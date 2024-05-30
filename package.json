@@ -12,6 +12,26 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "protopi-sidebar-view",
+          "title": "ProtoPI",
+          "icon": "media/logo.svg"
+        }
+      ]
+    },
+    "views": {
+      "protopi-sidebar-view": [
+        {
+          "type": "webview",
+          "id": "protopi-sidebar",
+          "name": "ProtoPI",
+          "icon": "media/logo.svg",
+          "contextualTitle": "ProtoPI"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "ProtoPI.helloWorld",
