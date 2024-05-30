@@ -21,7 +21,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
-        case "onInfo": {
+        case "getFiles": {
           if (!data.value) {
             return;
           }
@@ -44,6 +44,12 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
+    // uri to load script into webview
+    const scriptUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Sidebar.js")
+    );
+
+    // Uri to load styles into webview
     const styleResetUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
     );
@@ -51,38 +57,40 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
     );
 
-    const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/sidebar.js")
+    // Uri to load tailwind styles - hoist to top of style declarations
+    const cssUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "tailwind.css")
     );
+
+    // Uri to load svelte component style element
     const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/sidebar.css")
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Sidebar.css")
     );
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
 
     return `<!DOCTYPE html>
-			<html lang="en">
+		<html lang="en">
 			<head>
 				<meta charset="UTF-8">
 				<!--
 					Use a content security policy to only allow loading images from https or from our extension directory,
 					and only allow scripts that have a specific nonce.
         -->
-        <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${
-          webview.cspSource
-        }; script-src 'nonce-${nonce}';">
+        <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
-				<link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
+        <link href="${cssUri}" rel="stylesheet">
         <link href="${styleMainUri}" rel="stylesheet">
+        <link href="${styleResetUri}" rel="stylesheet">
+				<link href="${styleVSCodeUri}" rel="stylesheet">
         <script nonce="${nonce}">
           const tsvscode = acquireVsCodeApi();
         </script>
 			</head>
       <body>
-				<script nonce="${nonce}" src="${scriptUri}"></script>
+			  <script src="${scriptUri}" nonce="${nonce}"></script>
 			</body>
-			</html>`;
+		</html>`;
   }
 }

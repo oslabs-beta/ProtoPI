@@ -135,33 +135,34 @@ export class HelloWorldPanel {
     const stylesMainUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
     );
-    // const cssUri = webview.asWebviewUri(
-    //   vscode.Uri.joinPath(this._extensionUri, "out", "compiled/swiper.css")
-    // );
+
+    // Uri to load tailwind bundle - hoist to top of style declarations
+    const cssUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "tailwind.css")
+    );
 
     // // Use a nonce to only allow specific scripts to be run
     const nonce = getNonce();
 
-    return `
-    <!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<!--
-			Use a content security policy to only allow loading images from https or from our extension directory,
-			and only allow scripts that have a specific nonce.
+    return `<!DOCTYPE html>
+	  <html lang="en">
+	    <head>
+		    <meta charset="UTF-8">
+		    <!--
+			    Use a content security policy to only allow loading images from https or from our extension directory,
+			    and only allow scripts that have a specific nonce.
         -->
         <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="${cssUri}" rel="stylesheet">
         <link href="${stylesResetUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
         <script nonce="${nonce}">
         </script>
-	</head>
-    <body>
-        <h1>Hello World Panel!</h1>
-	</body>
-    <script src="${scriptUri}" nonce="${nonce}">
-	</html>`;
+	    </head>
+      <body>
+        <script src="${scriptUri}" nonce="${nonce}">
+	    </body>
+	  </html>`;
   }
 }

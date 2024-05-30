@@ -4,6 +4,7 @@ const commonjs = require("@rollup/plugin-commonjs");
 const { terser } = require("rollup-plugin-terser");
 const sveltePreprocess = require("svelte-preprocess");
 const typescript = require("@rollup/plugin-typescript");
+const postcss = require("rollup-plugin-postcss");
 const path = require("path");
 const fs = require("fs");
 
@@ -23,6 +24,12 @@ module.exports = fs
       },
       plugins: [
         svelte({
+          preprocess: sveltePreprocess({
+            postcss: {
+              plugins: [require("tailwindcss"), require("autoprefixer")],
+            },
+          }),
+
           // enable run-time checks when not in production
           dev: !production,
           // we'll extract any component CSS out into
@@ -30,7 +37,10 @@ module.exports = fs
           css: (css) => {
             css.write(name + ".css");
           },
-          preprocess: sveltePreprocess(),
+        }),
+
+        postcss({
+          extract: path.resolve("out/compiled/tailwind.css"),
         }),
 
         // If you have external dependencies installed from
@@ -63,6 +73,8 @@ module.exports = fs
       ],
       watch: {
         clearScreen: false,
+        include: "webviews/**",
+        exclude: "node_modules/**",
       },
     };
   });

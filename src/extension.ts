@@ -7,9 +7,6 @@ import { SidebarProvider } from "./SidebarProvider";
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-  // Use the console to output diagnostic information (console.log) and errors (console.error)
-  console.log('Congratulations, your extension "ProtoPI" is now active!');
-
   const sidebarProvider = new SidebarProvider(context.extensionUri);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
@@ -18,15 +15,30 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
+  // Open HelloWorldPanel webview
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.helloWorld", () => {
       HelloWorldPanel.createOrShow(context.extensionUri);
     })
   );
+
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.reload", () => {
       HelloWorldPanel.kill();
       HelloWorldPanel.createOrShow(context.extensionUri);
+      // setTimeout(() => {
+      //   vscode.commands.executeCommand(
+      //     "workbench.action.webview.openDeveloperTools"
+      //   );
+      // }, 500);
+    })
+  );
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.refresh", async () => {
+      await vscode.commands.executeCommand("workbench.action.closeSidebar");
+      await vscode.commands.executeCommand(
+        "workbench.view.extension.protopi-sidebar-view"
+      );
     })
   );
 }
