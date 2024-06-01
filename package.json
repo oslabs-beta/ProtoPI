@@ -9,7 +9,9 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "ProtoPI.runPrismMock"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
@@ -47,6 +49,11 @@
         "command": "ProtoPI.refresh",
         "category": "ProtoPI",
         "title": "Reload Sidebar Webview"
+      },
+      {
+        "command": "ProtoPI.runPrismMock",
+        "category": "ProtoPI",
+        "title": "Start Prism Mock Server"
       }
     ]
   },
@@ -92,5 +99,8 @@
     "svelte-preprocess": "^5.1.4",
     "tailwindcss": "^3.4.3",
     "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@stoplight/prism-cli": "^5.8.1"
   }
 }
