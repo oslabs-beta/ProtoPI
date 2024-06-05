@@ -54,6 +54,16 @@
         "command": "ProtoPI.runPrismMock",
         "category": "ProtoPI",
         "title": "Start Prism Mock Server"
+      },
+      {
+        "command": "ProtoPI.stopPrismMock",
+        "category": "ProtoPI",
+        "title": "Stop Prism Mock Server"
+      },
+      {
+        "command": "ProtoPI.findSpecFiles",
+        "category": "ProtoPI",
+        "title": "Display available API Specifications"
       }
     ]
   },
@@ -101,6 +111,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@stoplight/prism-cli": "^5.8.1"
+    "@stoplight/prism-cli": "^5.8.1",
+    "terminate": "^2.6.1"
   }
 }
