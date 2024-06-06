@@ -70,15 +70,15 @@ export function activate(context: vscode.ExtensionContext) {
       if (!mockServer) {
         vscode.window.showInformationMessage("No server is running");
       }
-      // terminate(mockServer?.pid, (err) => console.error(err));
-      // terminate(mockServer.pid, (err) => {
-      //   if (err) {
-      //     console.error(err);
-      //     vscode.window.showErrorMessage("Error killing mock server process");
-      //   }
-      //   mockServer = null;
-      //   vscode.window.showInformationMessage("Mock server is stopped");
-      // });
+      // @ts-ignore
+      terminate(mockServer.pid, (err: any) => {
+        if (err) {
+          console.error(err);
+          vscode.window.showErrorMessage("Error killing mock server process");
+        }
+        mockServer = null;
+        vscode.window.showInformationMessage("Mock server is stopped");
+      });
     })
   );
 
@@ -138,7 +138,8 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {
   if (mockServer) {
-    mockServer.kill();
+    // @ts-ignore
+    terminate(mockServer.pid, (err) => console.error(err));
     mockServer = null;
   }
 }
