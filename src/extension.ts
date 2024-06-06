@@ -69,6 +69,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("ProtoPI.stopPrismMock", async () => {
       if (!mockServer) {
         vscode.window.showInformationMessage("No server is running");
+        return;
       }
       // @ts-ignore
       terminate(mockServer.pid, (err: any) => {
