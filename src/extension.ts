@@ -1,26 +1,147 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import { ChildProcess, exec } from "child_process";
+import * as path from "path";
+import terminate from "terminate";
+import * as vscode from "vscode";
+import { HelloWorldPanel } from "./HelloWorldPanel";
+import { SidebarProvider } from "./SidebarProvider";
+import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+// Prism binary from local extension
+const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
+const prismPort = 3141;
+// const specPath = path.join(__dirname, "..", "examples", "spec.yaml");
+// const specURL =
+//   "https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml";
+
+let mockServer: ChildProcess | null = null;
+
 export function activate(context: vscode.ExtensionContext) {
+  // Creates mock server for first .yaml file found in workspace
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.runPrismMock", async () => {
+      if (mockServer) {
+        vscode.window.showInformationMessage("Server is already running!");
+        return;
+      }
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "ProtoPI" is now active!');
+      // Store all possible API Spec Files
+      const files = await findSpecFiles();
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('ProtoPI.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from ProtoPI!');
-	});
+      // Map files for quick selection
+      const fileItems = files.map((file) => ({
+        label: vscode.workspace.asRelativePath(file),
+        description: file.fsPath,
+        file: file,
+      }));
 
-	context.subscriptions.push(disposable);
+      // Prompt user for input
+      const selectedFile = await vscode.window.showQuickPick(fileItems, {
+        placeHolder: "Select a file",
+      });
+
+      if (selectedFile) {
+        // Create prism mock command
+        const prismCommand = `${prismPath} mock -d ${selectedFile.file.fsPath} --port ${prismPort}`;
+
+        mockServer = exec(prismCommand, (error, stdout, stderr) => {
+          if (error) {
+            vscode.window.showErrorMessage(`Error starting Prism: ${stderr}`);
+            mockServer = null;
+            return;
+          }
+          vscode.window.showInformationMessage(`${stdout}`); // Not displaying
+        });
+
+        // Displays regardless if command was executed properly - move to exec() callback
+        vscode.window.showInformationMessage(
+          `Prism started on ${path.basename(selectedFile.file.fsPath)}`
+        );
+      } else {
+        vscode.window.showErrorMessage("No file selected");
+      }
+    })
+  );
+
+  // Stops currently running mock server - not working currently
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.stopPrismMock", async () => {
+      if (!mockServer) {
+        vscode.window.showInformationMessage("No server is running");
+        return;
+      }
+
+      // @ts-ignore
+      terminate(mockServer.pid, (err: any) => {
+        if (err) {
+          console.error(err);
+          vscode.window.showErrorMessage("Error killing mock server process");
+        }
+        mockServer = null;
+        vscode.window.showInformationMessage("Mock server is stopped");
+      });
+    })
+  );
+
+  // Parses workspace to display available API Specifications and their directories
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.findSpecFiles", async () => {
+      const files = await findSpecFiles();
+      console.log(files);
+      vscode.window.showInformationMessage(files.toString());
+
+      const dirTree = groupFilesByDirectory(files);
+      console.log(JSON.stringify(dirTree));
+      vscode.window.showInformationMessage(JSON.stringify(dirTree));
+    })
+  );
+
+  // Sidebar
+  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  context.subscriptions.push(
+    vscode.window.registerWebviewViewProvider(
+      "protopi-sidebar",
+      sidebarProvider
+    )
+  );
+
+  // Open HelloWorldPanel webview
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.helloWorld", () => {
+      HelloWorldPanel.createOrShow(context.extensionUri);
+    })
+  );
+
+  // Reload Panel Webview
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.reload", () => {
+      HelloWorldPanel.kill();
+      HelloWorldPanel.createOrShow(context.extensionUri);
+      // setTimeout(() => {
+      //   vscode.commands.executeCommand(
+      //     "workbench.action.webview.openDeveloperTools"
+      //   );
+      // }, 500);
+    })
+  );
+
+  // Reload Side Panel Webview
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.refresh", async () => {
+      await vscode.commands.executeCommand("workbench.action.closeSidebar");
+      await vscode.commands.executeCommand(
+        "workbench.view.extension.protopi-sidebar-view"
+      );
+    })
+  );
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() {
+  if (mockServer) {
+    // @ts-ignore
+    terminate(mockServer.pid, (err) => console.error(err));
+    mockServer = null;
+  }
+}
