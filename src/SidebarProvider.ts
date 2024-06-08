@@ -19,6 +19,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
+
+    // USED TO RECEIVE DISPATCHED ACTIONS
     webviewView.webview.onDidReceiveMessage(async (data) => {
       switch (data.type) {
         case "getFiles": {
@@ -26,6 +28,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
             return;
           }
           vscode.window.showInformationMessage(data.value);
+          break;
+        }
+        case "startMock": {
+          if (!data.value) {
+            return;
+          }
+          vscode.window.showErrorMessage(data.value);
           break;
         }
         case "onError": {

@@ -12,6 +12,13 @@
       value: "info here",
     });
   });
+
+  function startMockDispatcher() {
+    tsvscode.postMessage({
+      type: "startMock",
+      value: "",
+    });
+  }
 </script>
 
 <div class="text-2xl font-bold">Sidebar</div>
@@ -21,7 +28,7 @@
   }}
 >
   <input bind:value={text} />
-  <button>Submit</button>
+  <button on:click={startMockDispatcher}>Submit</button>
 </form>
 
 <ul>

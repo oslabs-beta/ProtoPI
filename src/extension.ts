@@ -71,6 +71,7 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage("No server is running");
         return;
       }
+
       // @ts-ignore
       terminate(mockServer.pid, (err: any) => {
         if (err) {
