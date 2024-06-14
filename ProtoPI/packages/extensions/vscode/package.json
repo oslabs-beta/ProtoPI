@@ -92,7 +92,7 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -name 'yarn.lock' -exec sh -c '> {}' \\; && echo \"Cleanup completed!\""
+    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f -name 'yarn.lock' -exec sh -c '> {}' \\; && echo 'Cleanup completed!'"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.8",

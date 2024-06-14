@@ -7,7 +7,7 @@
     "build:prod": "NODE_ENV=production vite build",
     "preview:dev": "vite preview --outDir dist_dev",
     "preview:prod": "vite preview --outDir dist_prod",
-    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -name 'yarn.lock' -exec sh -c '> {}' \\; && echo \"Cleanup completed!\""
+    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f -name 'yarn.lock' -exec sh -c '> {}' \\; && echo 'Cleanup completed!'"
   },
   "type": "module",
   "devDependencies": {

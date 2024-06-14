@@ -24,12 +24,15 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+dist_dev/
+dist_prod/
 
 # Project Directories and Files
 .env
 out
 dist
 node_modules
+node_modules/
 .vscode-test/
 *.vsix
 package-lock.json
