@@ -17,7 +17,24 @@ const prismPort = 3141;
 
 let mockServer: ChildProcess | null = null;
 
+
+let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+
 export function activate(context: vscode.ExtensionContext) {
+  //
+  const statusBarCommandStart = 'ProtoPI.runPrismMock';
+  const statusBarCommandStop = 'ProtoPI.stopPrismMock';
+  
+  // Create and show the status bar item
+  statusBarItem.text = `$(gear~spin) Start Mock Server`;
+  statusBarItem.tooltip = "Click to start Mock Server";
+  statusBarItem.command = statusBarCommandStart;
+  statusBarItem.show();
+
+  // Add to context subscriptions for proper disposal
+  context.subscriptions.push(statusBarItem);
+
+
   // Creates mock server for first .yaml file found in workspace
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.runPrismMock", async () => {
@@ -58,6 +75,15 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage(
           `Prism started on ${path.basename(selectedFile.file.fsPath)}`
         );
+
+        // update the status bar item:
+
+        statusBarItem.text = `$(stop) Stop Mock Server`;
+        statusBarItem.command = statusBarCommandStop;
+        statusBarItem.tooltip = `Click to stop mock server`;
+        statusBarItem.show()
+
+
       } else {
         vscode.window.showErrorMessage("No file selected");
       }
@@ -80,6 +106,12 @@ export function activate(context: vscode.ExtensionContext) {
         }
         mockServer = null;
         vscode.window.showInformationMessage("Mock server is stopped");
+        // update status bar item:
+        statusBarItem.text = `$(gear~spin) Start Mock Server`;
+        statusBarItem.tooltip = "Click to start mock server"
+        statusBarItem.command = statusBarCommandStart;
+        statusBarItem.show()
+
       });
     })
   );
@@ -126,6 +158,7 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
+
   // Reload Side Panel Webview
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.refresh", async () => {
@@ -135,6 +168,9 @@ export function activate(context: vscode.ExtensionContext) {
       );
     })
   );
+
+  statusBarItem.show();
+
 }
 
 // This method is called when your extension is deactivated
