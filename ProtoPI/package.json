@@ -1,0 +1,17 @@
+{
+  "name": "ProtoPI",
+  "private": true,
+  "workspaces": [
+    "packages/dev-aids/*",
+    "packages/extensions/*"
+  ],
+  "scripts": {
+    "start": "yarn workspace @myorg/package1 start",
+    "build": "yarn workspaces run build",
+    "test": "yarn workspaces run test",
+    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f -name 'yarn.lock' -exec sh -c '> {}' \\; && echo 'Cleanup completed!'"
+  },
+  "devDependencies": {
+    "typescript": "^4.0.0"
+  }
+}
