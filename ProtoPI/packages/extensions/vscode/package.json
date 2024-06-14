@@ -1,5 +1,5 @@
 {
-  "name": "protopi",
+  "name": "extension",
   "displayName": "ProtoPI",
   "description": "OpenAPI spec file parser/creator and mock server for VS Code",
   "version": "0.0.2",
@@ -91,7 +91,8 @@
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -name 'yarn.lock' -exec sh -c '> {}' \\; && echo \"Cleanup completed!\""
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.8",
