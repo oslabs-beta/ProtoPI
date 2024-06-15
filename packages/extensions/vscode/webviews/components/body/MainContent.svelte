@@ -12,9 +12,9 @@
   <RequestMetaHeader class="flex-shrink-0" />
   <Tabs bind:activeTab class="flex-shrink-0" />
   {#if activeTab === "Request"}
-    <RequestPanel class="flex-grow p-4 bg-gray-100 overflow-auto" />
+    <RequestPanel class="flex-grow p-4 overflow-auto" />
   {:else if activeTab === "Response"}
-    <ResponsePanel class="flex-grow p-4 bg-gray-200 overflow-auto" />
+    <ResponsePanel class="flex-grow p-4 overflow-auto" />
   {/if}
 </div>
 

@@ -17,14 +17,16 @@ const prismPort = 3141;
 
 let mockServer: ChildProcess | null = null;
 
-
-let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
+  vscode.StatusBarAlignment.Right,
+  100
+);
 
 export function activate(context: vscode.ExtensionContext) {
   //
-  const statusBarCommandStart = 'ProtoPI.runPrismMock';
-  const statusBarCommandStop = 'ProtoPI.stopPrismMock';
-  
+  const statusBarCommandStart = "ProtoPI.runPrismMock";
+  const statusBarCommandStop = "ProtoPI.stopPrismMock";
+
   // Create and show the status bar item
   statusBarItem.text = `$(gear~spin) Start Mock Server`;
   statusBarItem.tooltip = "Click to start Mock Server";
@@ -33,7 +35,6 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Add to context subscriptions for proper disposal
   context.subscriptions.push(statusBarItem);
-
 
   // Creates mock server for first .yaml file found in workspace
   context.subscriptions.push(
@@ -63,17 +64,17 @@ export function activate(context: vscode.ExtensionContext) {
         const prismCommand = `${prismPath} mock -d ${selectedFile.file.fsPath} --port ${prismPort}`;
 
         mockServer = exec(prismCommand, (error, stdout, stderr) => {
-          if (error) {
-            vscode.window.showErrorMessage(`Error starting Prism: ${stderr}`);
-            mockServer = null;
-            return;
-          }
+          // if (error) {
+          //   vscode.window.showErrorMessage(`Error starting Prism: ${stderr}`);
+          //   mockServer = null;
+          //   return;
+          // }
           vscode.window.showInformationMessage(`${stdout}`); // Not displaying
         });
 
         // Displays regardless if command was executed properly - move to exec() callback
         vscode.window.showInformationMessage(
-          `Prism started on ${path.basename(selectedFile.file.fsPath)}`
+          `Mock server started with ${path.basename(selectedFile.file.fsPath)}`
         );
 
         // update the status bar item:
@@ -82,8 +83,6 @@ export function activate(context: vscode.ExtensionContext) {
         statusBarItem.command = statusBarCommandStop;
         statusBarItem.tooltip = `Click to stop mock server`;
         statusBarItem.show();
-
-
       } else {
         vscode.window.showErrorMessage("No file selected");
       }
@@ -111,7 +110,6 @@ export function activate(context: vscode.ExtensionContext) {
         statusBarItem.tooltip = "Click to start mock server";
         statusBarItem.command = statusBarCommandStart;
         statusBarItem.show();
-
       });
     })
   );
@@ -158,7 +156,6 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-
   // Reload Side Panel Webview
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.refresh", async () => {
@@ -172,29 +169,33 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.openFile", () => {
       const panel = vscode.window.createWebviewPanel(
-        'webview',
-        'Webview',
+        "webview",
+        "Webview",
         vscode.ViewColumn.One,
         {
-          enableScripts: true
+          enableScripts: true,
         }
       );
 
       panel.webview.html = getWebviewContent();
 
       panel.webview.onDidReceiveMessage(
-        message => {
-          if (message.command === 'openFile') {
-            vscode.window.showOpenDialog({ canSelectMany: false }).then(fileUri => {
-              if (fileUri && fileUri[0]) {
-                vscode.workspace.fs.readFile(fileUri[0]).then(fileContent => {
-                  panel.webview.postMessage({
-                    command: 'fileContent',
-                    content: fileContent.toString()
-                  });
-                });
-              }
-            });
+        (message) => {
+          if (message.command === "openFile") {
+            vscode.window
+              .showOpenDialog({ canSelectMany: false })
+              .then((fileUri) => {
+                if (fileUri && fileUri[0]) {
+                  vscode.workspace.fs
+                    .readFile(fileUri[0])
+                    .then((fileContent) => {
+                      panel.webview.postMessage({
+                        command: "fileContent",
+                        content: fileContent.toString(),
+                      });
+                    });
+                }
+              });
           }
         },
         undefined,
@@ -221,14 +222,16 @@ export function activate(context: vscode.ExtensionContext) {
       if (selectedFile) {
         const content = await vscode.workspace.fs.readFile(selectedFile.file);
         const textContent = content.toString();
-        
+
         sidebarProvider._view?.webview.postMessage({
-          type: 'fileContent',
-          content: textContent
+          type: "fileContent",
+          content: textContent,
         });
 
         console.log(`Opened file: ${selectedFile.label}`);
-        vscode.window.showInformationMessage(`Opened file: ${selectedFile.label}`);
+        vscode.window.showInformationMessage(
+          `Opened file: ${selectedFile.label}`
+        );
       } else {
         vscode.window.showErrorMessage("No file selected");
       }
@@ -239,7 +242,7 @@ export function activate(context: vscode.ExtensionContext) {
     vscode.commands.registerCommand("ProtoPI.closeAPIFile", () => {
       console.log("Closing API File");
       sidebarProvider._view?.webview.postMessage({
-        type: 'closeFile'
+        type: "closeFile",
       });
       vscode.window.showInformationMessage("API file closed");
     })
@@ -266,7 +269,6 @@ function getWebviewContent() {
     </body>
     </html>
   `;
-
 }
 
 // This method is called when your extension is deactivated

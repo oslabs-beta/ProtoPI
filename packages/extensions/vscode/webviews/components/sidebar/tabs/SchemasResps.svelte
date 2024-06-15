@@ -3,5 +3,5 @@
 </script>
 
 <div>
-  <h2>Schemas / Resps</h2>
+  <h2>Schemas</h2>
 </div>

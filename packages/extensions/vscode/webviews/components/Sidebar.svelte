@@ -133,13 +133,13 @@
   />
 </div>
 
-<hr class="border-2 border-blue-500 my-4" />
+<hr class="border-2 my-4" />
 
-<div class="w-full p-5 bg-gray-900 text-white box-border">
+<div class="w-full p-5 text-white box-border">
   <SidebarTabs />
 </div>
 
-<hr class="border-2 border-blue-500 my-4" />
+<hr class="border-2 my-4" />
 
 <input type="file" bind:this={fileInput} on:change={handleFileChange} style="display: none;" />
 

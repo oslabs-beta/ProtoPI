@@ -1,3 +1,4 @@
+import axios from "axios";
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
@@ -66,17 +67,46 @@ export class HelloWorldPanel {
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
     // // Handle messages from the webview
-    // this._panel.webview.onDidReceiveMessage(
-    //   (message) => {
-    //     switch (message.command) {
-    //       case "alert":
-    //         vscode.window.showErrorMessage(message.text);
-    //         return;
-    //     }
-    //   },
-    //   null,
-    //   this._disposables
-    // );
+    this._panel.webview.onDidReceiveMessage(
+      async (message) => {
+        console.log(JSON.stringify(message) + "panel view");
+        switch (message.type) {
+          case "makeFetchRequest":
+            if (!message.value) {
+              vscode.window.showInformationMessage(`No data`);
+              return;
+            }
+            vscode.window.showInformationMessage(
+              JSON.stringify(message.value.method) +
+                JSON.stringify(message.value.requestUrl)
+            );
+            try {
+              const method = message.value.method;
+
+              // Make request
+              const res = await axios.get(message.value.requestUrl);
+
+              vscode.window.showInformationMessage(JSON.stringify(res.data));
+
+              // Send response to webview
+              this._panel.webview.postMessage({
+                command: "sendFetchResponse",
+                data: res.data,
+              });
+            } catch (err) {
+              vscode.window.showErrorMessage(JSON.stringify(err));
+              this._panel.webview.postMessage({
+                command: "error",
+                //@ts-ignore
+                error: err.message,
+              });
+            }
+            break;
+        }
+      },
+      null,
+      this._disposables
+    );
   }
 
   public dispose() {
@@ -158,6 +188,7 @@ export class HelloWorldPanel {
         <link href="${stylesResetUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
         <script nonce="${nonce}">
+          const tsvscode = acquireVsCodeApi();
         </script>
 	    </head>
       <body>
