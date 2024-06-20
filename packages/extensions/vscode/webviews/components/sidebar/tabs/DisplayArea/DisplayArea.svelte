@@ -1,7 +1,6 @@
 <script>
   import TreeView from './TreeView.svelte';
-  import { selectedNode } from '../../../../stores/treeState';
-  import { selectedData } from '../../../../stores/selectedDataStore';
+  import { selectedData } from '../../../../stores/dataStore';
 
   export let data;
 
@@ -22,7 +21,6 @@
   console.log('DisplayArea pathsData after extraction:', pathsData);
 
   function handleClick(event) {
-    selectedNode.set(event.detail.node);
     selectedData.set(event.detail.node); // Update the store
     console.log("Selected node data:", event.detail.node);
   }

@@ -127,6 +127,7 @@
   "dependencies": {
     "@stoplight/prism-cli": "^5.8.1",
     "axios": "^1.7.2",
+    "svelte-dnd-action": "^0.9.49",
     "terminate": "^2.6.1"
   }
 }
