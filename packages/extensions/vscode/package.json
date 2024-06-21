@@ -127,7 +127,9 @@
   "dependencies": {
     "@stoplight/prism-cli": "^5.8.1",
     "axios": "^1.7.2",
+    "sortablejs": "^1.15.2",
     "svelte-dnd-action": "^0.9.49",
+    "svelte-sortablejs": "^0.2.0",
     "terminate": "^2.6.1"
   }
 }

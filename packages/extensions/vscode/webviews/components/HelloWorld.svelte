@@ -13,7 +13,7 @@
   {#if activeTab === 'hello'}
     <div class="h-screen flex flex-col">
       <Header />
-      <MainContent class="flex-grow" />
+      <MainContent className="flex-grow" />
     </div>
     {:else if activeTab === 'rest'}
       <RestRequest />

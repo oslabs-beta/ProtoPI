@@ -4,7 +4,7 @@
   import SidebarTabs from './sidebar/tabs/SidebarTabs.svelte';
   import { activeTab } from '../stores/tabStore.js';
   import MultiActionDropButton from './../components/library/buttons/MultiActionDropButton/MultiActionDropButton.svelte';
-  import { fileContent, parsedData } from '../stores/dataStore';
+  import { fileContent, parsedData, selectedData } from '../stores/dataStore';
   import YAML from 'yaml';
   import { writable } from 'svelte/store';
 
@@ -19,12 +19,14 @@
         type: "getFiles",
         value: "info here",
       });
+      console.log("VS Code API acquired and postMessage sent to getFiles");
     }
   });
 
   function handleOpenAPIWithServer() {
     if (tsvscode) {
       tsvscode.postMessage({ type: "openAPIWithServer", value: "" });
+      console.log("PostMessage sent to openAPIWithServer");
     } else {
       alert("This feature is only available in the VS Code extension.");
     }
@@ -38,6 +40,7 @@
   function handleStartServerOnly() {
     if (tsvscode) {
       tsvscode.postMessage({ type: "startServerOnly", value: "" });
+      console.log("PostMessage sent to startServerOnly");
     } else {
       alert("This feature is only available in the VS Code extension.");
     }
@@ -47,22 +50,27 @@
     console.log("Closing API file in Sidebar");
     fileContent.set(null);
     parsedData.set(null);
+    selectedData.set(null);
+    console.log("fileContent, parsedData, and selectedData set to null");
     if (tsvscode) {
       tsvscode.postMessage({ type: "closeAPIFile" });
+      console.log("PostMessage sent to closeAPIFile");
     } else {
       // Reset file input for browser
       fileInput.value = "";
+      console.log("File input reset for browser");
     }
-
   }
 
   function openFileDialog() {
     if (tsvscode) {
       // In VS Code webview
       tsvscode.postMessage({ command: 'openFile' });
+      console.log("PostMessage sent to openFile in VS Code webview");
     } else {
       // In a browser
       fileInput.click();
+      console.log("File input clicked in browser");
     }
   }
 
@@ -74,20 +82,30 @@
         const content = e.target.result;
         fileContent.set(content);
 
+        // Log the file content in a collapsed group
+        console.groupCollapsed("File content set in fileContent store:");
+        console.log(content);
+        console.groupEnd();
+
         // Parse the YAML file
         try {
           const data = YAML.parse(content);
           parsedData.set(data);
-          console.log("File read successfully. Parsed data:", data);
+          selectedData.set(data);
+          console.log("File read successfully. Parsed data set in parsedData and selectedData:", data);
         } catch (error) {
           console.error("Error parsing YAML file:", error);
         }
       };
       reader.readAsText(file);
+      console.log("FileReader started reading the file");
+
+      // Reset the file input to ensure the change event is triggered again
+      fileInput.value = "";
+      console.log("File input reset");
     } else {
       console.log("No file selected");
     }
-
   }
 
   window.addEventListener('message', event => {
@@ -96,26 +114,36 @@
     if (message.command === 'fileContent') {
       const content = message.content;
       fileContent.set(content);
+      
+      // Log the file content in a collapsed group
+      console.groupCollapsed("File content set in fileContent store via message:");
+      console.log(content);
+      console.groupEnd();
 
       // Parse the YAML file
       try {
         const data = YAML.parse(content);
         parsedData.set(data);
-        console.log("File read successfully. Parsed data:", data);
+        selectedData.set(data); 
+        console.log("File read successfully via message. Parsed data set in parsedData and selectedData:", data);
       } catch (error) {
         console.error("Error parsing YAML file:", error);
       }
     } else if (message.command === 'closeFile') {
-      console.log("Closing file in Sidebar")
+      console.log("Closing file in Sidebar via message");
       fileContent.set(null);
       parsedData.set(null);
+      selectedData.set(null);
+      console.log("fileContent, parsedData, and selectedData set to null via message");
       // Reset file input for browser
       fileInput.value = "";
+      console.log("File input reset for browser via message");
     }
   });
 
   function handleCheckboxChange(event) {
     responsesIncluded.set(event.target.checked);  // Update store value based on checkbox state
+    console.log("responsesIncluded set to", event.target.checked);
   }
 
   let actions = [

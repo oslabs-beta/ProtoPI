@@ -25,5 +25,6 @@
     },
     "lib": ["dom", "esnext"]
   },
-  "include": ["../src/**/*", "../../../extensions/vscode/webviews/**/*"]
+  "include": ["../src/**/*", "../../../extensions/vscode/webviews/**/*"],
+  "exclude": ["../node_modules/*"]
 }
