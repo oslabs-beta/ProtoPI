@@ -13,9 +13,19 @@
   // Structured array to track items with their state
   let items = [];
 
+  // Ensure items are updated reactively when yamlData changes
   $: items = parseItems(yamlData);
 
   console.log('TreeViewDND: items', items);
+
+  // Generate a unique identifier
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
 
   // Parse data to construct a suitable structure for rendering
   function parseItems(data) {
@@ -26,7 +36,8 @@
   function createItem(item, isOpen) {
     console.log('Creating item:', item);
     return {
-      id: item.key,
+      id: generateUUID(),
+      key: item.key,
       value: item.value,
       isOpen, // All items initially expanded
       children: item.value && Array.isArray(item.value)
@@ -57,6 +68,8 @@
     sortable = new Sortable(container, {
       handle: '.drag-handle',
       animation: 150,
+      group: 'listGroup-root',
+      fallbackOnBody: true,
       ghostClass: 'sortable-ghost',
       onEnd: ({oldIndex, newIndex}) => {
         const movedItem = items.splice(oldIndex, 1)[0];
@@ -92,20 +105,21 @@
   .caret, .drag-handle {
     vertical-align: middle; /* Align icons vertically */
   }
-  ul {
+  .list-group {
     list-style: none;
-    padding-left: 20px;
+    padding-left: 20px; /* Indent nested items */
   }
 
-  li {
+  .list-group-item {
     margin-bottom: 5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
   }
 </style>
 
-<ul bind:this={container}>
+<div class="js-sortable list-group" bind:this={container}>
   {#each items as item (item.id)}
-    <li>
-      <TreeNodeDND node={item} toggle={toggleOpen} />
-    </li>
+    <TreeNodeDND node={item} toggle={toggleOpen} />
   {/each}
-</ul>
+</div>
