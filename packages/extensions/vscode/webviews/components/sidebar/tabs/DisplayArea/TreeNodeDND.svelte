@@ -1,13 +1,20 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
   import Sortable from 'sortablejs';
   export let node;
   export let toggle; // Function passed from parent to handle toggling
+  export let generateUUID; // Function passed from parent to generate UUIDs
+  export let level = 1; // The nesting level
   import TreeNodeDND from './TreeNodeDND.svelte';
+
   console.log('TreeNodeDND: node', node);
 
   let nestedContainer;
 
+  const id = generateUUID(level);
+  node.id = id;
+  console.log('TreeNodeDND: node', node);
+  
   let sortableOptions = JSON.stringify({
     animation: 150,
     group: `listGroup-${node.id}`
@@ -34,6 +41,9 @@
     event.stopPropagation();
     toggle(node.id);
   }
+
+  const Lx = `L${level}`;
+
 </script>
 
 <div class="node-container list-group-item">
@@ -44,6 +54,7 @@
       <rect x="3" y="19" width="18" height="2" rx="1" fill="currentColor"/>
     </svg>
   </span>
+  <span class="level-indicator">{Lx}</span>
   <span class="caret" on:click={handleToggle}>
       <svg class="{node.isOpen ? 'caret-open' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M9 18L15 12L9 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -52,21 +63,21 @@
   <span class="node-label">{node.key}</span>
 </div>
 {#if node.isOpen && node.children.length}
-  <div class="js-sortable list-group nested {node.isOpen ? 'open' : ''}" bind:this={nestedContainer} data-hs-sortable-options={sortableOptions} >
+  <div class="js-sortable list-group nested open}" bind:this={nestedContainer} data-hs-sortable-options={sortableOptions} >
     {#each node.children as child (child.id)}
-      <TreeNodeDND node={child} toggle={toggle} />
+      <TreeNodeDND node={child} toggle={toggle} generateUUID={generateUUID} level={level + 1} />
     {/each}
   </div>
 {:else if node.isOpen && Array.isArray(node.value)}
   <div class="js-sortable list-group nested open" bind:this={nestedContainer} data-hs-sortable-options={sortableOptions} >
     {#each node.value as item, index}
-      <TreeNodeDND node={{ id: generateUUID(), key: index, value: item, isOpen: false, children: [] }} toggle={toggle} />
+      <TreeNodeDND node={{ id: generateUUID(level + 1), key: index, value: item, isOpen: false, children: [] }} toggle={toggle} generateUUID={generateUUID} level={level + 1}/>
     {/each}
   </div>
 {:else if node.isOpen && typeof node.value === 'object'}
   <div class="js-sortable list-group nested open" bind:this={nestedContainer} data-hs-sortable-options={sortableOptions} >
     {#each Object.entries(node.value) as [key, value]}
-      <TreeNodeDND node={{ id: generateUUID(), key, value, isOpen: false, children: [] }} toggle={toggle} />
+      <TreeNodeDND node={{ id: generateUUID(level + 1), key, value, isOpen: false, children: [] }} toggle={toggle} generateUUID={generateUUID} level={level + 1} />
     {/each}
   </div>
 {/if}
@@ -82,6 +93,9 @@
     margin-right: 5px; /* Space between handle and caret */
     display: flex;
     align-items: center;
+  }
+  .level-indicator {
+    margin-right: 5px; /* Space between level indicator and caret */
   }
   .caret {
     cursor: pointer;
@@ -99,12 +113,16 @@
     margin-left: 5px;
   }
   .nested {
-    display: none;
-    list-style-type: none; /* Remove default list styling */
-    padding-left: 10px; /* Indent nested items */
+    list-style: none;
+    padding-left: 10px;
+    overflow: hidden;
+    transition: height 0.3s ease;
   }
   .nested.open {
-    display: block;
+    height: auto;
+  }
+  .nested.collapsed {
+    height: 0;
   }
   .sortable-ghost {
     background-color: #f0f0f0;
