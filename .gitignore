@@ -1,3 +1,6 @@
+# Ignore Vite timestamp files
+*.timestamp-*.mjs
+
 # macOS system files
 .DS_Store
 .AppleDouble

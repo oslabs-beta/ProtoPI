@@ -1,12 +1,16 @@
 <script>
   import { onMount } from "svelte";
   import "../tailwind.css";
-  import SidebarTabs from './sidebar/tabs/SidebarTabs.svelte';
+  // import SidebarTabs from './sidebar/tabs/SidebarTabs.svelte';
   import { activeTab } from '../stores/tabStore.js';
-  import MultiActionDropButton from './../components/library/buttons/MultiActionDropButton/MultiActionDropButton.svelte';
+  import MultiActionDropButton from './asset-library/buttons/MultiActionDropButton/MultiActionDropButton.svelte';
   import { fileContent, parsedData, selectedData } from '../stores/dataStore';
   import YAML from 'yaml';
   import { writable } from 'svelte/store';
+  import { openFilesData } from '../stores/openStore';
+  import DisplayArea from './sidebar/DisplayArea.svelte';
+  import SliderButton from './asset-library/buttons/ToOrganize/SliderButton.svelte';
+  import { filterCriteria } from '../stores/treefilterStore'; // Import the filterCriteria store
 
   let fileInput;
   let tsvscode;
@@ -75,36 +79,23 @@
   }
 
   function handleFileChange(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const content = e.target.result;
-        fileContent.set(content);
-
-        // Log the file content in a collapsed group
-        console.groupCollapsed("File content set in fileContent store:");
-        console.log(content);
-        console.groupEnd();
-
-        // Parse the YAML file
-        try {
-          const data = YAML.parse(content);
-          parsedData.set(data);
-          selectedData.set(data);
-          console.log("File read successfully. Parsed data set in parsedData and selectedData:", data);
-        } catch (error) {
-          console.error("Error parsing YAML file:", error);
-        }
-      };
-      reader.readAsText(file);
-      console.log("FileReader started reading the file");
-
-      // Reset the file input to ensure the change event is triggered again
-      fileInput.value = "";
-      console.log("File input reset");
-    } else {
-      console.log("No file selected");
+    const files = event.target.files;
+    if (files.length > 0) {
+      Array.from(files).forEach(file => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          openFilesData.update(currentFiles => {
+            if (!Array.isArray(currentFiles)) {
+              currentFiles = [];
+            }
+            return [
+              ...currentFiles,
+              { name: file.name, content: e.target.result }
+            ];
+          });
+        };
+        reader.readAsText(file);
+      });
     }
   }
 
@@ -150,6 +141,14 @@
     { label: "Open API File", action: handleOpenAPIWithoutServer },
     { label: "Close API File", action: handleCloseAPIFile }
   ];
+
+  let isRequestsFilter = false;
+
+  function handleFilterChange(event) {
+    isRequestsFilter = event.target.checked;
+    filterCriteria.set(isRequestsFilter ? 'requests' : ''); // Update the filter criteria based on the toggle state
+    console.log('Filter Criteria Set:', isRequestsFilter ? 'requests' : '');
+  }
 </script>
 
 <!-- Use the new MultiActionDropButton component with caretWidth prop -->
@@ -163,17 +162,22 @@
 
 <hr class="border-2 my-4" />
 
+<SliderButton {isRequestsFilter} onChange={handleFilterChange} />
+
+<hr class="border-2 my-4" />
+
 <div class="w-full p-5 text-white box-border">
-  <SidebarTabs />
+  <!-- <SidebarTabs /> -->
+  <DisplayArea />
 </div>
 
 <hr class="border-2 my-4" />
 
 <input type="file" bind:this={fileInput} on:change={handleFileChange} style="display: none;" />
 
-<div>
+<!-- <div>
   <label>
     <input type="checkbox" on:change={handleCheckboxChange}>
     Include Responses
   </label>
-</div>
+</div> -->

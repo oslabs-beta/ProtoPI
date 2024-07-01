@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import { activeTab } from "../../../stores/tabStore.js";
-  import Reqs from "../tabs/Reqs.svelte";
-  import SchemasResps from "../tabs/SchemasResps.svelte";
+  import Reqs from "./Reqs.svelte.js";
+  import SchemasResps from "./SchemasResps.svelte.js";
 
   function setTab(tab) {
     console.log("Setting active tab:", tab);
@@ -17,7 +17,7 @@
 </script>
 
 <div class="flex justify-around text-white mb-5" role="tablist">
-  <button
+  <!-- <button
     class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none"
     class:border-b-blue-500={$activeTab === "SchemasResps"}
     role="tab"
@@ -36,7 +36,7 @@
     on:keydown={(e) => e.key === "Enter" && setTab("Reqs")}
   >
     Requests
-  </button>
+  </button> -->
 </div>
 
 {#if $activeTab === "SchemasResps"}

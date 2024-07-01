@@ -1,7 +1,7 @@
 <script>
   import Header from './body/Header.svelte';
   import MainContent from './body/MainContent.svelte';
-  import RestRequest from './RestRequest.svelte';
+  import RestRequest from './_cleanup/tabs/RestRequest.svelte';
   let activeTab = 'hello';
 </script>
 

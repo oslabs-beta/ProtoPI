@@ -1,7 +1,5 @@
 <script>
   import TreeViewDND from './TreeViewDND.svelte';
-  import { selectedData } from '../../../../stores/dataStore';
-
   export let parsedYaml = {};
 
   let yamlData = [];
@@ -9,10 +7,7 @@
   function extractYamlSections(data) {
     console.log("Extracting Sections from data:", data);
     if (data && typeof data === 'object') {
-      return Object.entries(data).map(([key, value]) => ({
-        key,
-        value: typeof value === 'object' ? value : JSON.stringify(value, null, 2) // Handle nested objects
-      }));
+      return data;
     }
     return [];
   }

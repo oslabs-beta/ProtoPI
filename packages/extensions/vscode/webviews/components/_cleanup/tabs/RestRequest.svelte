@@ -1,6 +1,6 @@
 <script>
-  import Request from './Rest/RequestContent.svelte';
-  import Response from './Rest/ResponseContent.svelte';
+  import Request from '../../Rest/RequestContent.svelte';
+  import Response from '../../Rest/ResponseContent.svelte';
 </script>
 
 <div class="h-screen flex flex-col">

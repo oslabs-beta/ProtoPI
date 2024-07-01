@@ -5,14 +5,16 @@
     "packages/dev-aids/*",
     "packages/extensions/*"
   ],
-  "scripts": {
-    "start": "yarn workspace @myorg/package1 start",
-    "build": "yarn workspaces run build",
-    "test": "yarn workspaces run test",
-    "cleanup:yarn": "yarn cache clean",
-    "cleanup:files": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f -name 'yarn.lock' -exec sh -c '> {}' \\; && echo 'Cleanup completed!'",
-    "cleanup": "concurrently \"yarn cleanup:yarn\" \"yarn cleanup:files\""
-  },
+"scripts": {
+  "start": "yarn workspace @myorg/package1 start",
+  "build": "yarn workspaces run build",
+  "test": "yarn workspaces run test",
+  "cleanup:yarn": "yarn cache clean",
+  "cleanup:files": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn.lock' -o -name '*.timestamp-*.mjs' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
+  "cleanup": "concurrently \"yarn cleanup:yarn\" \"yarn cleanup:files\" && yarn empty:trash",
+  "empty:trash": "sudo rm -rf ~/.Trash/*",
+  "wrkspc:ls": "yarn workspaces info | grep '\"location\"' | sed 's/.*: \\\"\\(.*\\)\\\",/\\1/'"
+},
   "devDependencies": {
     "concurrently": "^8.2.2",
     "typescript": "^4.0.0"
