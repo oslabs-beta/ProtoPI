@@ -12,5 +12,20 @@
     "typescript.tsc.autoDetect": "off",
     "cSpell.words": [
       "protopi"
-    ]
+    ],
+    // Below here are new 7/2/2024
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "svelte.plugin.typescript.enable": true,
+    "svelte.language-server.runtime": "node_modules/.bin/svelte-language-server",
+    "svelte.enable-ts-plugin": true,
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "editor.suggestSelection": "first",
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.showClasses": true,
+    "editor.suggest.showFunctions": true,
+    "editor.suggest.showKeywords": true,
+    "editor.suggest.showVariables": true,
+    "editor.suggest.showProperties": true
 }
