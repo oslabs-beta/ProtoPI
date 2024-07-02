@@ -11,10 +11,12 @@
   import DisplayArea from './sidebar/DisplayArea.svelte';
   import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
   import { filterCriteria } from '../stores/fileMgmt/treefilterStore'; // Import the filterCriteria store
+  import SplitViewButton from './asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
 
   let fileInput;
   let tsvscode;
   let responsesIncluded = writable(false);
+  let isSplit = false; 
 
   onMount(() => {
     if (typeof acquireVsCodeApi === "function") {
@@ -32,6 +34,11 @@
       console.log("VS Code API acquired and postMessage sent to getFiles");
     }
   });
+
+  function handleUpdateSplit(event) {
+    isSplit = event.detail.isSplit;
+    console.log('Split View state updated:', isSplit);
+  }
 
   function handleOpenAPIWithServer() {
     if (tsvscode) {
@@ -157,33 +164,29 @@
   }
 </script>
 
-<!-- Use the new MultiActionDropButton component with caretWidth prop -->
-<div class="mb-4">
-  <MultiActionDropButton
-    actions={actions}
-    defaultLabel="Select an action"
-    caretWidth="30px"
-  />
+<div>
+    <!-- Use the new MultiActionDropButton component with caretWidth prop -->
+  <div class="mb-4">
+    <MultiActionDropButton
+      actions={actions}
+      defaultLabel="Select an action"
+      caretWidth="30px"
+    />
+  </div>
+
+  <hr class="border-2 my-4" />
+
+  <SplitViewButton on:updateSplit={handleUpdateSplit} />
+  <SliderButton {isRequestsFilter} onChange={handleFilterChange} />
+
+  <hr class="border-2 my-4" />
+
+  <div class="w-full p-5 text-white box-border">
+    <!-- <SidebarTabs /> -->
+    <DisplayArea />
+  </div>
+
+  <hr class="border-2 my-4" />
+
+  <input type="file" bind:this={fileInput} on:change={handleFileChange} style="display: none;" />
 </div>
-
-<hr class="border-2 my-4" />
-
-<SliderButton {isRequestsFilter} onChange={handleFilterChange} />
-
-<hr class="border-2 my-4" />
-
-<div class="w-full p-5 text-white box-border">
-  <!-- <SidebarTabs /> -->
-  <DisplayArea />
-</div>
-
-<hr class="border-2 my-4" />
-
-<input type="file" bind:this={fileInput} on:change={handleFileChange} style="display: none;" />
-
-<!-- <div>
-  <label>
-    <input type="checkbox" on:change={handleCheckboxChange}>
-    Include Responses
-  </label>
-</div> -->
