@@ -33,7 +33,7 @@ module.exports = fs
           dev: !production,
           // CSCS handling aligns with Svelte 4
           css: (css) => {
-            css.write('out/compiled/' + name + '.css', false);
+            css.write(name + ".css", false);
           },
         }),
         svg(),
