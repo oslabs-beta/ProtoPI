@@ -1,7 +1,7 @@
 const svelte = require("rollup-plugin-svelte");
 const resolve = require("@rollup/plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
-const { terser } = require("rollup-plugin-terser");
+const { terser } = require("@rollup/plugin-terser");
 const sveltePreprocess = require("svelte-preprocess");
 const typescript = require("@rollup/plugin-typescript");
 const postcss = require("rollup-plugin-postcss");
