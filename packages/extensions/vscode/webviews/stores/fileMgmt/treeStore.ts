@@ -38,7 +38,9 @@ function createTreeStore(initialData: Record<string, any>): Writable<TreeNode[]>
             yesChildren.push(createItem({ key: `${item.key}[${index}]`, keyData: element }, newPath));
           } else {
             // Simple arrays or arrays of primitives stay in noChildren
-            if (!noChildren[item.key]) noChildren[item.key] = [];
+            if (!noChildren[item.key]) {
+              noChildren[item.key] = [];
+            };
             noChildren[item.key].push(element);
           }
         });

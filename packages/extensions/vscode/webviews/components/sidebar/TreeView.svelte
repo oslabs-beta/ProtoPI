@@ -3,7 +3,7 @@
   import Sortable from 'sortablejs';
   import { onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
-  import type { TreeNode as TreeNodeType } from '../../../../stores/treeStore';
+  import type { TreeNode as TreeNodeType } from '../../stores/fileMgmt/treeStore';
 
   export let content: Writable<TreeNodeType[]>;  // Accept the store as a prop
 
