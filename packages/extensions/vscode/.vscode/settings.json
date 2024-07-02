@@ -13,7 +13,8 @@
     "cSpell.words": [
       "protopi"
     ],
-    // Below here are new 7/2/2024
+    // Settings specific to Svelte and TypeScript integration to ensure VSCode properly 
+    //  handles Svelte and TypeScript
     "typescript.tsdk": "node_modules/typescript/lib",
     "svelte.plugin.typescript.enable": true,
     "svelte.language-server.runtime": "node_modules/.bin/svelte-language-server",
