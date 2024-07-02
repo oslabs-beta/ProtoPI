@@ -19,7 +19,6 @@ module.exports = fs
       input: "webviews/pages/" + input,
       output: {
         sourcemap: true,
-        format: "iife",
         name: "app",
         file: "out/compiled/" + name + ".js",
       },
