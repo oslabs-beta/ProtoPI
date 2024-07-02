@@ -17,7 +17,10 @@
     //  handles Svelte and TypeScript
     "typescript.tsdk": "node_modules/typescript/lib",
     "svelte.plugin.typescript.enable": true,
-    "svelte.language-server.runtime": "node_modules/.bin/svelte-language-server",
+    
+    "svelte.language-server.runtime": "node",
+    "svelte.language-server.ls-path": "./node_modules/.bin/svelte-language-server",
+
     "svelte.enable-ts-plugin": true,
     "editor.quickSuggestions": {
         "strings": true

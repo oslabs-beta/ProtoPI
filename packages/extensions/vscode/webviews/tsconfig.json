@@ -1,33 +1,47 @@
 {
-    "extends": "@tsconfig/svelte/tsconfig.json",
-    "compilerOptions": {
-      "strict": true,
-      "baseUrl": ".",
-      "paths": {
-      /*
-      Below line allows ProtoPi to import Svelte's main module using just 
-      
-      import svelte from 'svelte';
-      
-      instead of specifying the full path to the node_modules directory.
-      */
-      "svelte": ["../node_modules/svelte"],   
-      /*
-      Below line allows ProtoPi to import any sub-modules or files within 
-      the Svelte package directly. For example, if ProtoPi is to import a 
-      specific module or component from Svelte, ProtoPi can do so directly 
-      without providing the full path. For instance::
-      
-      import { onMount } from 'svelte';
-      
-      can be used directly as if the 'svelte' module is a local module.
-      */
-      "svelte/*": ["../node_modules/svelte/*"]
-      }
-    },
-    "include": [
-      "./**/*",
-      "../node_modules/svelte/@types/**/*"
-    ],
-    "exclude": ["../node_modules/*"]
-  }
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "compilerOptions": {
+    /* test */
+    // "esModuleInterop": true,
+    // "resolveJsonModule": true,
+    // "allowSyntheticDefaultImports": true,
+    /* test */
+
+    "strict": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+        /*
+        Below line allows ProtoPi to import Svelte's main module using just 
+        
+        import svelte from 'svelte';
+        
+        instead of specifying the full path to the node_modules directory.
+        */
+      "svelte": [
+        "../node_modules/svelte"
+      ],   
+        /*
+        Below line allows ProtoPi to import any sub-modules or files within 
+        the Svelte package directly. For example, if ProtoPi is to import a 
+        specific module or component from Svelte, ProtoPi can do so directly 
+        without providing the full path. For instance::
+        
+        import { onMount } from 'svelte';
+        
+        can be used directly as if the 'svelte' module is a local module.
+        */
+      "svelte/*": [
+        "../node_modules/svelte/*"
+      ]
+    }
+  },
+  "include": [
+    "./**/*",
+    "../node_modules/svelte/@types/**/*",
+    "types/**/*.d.ts"
+  ],
+  "exclude": [
+    "../node_modules/*"
+  ]
+}
