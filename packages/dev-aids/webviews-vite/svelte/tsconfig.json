@@ -20,10 +20,14 @@
     "verbatimModuleSyntax": true,
     "ignoreDeprecations": "5.0",
     "baseUrl": ".",
-    "paths": {
-      "*": ["types/*"]
-    },
     "lib": ["dom", "esnext"]
   },
-  "include": ["../src/**/*", "../../../extensions/vscode/webviews/**/*"]
+  "include": [
+    "../src/**/*", 
+    "../../../extensions/vscode/webviews/**/*"
+  ],
+  "exclude": [
+    "node_modules",  // Correctly exclude node_modules
+    "../node_modules/*"
+  ]
 }

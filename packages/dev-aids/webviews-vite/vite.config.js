@@ -3,7 +3,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import sveltePreprocess from 'svelte-preprocess';
 import tailwindcss from 'tailwindcss';
 import autoprefixer from 'autoprefixer';
-import postcss from './postcss.config.js';
+import postcssConfig from './postcss.config.js';  // Ensure correct import for postcss config
 
 const production = process.env.NODE_ENV === 'production';
 
@@ -16,7 +16,7 @@ export default defineConfig({
           plugins: [tailwindcss, autoprefixer],
         },
         typescript: {
-          tsconfigFile: './svelte/tsconfig.json',
+          tsconfigFile: './svelte/tsconfig.json',  // Ensure this path is correct
         },
       }),
       compilerOptions: {
@@ -25,21 +25,22 @@ export default defineConfig({
     }),
   ],
   css: {
-    postcss,
+    postcss: postcssConfig,  // Ensure correct reference to postcss config
   },
   build: {
     outDir: production ? 'dist_prod' : 'dist_dev',
     sourcemap: true,
     rollupOptions: {
-      input: './index.html', // Ensure it uses the correct index.html
+      input: './index.html',  // Ensure this path is correct and exists
     },
     minify: production,
   },
   resolve: {
     alias: {
-      svelte: 'svelte',
+      '@': '/src',  // Alias '@' to your source directory for cleaner imports
     },
     dedupe: ['svelte'],
+    extensions: ['.js', '.svelte', '.ts', '.json'],
   },
   server: {
     open: true,
