@@ -40,6 +40,8 @@
       {#each filteredMethods as method}
         <div 
           class="cursor-pointer p-2 hover:bg-gray-200 text-black" 
+          role="button" 
+          tabindex="0"
           on:mousedown={() => selectMethod(method)}>
           {method}
         </div>

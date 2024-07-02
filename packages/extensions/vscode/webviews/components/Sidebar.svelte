@@ -18,11 +18,17 @@
 
   onMount(() => {
     if (typeof acquireVsCodeApi === "function") {
-      tsvscode = acquireVsCodeApi();
-      tsvscode.postMessage({
-        type: "getFiles",
-        value: "info here",
-      });
+      if (!window.vscode) {
+        tsvscode = acquireVsCodeApi();
+        tsvscode.postMessage({
+          type: "getFiles",
+          value: "info here",
+        });
+        console.log("VS Code API acquired");
+      } else {
+      tsvscode = window.vscode;
+      console.log("Using existing VS Code API instance");
+    }
       console.log("VS Code API acquired and postMessage sent to getFiles");
     }
   });

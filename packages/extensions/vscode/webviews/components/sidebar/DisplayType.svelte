@@ -4,7 +4,6 @@
   import { onDestroy } from 'svelte';
 
   export let isSplit: boolean;
-  export let largeText: boolean;
 
   let treeData: TreeFileData[] = [];
   let leftData: TreeFileData[] = [];

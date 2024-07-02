@@ -17,7 +17,13 @@
 </script>
 
 <div class="node pl-5 border-l border-dashed border-gray-600">
-  <div class="header flex items-center cursor-pointer select-none" on:click={toggle}>
+  <div 
+    class="header flex items-center cursor-pointer select-none"
+    role="button"
+    tabindex="0"
+    on:click={toggle}
+    on:keydown={(e) => e.key === 'Enter' && toggle()}
+  >
     <span class="toggle pr-1 text-yellow-500">
       {node.isOpen ? '▼' : '►'}
     </span>

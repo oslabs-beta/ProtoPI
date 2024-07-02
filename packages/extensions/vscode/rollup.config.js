@@ -29,13 +29,11 @@ module.exports = fs
               plugins: [require("tailwindcss"), require("autoprefixer")],
             },
           }),
-
           // enable run-time checks when not in production
           dev: !production,
-          // we'll extract any component CSS out into
-          // a separate file - better for performance
+          // CSCS handling aligns with Svelte 4
           css: (css) => {
-            css.write(name + ".css");
+            css.write('out/compiled/' + name + '.css', false);
           },
         }),
         svg(),

@@ -61,63 +61,67 @@
     <button on:click={() => handleAction(defaultAction.action)} class="px-4 py-2 text-sm rounded-l text-left truncate" style="flex: 1;">
       {defaultAction.label}
     </button> 
-    <div class="flex items-center justify-center bg-blue-700 rounded-r cursor-pointer" style="width: {caretWidth};" on:click={toggleDropdown}>
+    <button aria-expanded={showDropdown} class="flex items-center justify-center bg-blue-700 rounded-r cursor-pointer" style="width: {caretWidth};" on:click={toggleDropdown}>
       <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
       </svg>
-    </div>
+    </button>
   </div>
   {#if showDropdown && remainingActions.length > 0}
-    <div class="absolute left-0 top-full mt-1 bg-white border rounded shadow-lg z-10" style="width: {buttonWidth};">
+    <div role="menu" class="absolute left-0 top-full mt-1 bg-white border rounded shadow-lg z-10" style="width: {buttonWidth};">
       {#each remainingActions as action}
-        <div class="cursor-pointer px-4 py-2 text-sm hover:bg-gray-200 text-black" on:click={() => handleAction(action.action)}>
+        <button role="menuitem" tabindex="0" class="cursor-pointer px-4 py-2 text-sm hover:bg-gray-200 text-black" on:click={() => handleAction(action.action)}>
           {action.label}
-        </div>
+        </button>
       {/each}
     </div>
   {/if}
 </div>
 
 <style>
+
+/*  UNUSED
   .dropdown-button {
     display: inline-flex;
     align-items: center;
-    background-color: #3b82f6; /* bg-blue-500 */
+    background-color: #3b82f6; 
     color: white;
     padding: 0.5rem 1rem;
-    border-radius: 0.375rem; /* rounded */
+    border-radius: 0.375rem;
     cursor: pointer;
   }
 
   .dropdown-button:hover {
-    background-color: #2563eb; /* hover:bg-blue-700 */
+    background-color: #2563eb; 
   }
 
   .dropdown-menu {
     position: absolute;
-    top: 100%; /* Place the dropdown below the button */
+    top: 100%;
     left: 0;
     margin-top: 0.25rem;
     background-color: white;
-    border: 1px solid #d1d5db; /* border-gray-300 */
-    border-radius: 0.375rem; /* rounded */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* shadow-lg */
+    border: 1px solid #d1d5db; 
+    border-radius: 0.375rem; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 10;
-    width: 100%; /* Ensure the dropdown matches the button width */
+    width: 100%; 
   }
 
   .dropdown-item {
     padding: 0.5rem 1rem;
     cursor: pointer;
     color: black;
-    font-size: 0.875rem; /* match text-sm class */
+    font-size: 0.875rem; 
   }
 
   .dropdown-item:hover {
-    background-color: #f3f4f6; /* hover:bg-gray-100 */
+    background-color: #f3f4f6;
   }
 
   button {
-    white-space: nowrap; /* Prevent text wrapping */
+    white-space: nowrap; 
   }
+  */
+
 </style>

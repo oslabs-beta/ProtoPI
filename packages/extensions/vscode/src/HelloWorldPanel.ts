@@ -192,7 +192,7 @@ export class HelloWorldPanel {
         </script>
 	    </head>
       <body>
-        <script src="${scriptUri}" nonce="${nonce}">
+        <script src="${scriptUri}" nonce="${nonce}" type="module"></script>
 	    </body>
 	  </html>`;
   }
