@@ -2,7 +2,7 @@
   "name": "protopi",
   "displayName": "ProtoPI",
   "description": "OpenAPI spec file parser/creator and mock server for VS Code",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "oslabs-beta",
   "repository": "https://github.com/oslabs-beta/ProtoPI",
   "engines": {
@@ -95,6 +95,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
     "@tsconfig/svelte": "^5.0.4",
+    "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
     "@types/vscode": "^1.89.0",
@@ -120,6 +121,8 @@
   },
   "dependencies": {
     "@stoplight/prism-cli": "^5.8.1",
+    "js-yaml": "^4.1.0",
+    "openapi-types": "^12.1.3",
     "terminate": "^2.6.1"
   }
 }
