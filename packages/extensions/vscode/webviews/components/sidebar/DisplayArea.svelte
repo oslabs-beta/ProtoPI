@@ -1,6 +1,6 @@
 <script>
   import DisplayType from './DisplayType.svelte';
-  import SplitViewButton from '../asset-library/buttons/ToOrganize/SplitViewButton.svelte';
+  import SplitViewButton from '../asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte';
 
   import { displayState } from '../../stores/displayStore';
 

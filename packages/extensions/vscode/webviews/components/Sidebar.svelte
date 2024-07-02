@@ -7,10 +7,10 @@
   import { fileContent, parsedData, selectedData } from '../stores/dataStore';
   import YAML from 'yaml';
   import { writable } from 'svelte/store';
-  import { openFilesData } from '../stores/openStore';
+  import { openFilesData } from '../stores/fileMgmt/openStore';
   import DisplayArea from './sidebar/DisplayArea.svelte';
-  import SliderButton from './asset-library/buttons/ToOrganize/SliderButton.svelte';
-  import { filterCriteria } from '../stores/treefilterStore'; // Import the filterCriteria store
+  import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
+  import { filterCriteria } from '../stores/fileMgmt/treefilterStore'; // Import the filterCriteria store
 
   let fileInput;
   let tsvscode;

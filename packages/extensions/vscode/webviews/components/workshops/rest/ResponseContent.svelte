@@ -1,5 +1,5 @@
 <script>
-  import { selectedData } from '../../stores/dataStore';
+  import { selectedData } from '../../../stores/dataStore';
 
   let clipboardData = null;
   let fetchData = null;

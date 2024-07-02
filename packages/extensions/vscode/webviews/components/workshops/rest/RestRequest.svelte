@@ -1,5 +1,7 @@
 <script>
+  // Input stuff
   import Request from './RequestContent.svelte';
+  // Data coming in from sidebar (testing)
   import Response from './ResponseContent.svelte';
 </script>
 

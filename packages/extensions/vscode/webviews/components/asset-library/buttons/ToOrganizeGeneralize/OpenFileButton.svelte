@@ -1,5 +1,5 @@
 <script>
-  import { openFilesData } from '../../../../stores/openStore';
+  import { openFilesData } from '../../../../stores/fileMgmt/openStore';
 
   function handleFileUpload(event) {
     const files = event.target.files;

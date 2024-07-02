@@ -1,8 +1,8 @@
 <script>
   import { onMount } from "svelte";
-  import AddressInput from "./elements/AddressInput.svelte";
-  import MethodDropdown from "./elements/MethodDropdown.svelte";
-  import SendButton from "./elements/SendButton.svelte";
+  import AddressInput from "../../../asset-library/inputs/ToOrganizeGeneralize/AddressInput.svelte";
+  import MethodDropdown from "../../../asset-library/inputs/FilterActionDrop/MethodDropdown.svelte";
+  import SendButton from "../../../asset-library/buttons/ToOrganizeGeneralize/SendButton.svelte";
 
   let selectedMethod = "GET";
   let url = "";

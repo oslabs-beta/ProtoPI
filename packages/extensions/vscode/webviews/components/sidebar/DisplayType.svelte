@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { filteredTreeFilesData, type TreeFileData } from '../../stores/treefilterStore';
+  import { filteredTreeFilesData, type TreeFileData } from '../../stores/fileMgmt/treefilterStore';
   import TreeView from './TreeView.svelte';
   import { onDestroy } from 'svelte';
 
