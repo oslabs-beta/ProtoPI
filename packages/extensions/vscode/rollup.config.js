@@ -5,6 +5,7 @@ const { terser } = require("rollup-plugin-terser");
 const sveltePreprocess = require("svelte-preprocess");
 const typescript = require("@rollup/plugin-typescript");
 const postcss = require("rollup-plugin-postcss");
+const svg = require("rollup-plugin-svg");
 const path = require("path");
 const fs = require("fs");
 
@@ -38,7 +39,7 @@ module.exports = fs
             css.write(name + ".css");
           },
         }),
-
+        svg(),
         postcss({
           extract: path.resolve("out/compiled/tailwind.css"),
         }),
