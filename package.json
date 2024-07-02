@@ -2,7 +2,7 @@
   "name": "protopi",
   "displayName": "ProtoPI",
   "description": "OpenAPI spec file parser/creator and mock server for VS Code",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "oslabs-beta",
   "repository": "https://github.com/oslabs-beta/ProtoPI",
   "engines": {
