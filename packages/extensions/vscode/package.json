@@ -42,14 +42,14 @@
     },
     "commands": [
       {
-        "command": "ProtoPI.helloWorld",
+        "command": "ProtoPI.workShop.start",
         "category": "ProtoPI",
-        "title": "Display Hello World Panel"
+        "title": "Display the Workshop"
       },
       {
-        "command": "ProtoPI.reload",
+        "command": "ProtoPI.workShop.refresh",
         "category": "ProtoPI",
-        "title": "Reload Webview Panel"
+        "title": "Reload the Workshop"
       },
       {
         "command": "ProtoPI.refresh",

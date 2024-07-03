@@ -1,14 +1,16 @@
+//renamed HelloWorldPanel file
+
 import axios from "axios";
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
-export class HelloWorldPanel {
+export class Workshop {
   /**
    * Track the currently panel. Only allow a single panel to exist at a time.
    */
-  public static currentPanel: HelloWorldPanel | undefined;
+  public static currentPanel: Workshop | undefined;
 
-  public static readonly viewType = "hello-world";
+  public static readonly viewType = "Workshop";
 
   private readonly _panel: vscode.WebviewPanel;
   private readonly _extensionUri: vscode.Uri;
@@ -20,16 +22,16 @@ export class HelloWorldPanel {
       : undefined;
 
     // If we already have a panel, show it.
-    if (HelloWorldPanel.currentPanel) {
-      HelloWorldPanel.currentPanel._panel.reveal(column);
-      HelloWorldPanel.currentPanel._update();
+    if (Workshop.currentPanel) {
+      Workshop.currentPanel._panel.reveal(column);
+      Workshop.currentPanel._update();
       return;
     }
 
     // Otherwise, create a new panel.
     const panel = vscode.window.createWebviewPanel(
-      HelloWorldPanel.viewType,
-      "HelloWorld",
+      Workshop.viewType,
+      "Workshop",
       column || vscode.ViewColumn.One,
       {
         // Enable javascript in the webview
@@ -38,21 +40,21 @@ export class HelloWorldPanel {
         // And restrict the webview to only loading content from our extension's `media` directory.
         localResourceRoots: [
           vscode.Uri.joinPath(extensionUri, "media"),
-          vscode.Uri.joinPath(extensionUri, "out/compiled"),
+          vscode.Uri.joinPath(extensionUri, "out", "compiled"),
         ],
       }
     );
 
-    HelloWorldPanel.currentPanel = new HelloWorldPanel(panel, extensionUri);
+    Workshop.currentPanel = new Workshop(panel, extensionUri);
   }
 
   public static kill() {
-    HelloWorldPanel.currentPanel?.dispose();
-    HelloWorldPanel.currentPanel = undefined;
+    Workshop.currentPanel?.dispose();
+    Workshop.currentPanel = undefined;
   }
 
   public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-    HelloWorldPanel.currentPanel = new HelloWorldPanel(panel, extensionUri);
+    Workshop.currentPanel = new Workshop(panel, extensionUri);
   }
 
   private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
@@ -110,7 +112,7 @@ export class HelloWorldPanel {
   }
 
   public dispose() {
-    HelloWorldPanel.currentPanel = undefined;
+    Workshop.currentPanel = undefined;
 
     // Clean up our resources
     this._panel.dispose();
@@ -155,7 +157,7 @@ export class HelloWorldPanel {
   private _getHtmlForWebview(webview: vscode.Webview) {
     // // And the uri we use to load this script in the webview
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out/compiled", "HelloWorld.js")
+      vscode.Uri.joinPath(this._extensionUri, "out/compiled", "Workshop.js")
     );
 
     // Uri to load styles into webview

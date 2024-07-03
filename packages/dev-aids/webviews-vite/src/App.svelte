@@ -1,6 +1,6 @@
 <script>
   import SidebarContainer from '../../../extensions/vscode/webviews/components/Sidebar.svelte';
-  import HelloWorldContainer from '../../../extensions/vscode/webviews/components/HelloWorld.svelte';
+  import Workshop from '../../../extensions/vscode/webviews/components/Workshop.svelte';
 </script>
 
 <div class="bg-gray-800 min-h-screen text-white flex items-center justify-center p-5">
@@ -12,7 +12,7 @@
             </div>
 
             <div class="w-full lg:w-2/3 p-4">
-              <HelloWorldContainer />
+              <Workshop />
             </div>
         </main>
     </div>

@@ -4,7 +4,9 @@ import { ChildProcess, exec } from "child_process";
 import * as path from "path";
 import terminate from "terminate";
 import * as vscode from "vscode";
-import { HelloWorldPanel } from "./HelloWorldPanel";
+
+import { Workshop } from "./Workshop";
+
 import { SidebarProvider } from "./SidebarProvider";
 import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
 
@@ -136,25 +138,25 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-  // Open HelloWorldPanel webview
-  context.subscriptions.push(
-    vscode.commands.registerCommand("ProtoPI.helloWorld", () => {
-      HelloWorldPanel.createOrShow(context.extensionUri);
-    })
-  );
-
-  // Reload Panel Webview
-  context.subscriptions.push(
-    vscode.commands.registerCommand("ProtoPI.reload", () => {
-      HelloWorldPanel.kill();
-      HelloWorldPanel.createOrShow(context.extensionUri);
-      // setTimeout(() => {
-      //   vscode.commands.executeCommand(
-      //     "workbench.action.webview.openDeveloperTools"
-      //   );
-      // }, 500);
-    })
-  );
+    // Open Workshop Webview
+    context.subscriptions.push(
+      vscode.commands.registerCommand("ProtoPI.workShop.start", () => {
+        Workshop.createOrShow(context.extensionUri);
+      })
+    );
+  
+    // Refresh Workshop Webview
+    context.subscriptions.push(
+      vscode.commands.registerCommand("ProtoPI.workShop.refresh", () => {
+        Workshop.kill();
+        Workshop.createOrShow(context.extensionUri);
+        // setTimeout(() => {
+        //   vscode.commands.executeCommand(
+        //     "workbench.action.webview.openDeveloperTools"
+        //   );
+        // }, 500);
+      })
+    );
 
   // Reload Side Panel Webview
   context.subscriptions.push(

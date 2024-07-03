@@ -4,7 +4,7 @@
   // import SidebarTabs from './sidebar/tabs/SidebarTabs.svelte';
   import { activeTab } from '../stores/tabStore.js';
   import MultiActionDropButton from './asset-library/buttons/MultiActionDropButton/MultiActionDropButton.svelte';
-  import { fileContent, parsedData, selectedData } from '../stores/dataStore';
+  // import { fileContent, parsedData, selectedData } from '../stores/dataStore';
   import YAML from 'yaml';
   import { writable } from 'svelte/store';
   import { openFilesData } from '../stores/fileMgmt/openStore';
@@ -65,10 +65,10 @@
 
   function handleCloseAPIFile() {
     console.log("Closing API file in Sidebar");
-    fileContent.set(null);
-    parsedData.set(null);
-    selectedData.set(null);
-    console.log("fileContent, parsedData, and selectedData set to null");
+    // fileContent.set(null);
+    // parsedData.set(null);
+    // selectedData.set(null);
+    // console.log("fileContent, parsedData, and selectedData set to null");
     if (tsvscode) {
       tsvscode.postMessage({ type: "closeAPIFile" });
       console.log("PostMessage sent to closeAPIFile");
@@ -117,7 +117,7 @@
     console.log("Message received in Sidebar:", message);
     if (message.command === 'fileContent') {
       const content = message.content;
-      fileContent.set(content);
+      // fileContent.set(content);
       
       // Log the file content in a collapsed group
       console.groupCollapsed("File content set in fileContent store via message:");
@@ -135,9 +135,9 @@
       }
     } else if (message.command === 'closeFile') {
       console.log("Closing file in Sidebar via message");
-      fileContent.set(null);
-      parsedData.set(null);
-      selectedData.set(null);
+      // fileContent.set(null);
+      // parsedData.set(null);
+      // selectedData.set(null);
       console.log("fileContent, parsedData, and selectedData set to null via message");
       // Reset file input for browser
       fileInput.value = "";
