@@ -1,15 +1,15 @@
 import { dump } from 'js-yaml';
 
-import { OpenAPI as types, OpenAPIV3_1 as subtypes } from "../types";
+import { OpenAPI, OpenAPIV3_1, OpenAPIV3 } from "../types";
 
-const convertResponsesObjectToYaml = (responsesObject: subtypes.ResponsesObject) => {
+/* const convertResponsesObjectToYaml = (responsesObject: OpenAPIV3_1.ResponsesObject) => {
   try {
     return dump(responsesObject);
   } catch (err) {
     console.error('Error converting to YAML:', err);
     return null;
   }
-};
+}; */
 
 /**
  * 
@@ -61,7 +61,7 @@ export function deepObjectForEach(
  * @param toMod String variable to modify.
  * @returns 
  */
-export function nextGen(
+/* export function nextGen(
   prop: [string, any],
   depth: number,
   toMod: string
@@ -86,9 +86,9 @@ export function nextGen(
     toMod += ': {}';
   }
   return toMod;
-}
+} */
 
-const resps: subtypes.ResponsesObject = {
+export const resps: OpenAPIV3_1.ResponsesObject & OpenAPIV3.ResponsesObject = {
   '200': {
     description: 'Pet updated.',
     content: {
@@ -105,40 +105,56 @@ const resps: subtypes.ResponsesObject = {
   }
 };
 
-console.log(convertResponsesObjectToYaml(resps));
+// console.log(convertResponsesObjectToYaml(resps));
 
 export function generatePathSpec(
   path: string,
-  method: subtypes.HttpMethods,
-  operation: types.Operation,
-  summary?: string,
-  description?: string,
-  parameters?: types.Parameters
+  // method: OpenAPIV3_1.HttpMethods,
+  // operation: types.Operation, // operation includes responses object
+  // summary?: string,
+  // description?: string,
+  // parameters?: types.Parameters
+  pathObject: OpenAPIV3_1.PathItemObject
 ): string {
-  let out = '';
-  switch (method) {
-    case 'get':
+  // let out = '';
+  // switch (method) {
+  //   case 'get':
 
-      out += 'get:\n  ';
+  //     out += 'get:\n  ';
 
-      if (summary) {
-        out += `summary: ${summary}\n  `;
-      }
+  //     if (summary) {
+  //       out += `summary: ${summary}\n  `;
+  //     }
 
-      if (description) {
-        out += `description: ${description}\n  `;
-      }
+  //     if (description) {
+  //       out += `description: ${description}\n  `;
+  //     }
 
-      out += 'responses:\n    ';
-      if (operation.responses) {
-        out += convertResponsesObjectToYaml(operation.responses as subtypes.ResponsesObject);
-      }
+  //     out += 'responses:\n    ';
+  //     if (operation.responses) {
+  //       out += convertResponsesObjectToYaml(operation.responses as OpenAPIV3_1.ResponsesObject);
+  //     }
 
-      break;
-    default:
-  }
+  //     break;
+  //   default:
+  // }
 
   return `
   ${path}:
-    ${out}`;
+  ${dump(pathObject)}`;
 }
+
+export const pathItem: OpenAPIV3_1.PathItemObject = {
+  get: {
+    responses: resps
+  }
+};
+
+/* console.log(generatePathSpec(
+  '/pets',
+  // 'get' as OpenAPIV3_1.HttpMethods,
+  // {
+  //   responses: resps
+  // }
+  pathItem
+)); */
