@@ -1,7 +1,7 @@
 <script lang="ts">
   import TreeNodeDND from './TreeNode.svelte';
   import { createEventDispatcher } from 'svelte';
-  import type { TreeNode as TreeNodeType } from '../../stores/fileMgmt/treeStore';
+  import type { TreeNode as TreeNodeType } from '../../stores/fileMgmt/tsaveStore';
   import globeIconPath from '../asset-library/svgs/globe.svg'; // Import the SVG file
   import Tooltip from '../asset-library/tooltip/Tooltip.svelte'; // Import the Tooltip component
 
@@ -21,19 +21,16 @@
 
   function getHoverLabel(node) {
     let label = '';
-    if (node.noChildren.summary) {
-      label = node.noChildren.summary;
-    } else if (node.noChildren.description) {
-      label = node.noChildren.description;
-    } else if (node.noChildren.example) {
-      label = `EX: ${node.noChildren.example}`;
-    } else {
-      // Display the first item in noChildren if it exists and its value is less than 20 characters
-      const firstKey = Object.keys(node.noChildren)[0];
-      const firstValue = node.noChildren[firstKey];
-      if (firstKey && firstValue && firstValue.length < 20) {
-        label = `${firstKey}: ${firstValue}`;
-      }
+    const summaryItem = node.noChildren.find(child => child.key === 'summary');
+    const descriptionItem = node.noChildren.find(child => child.key === 'description');
+    const firstItem = node.noChildren[0];
+
+    if (summaryItem) {
+      label = summaryItem.value;
+    } else if (descriptionItem) {
+      label = descriptionItem.value;
+    } else if (firstItem) {
+      label = `${firstItem.key}: ${firstItem.value}`;
     }
 
     return label;
@@ -65,7 +62,7 @@
     handleMouseOut();
   }
 
-  console.log('Rendering node:', node);
+  // console.log('Rendering node:', node);
 </script>
 
 <div class="node pl-5 border-l border-dashed border-gray-600">
@@ -103,11 +100,11 @@
 
   {#if node.isOpen}
     <div class="children pt-1">
-      {#each Object.entries(node.noChildren) as [key, value]}
+      {#each node.noChildren as child (child.id)}
         <div class="no-children" style="padding-left: {node.level * 28}px">
           <div class="dictionary-item hanging-indent">
-            <span class="key font-bold text-orange-500">{key}:</span>
-            <span class="value text-gray-400">{JSON.stringify(value)}</span>
+            <span class="key font-bold text-orange-500">{child.key}:</span>
+            <span class="value text-gray-400">{child.value}</span>
           </div>
         </div>
       {/each}

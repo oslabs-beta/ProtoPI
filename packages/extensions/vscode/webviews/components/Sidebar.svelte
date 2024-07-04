@@ -7,10 +7,10 @@
   // import { fileContent, parsedData, selectedData } from '../stores/dataStore';
   import YAML from 'yaml';
   import { writable } from 'svelte/store';
-  import { openFilesData } from '../stores/fileMgmt/openStore';
+  import { openFilesData, addFile  } from '../stores/fileMgmt/openStore';
   import DisplayArea from './sidebar/DisplayArea.svelte';
   import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
-  import { filterCriteria } from '../stores/fileMgmt/treefilterStore'; // Import the filterCriteria store
+  import { filterCriteria } from '../stores/fileMgmt/viewDerivedStore'; // Import the filterCriteria store
   import SplitViewButton from './asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
 
   let fileInput;
@@ -97,15 +97,7 @@
       Array.from(files).forEach(file => {
         const reader = new FileReader();
         reader.onload = (e) => {
-          openFilesData.update(currentFiles => {
-            if (!Array.isArray(currentFiles)) {
-              currentFiles = [];
-            }
-            return [
-              ...currentFiles,
-              { name: file.name, content: e.target.result }
-            ];
-          });
+          addFile({ name: file.name, content: e.target.result });
         };
         reader.readAsText(file);
       });

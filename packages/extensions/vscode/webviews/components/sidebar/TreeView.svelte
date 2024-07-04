@@ -3,9 +3,9 @@
   import Sortable from 'sortablejs';
   import { onMount, onDestroy } from 'svelte';
   import { writable, type Writable } from 'svelte/store';
-  import type { TreeNode as TreeNodeType } from '../../stores/fileMgmt/treeStore';
+  import type { TreeNode as TreeNodeType } from '../../stores/fileMgmt/tsaveStore';
 
-  export let content: Writable<TreeNodeType[]>;  // Accept the store as a prop
+  export let content: Writable<TreeNodeType[]>;
 
   let container: HTMLDivElement | null = null;
   let sortable: Sortable | null = null;
@@ -16,16 +16,22 @@
     newIndex?: number;
   }
 
-  let unsubscribe: () => void;
+  let unsubscribe: () => void = () => {};
 
-  // Subscribe to content store and update treeNodes
-  $: {
-    if (unsubscribe) unsubscribe();
-    unsubscribe = content.subscribe(value => {
-      console.log('TreeView content:', value);
-      treeNodes = [...value];
-    });
-  }
+  // Correctly manage subscriptions
+  $: content, unsubscribe();
+$: if (content) {
+  console.groupCollapsed('Data Inserted Into UI:');
+  unsubscribe = content.subscribe(value => {
+    console.groupCollapsed('Value:');
+    console.log(value);
+    console.groupEnd();
+    treeNodes = [...value];
+  });
+  console.groupEnd();
+}
+
+
 
   onMount(() => {
     if (container) {
@@ -33,7 +39,6 @@
         handle: '.header',
         animation: 150,
         onEnd: (evt: SortableEvent) => {
-          // Ensure oldIndex and newIndex are defined before using them
           if (evt.oldIndex !== undefined && evt.newIndex !== undefined) {
             reorderContent(evt.oldIndex, evt.newIndex);
           }
@@ -44,7 +49,7 @@
 
   onDestroy(() => {
     sortable?.destroy();
-    if (unsubscribe) unsubscribe();
+    unsubscribe();
   });
 
   function reorderContent(oldIndex: number, newIndex: number): void {
@@ -57,7 +62,7 @@
 </script>
 
 <div bind:this={container}>
-    {#each treeNodes as item (item.id)}
+    {#each treeNodes as item, index (item.id || index)}
       <TreeNode node={item} />
     {/each}
 </div>

@@ -1,0 +1,16 @@
+openapi: 3.0.1
+info:
+  title: Example API
+  description: This is a sample API to demonstrate an OpenAPI specification with multiple servers and diverse endpoints.
+  version: 1.0.0
+tags:
+  - name: users
+    description: Operations related to users
+  - name: products
+    description: Operations related to products
+  - name: orders
+    description: Operations related to orders
+  - name: categories
+    description: Operations related to categories
+  - name: reviews
+    description: Operations related to reviews
