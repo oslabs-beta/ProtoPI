@@ -1,10 +1,11 @@
 const svelte = require("rollup-plugin-svelte");
 const resolve = require("@rollup/plugin-node-resolve");
 const commonjs = require("@rollup/plugin-commonjs");
-const { terser } = require("rollup-plugin-terser");
+const { terser } = require("@rollup/plugin-terser");
 const sveltePreprocess = require("svelte-preprocess");
 const typescript = require("@rollup/plugin-typescript");
 const postcss = require("rollup-plugin-postcss");
+const svg = require("rollup-plugin-svg");
 const path = require("path");
 const fs = require("fs");
 
@@ -18,7 +19,6 @@ module.exports = fs
       input: "webviews/pages/" + input,
       output: {
         sourcemap: true,
-        format: "iife",
         name: "app",
         file: "out/compiled/" + name + ".js",
       },
@@ -29,16 +29,14 @@ module.exports = fs
               plugins: [require("tailwindcss"), require("autoprefixer")],
             },
           }),
-
           // enable run-time checks when not in production
           dev: !production,
-          // we'll extract any component CSS out into
-          // a separate file - better for performance
+          // CSCS handling aligns with Svelte 4
           css: (css) => {
-            css.write(name + ".css");
+            css.write(name + ".css", false);
           },
         }),
-
+        svg(),
         postcss({
           extract: path.resolve("out/compiled/tailwind.css"),
         }),
