@@ -1,8 +1,0 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Import VS Code Theme Styling
-not sure if does anything, styles are imported in HelloWorldPanel.ts as URI's */
-@import "../media/reset.css";
-@import "../media/vscode.css";
