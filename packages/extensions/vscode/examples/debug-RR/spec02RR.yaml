@@ -1,0 +1,227 @@
+openapi: 3.0.0
+info:
+  title: To-Do List API
+  description: API for managing a to-do list.
+  version: 1.0.0
+  termsOfService: http://example.com/terms/
+  contact:
+    name: API Support
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.example.com/v1
+    description: Main (production) server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+tags:
+  - name: ToDos
+    description: Operations related to to-do items
+
+paths:
+  /todos:
+    post:
+      tags:
+        - ToDos
+      summary: Create a new to-do item
+      description: This endpoint creates a new to-do item.
+      operationId: createToDo
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+              properties:
+                title:
+                  type: string
+                  description: Title of the to-do item
+                  example: "Buy groceries"
+                description:
+                  type: string
+                  description: Detailed description of the to-do item
+                  example: "Milk, Bread, Butter, Eggs"
+                due_date:
+                  type: string
+                  format: date
+                  description: Due date for the to-do item
+                  example: "2023-07-10"
+                priority:
+                  type: string
+                  enum: [low, medium, high]
+                  description: Priority level of the to-do item
+                  example: "high"
+                completed:
+                  type: boolean
+                  description: Status of the to-do item
+                  example: false
+            examples:
+              todoExample1:
+                summary: Homework Example
+                value:
+                  title: "Finish homework"
+                  description: "Math, Science, English"
+                  due_date: "2023-07-15"
+                  priority: "medium"
+                  completed: false
+              todoExample2:
+                summary: Cleaning Example
+                value:
+                  title: "Clean the house"
+                  description: "Living room, Kitchen, Bathroom"
+                  due_date: "2023-07-12"
+                  priority: "high"
+                  completed: false
+              todoExample3:
+                summary: Presentation Example
+                value:
+                  title: "Prepare presentation"
+                  description: "Slides, Notes, Handouts"
+                  due_date: "2023-07-20"
+                  priority: "high"
+                  completed: false
+      responses:
+        '201':
+          description: To-do item created successfully
+          headers:
+            Location:
+              description: URL to the newly created resource
+              schema:
+                type: string
+                format: uri
+                example: "https://api.example.com/v1/todos/1"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier of the to-do item
+                    example: "1"
+                  title:
+                    type: string
+                    description: Title of the to-do item
+                    example: "Buy groceries"
+                  description:
+                    type: string
+                    description: Detailed description of the to-do item
+                    example: "Milk, Bread, Butter, Eggs"
+                  due_date:
+                    type: string
+                    format: date
+                    description: Due date for the to-do item
+                    example: "2023-07-10"
+                  priority:
+                    type: string
+                    description: Priority level of the to-do item
+                    enum: [low, medium, high]
+                    example: "high"
+                  completed:
+                    type: boolean
+                    description: Status of the to-do item
+                    example: false
+              examples:
+                successResponse1:
+                  summary: Homework Created
+                  value:
+                    id: "1"
+                    title: "Finish homework"
+                    description: "Math, Science, English"
+                    due_date: "2023-07-15"
+                    priority: "medium"
+                    completed: false
+                successResponse2:
+                  summary: Cleaning Created
+                  value:
+                    id: "2"
+                    title: "Clean the house"
+                    description: "Living room, Kitchen, Bathroom"
+                    due_date: "2023-07-12"
+                    priority: "high"
+                    completed: false
+                successResponse3:
+                  summary: Presentation Created
+                  value:
+                    id: "3"
+                    title: "Prepare presentation"
+                    description: "Slides, Notes, Handouts"
+                    due_date: "2023-07-20"
+                    priority: "high"
+                    completed: false
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Invalid input data"
+              examples:
+                errorResponse1:
+                  summary: Missing Title
+                  value:
+                    error: "Title is required"
+                errorResponse2:
+                  summary: Invalid Due Date
+                  value:
+                    error: "Due date must be a valid date"
+                errorResponse3:
+                  summary: Empty Description
+                  value:
+                    error: "Description cannot be empty"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Internal server error"
+              examples:
+                errorResponse500:
+                  summary: Generic Server Error
+                  value:
+                    error: "Internal server error"
+
+components:
+  schemas:
+    ToDoItem:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the to-do item
+          example: "1"
+        title:
+          type: string
+          description: Title of the to-do item
+          example: "Buy groceries"
+        description:
+          type: string
+          description: Detailed description of the to-do item
+          example: "Milk, Bread, Butter, Eggs"
+        due_date:
+          type: string
+          format: date
+          description: Due date for the to-do item
+          example: "2023-07-10"
+        priority:
+          type: string
+          enum: [low, medium, high]
+          description: Priority level of the to-do item
+          example: "high"
+        completed:
+          type: boolean
+          description: Status of the to-do item
+          example: false
