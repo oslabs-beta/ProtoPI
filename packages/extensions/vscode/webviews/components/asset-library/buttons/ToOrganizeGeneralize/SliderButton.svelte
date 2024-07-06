@@ -1,10 +1,18 @@
 <script>
+  import { filterCriteria } from '../../../../stores/fileMgmt/viewDerivedStore';
+  import { get } from 'svelte/store';
+
+  export let filterType = '';
   export let isChecked = false;
-  export let onChange;
 
   function handleChange(event) {
-    if (onChange) {
-      onChange(event);
+    const currentFilter = get(filterCriteria);
+    if (currentFilter === filterType) {
+      filterCriteria.set('');
+      isChecked = false;
+    } else {
+      filterCriteria.set(filterType);
+      isChecked = true;
     }
   }
 </script>

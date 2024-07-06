@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import CryptoJS from 'crypto-js';
 
-export interface FileData {  // Exporting the interface
+export interface FileData {
   name: string;
   content: string;
   hash?: string; 
@@ -15,16 +15,16 @@ export const openFilesData = writable<FileDataMap>({});
 
 openFilesData.subscribe((value: FileDataMap) => {
   if (value && typeof value === 'object') {
-    console.groupCollapsed('1️⃣ openStore:: File(s) Opened:');
+    console.groupCollapsed('📚1️⃣📚 openStore:: File(s) Opened:');
     Object.values(value).forEach((file: FileData) => {
       console.groupCollapsed(`File Name: ${file.name}`);
       console.log('Hash:', file.hash);
-      console.groupCollapsed('Content:'); // Use groupCollapsed for content
-      console.log(file.content); // This will be inside the collapsible group
-      console.groupEnd(); // Ends the group for File Content
-      console.groupEnd(); // Ends the group for File Name
+      console.groupCollapsed('Content:'); 
+      console.log(file.content);
+      console.groupEnd(); 
+      console.groupEnd();
     });
-    console.groupEnd(); // Ends the group for Current openFilesData
+    console.groupEnd(); 
   } else {
     console.error('openFilesData is not an object:', value);
   }

@@ -1,5 +1,6 @@
 <script>
-  import DisplayType from './DisplayType.svelte';
+  import CoreView from '../views/coreView/CoreView.svelte';
+  // import RequestsView from '../views/requestsView/RequestsView.svelte';
   import { displayState } from '../../stores/displayStore';
 
   let isSplit = false;
@@ -7,7 +8,9 @@
   displayState.subscribe($state => {
     isSplit = $state.isSplit;
   });
-
 </script>
 
-<DisplayType {isSplit} largeText={!isSplit} />
+<CoreView {isSplit} largeText={!isSplit} />
+<hr class="border-2 my-4" />
+<hr class="border-2 my-4" />
+<!-- <RequestsView {isSplit} largeText={!isSplit} /> -->

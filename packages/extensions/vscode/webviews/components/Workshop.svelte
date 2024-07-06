@@ -1,10 +1,10 @@
 <script>
   import RestRequest from './workshop/rest/RestRequest.svelte';
-  import ClientFormTab from './body/ClientFormTab.svelte';
 </script>
 
 <div>
-
+  <div class="p-4 text-center">
+    Workshop
+  </div>
     <RestRequest />
-    <ClientFormTab />
 </div>
