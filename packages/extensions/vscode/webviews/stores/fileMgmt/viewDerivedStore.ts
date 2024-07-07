@@ -1,172 +1,123 @@
 import { writable, derived, type Writable, get } from 'svelte/store';
-import { treeFilesData, type TreeNode, type ITreeFileMap } from './tsaveStore';
-import { validMethods } from './../../core/static/HttpMethods';
-import type { HttpMethod } from './../../core/static/HttpMethods';
 
+// Relabelled as tsaveStore to indicate in present file where data is coming from
+import { treeFilesData as tsaveStore } from './tsaveStore';
+import { type TreeNode, type ITreeFileMap } from './tnodeStore';
+import { filterManager } from './viewDerivedStore/viewFiltersRouters';
+import type { FilterType, FileFilterStatusMap } from './viewDerivedStore/types';
+
+//  
 export const filterCriteria = writable<string>('');
+export const filterStatusMap: Writable<FileFilterStatusMap> = writable(new Map());
 
-const filters = {
-  contains: (nodes: TreeNode[], criteria: string) => {
-    const filteredNodes = nodes.filter(node => node.key.includes(criteria));
-    console.log('Filtered nodes using contains:', filteredNodes);
-    return filteredNodes;
-  },
-  paths: (nodes: TreeNode[]) => {
-    const pathsNode = nodes.find(node => node.key === 'paths');
-    if (pathsNode) {
-      console.log('Paths node found:', pathsNode);
-      return pathsNode.children || [];
-    }
-    console.log('Paths node not found');
-    return [];
-  },
-  servers: (nodes: TreeNode[]) => {
-    const serversNode = nodes.find(node => node.key === 'servers');
-    if (serversNode) {
-      console.log('Servers node found:', serversNode);
-      return serversNode.children || [];
-    }
-    console.log('Servers node not found');
-    return [];
-  },
-  components: (nodes: TreeNode[]) => {
-    const componentsNode = nodes.find(node => node.key === 'components');
-    if (componentsNode) {
-      console.log('Components node found:', componentsNode);
-      return componentsNode.children || [];
-    }
-    console.log('Components node not found');
-    return [];
-  }
-};
+console.log('Initializing filterStatusMap...');
 
-function filterRouter(criteria: string) {
-  if (criteria.startsWith('contains:')) {
-    console.log(`Using 'contains' filter with criteria: ${criteria}`);
-    return filters.contains;
-  } else if (criteria === 'paths') {
-    console.log('Using paths filter');
-    return filters.paths;
-  } else if (criteria === 'servers') {
-    console.log('Using servers filter');
-    return filters.servers;
-  } else if (criteria === 'components') {
-    console.log('Using components filter');
-    return filters.components;
-  } 
+// Initialize the filterStatusMap with default values
+function initializeFilterStatusMap(treeFilesData: ITreeFileMap, filters: FilterType[]) {
+  const statusMap: FileFilterStatusMap = new Map();
 
-  console.log(`Using default 'contains' filter with criteria: ${criteria}`);
-  return (nodes: TreeNode[]) => nodes;
+  Object.keys(treeFilesData).forEach(fileHash => {
+    const fileFilterMap = new Map<FilterType, { enabled: boolean }>();
+    filters.forEach(filter => {
+      fileFilterMap.set(filter, { enabled: false });
+    });
+    statusMap.set(fileHash, fileFilterMap);
+  });
+
+  filterStatusMap.set(statusMap);
+  console.log('filterStatusMap initialized:', get(filterStatusMap));
 }
 
-export const ActiveFilterMap = derived<
-  [Writable<ITreeFileMap>, Writable<string>],
-  Map<string, Map<string, TreeNode[]>> // Map<fileHash, Map<filterType, filteredNodes>>
->(
-  [treeFilesData, filterCriteria],
-  ([$treeFilesData, $filterCriteria], set) => {
-    console.groupCollapsed('Derived Store Calculation');
-    console.log(`Current filter criteria: ${$filterCriteria}`);
-    console.log('Tree files data:', $treeFilesData);
+initializeFilterStatusMap(get(tsaveStore), ['contains', 'paths', 'servers', 'components']);
 
-    const filterMap = new Map<string, Map<string, TreeNode[]>>();
+function filterNodes(treeFilesData: ITreeFileMap, filterCriteria: string, statusMap: FileFilterStatusMap) {
+  const criteriaValue = filterCriteria.replace(/^[a-z]+:/, '');
 
-    Object.entries($treeFilesData).forEach(([fileHash, treeNodes]) => {
-      const rootNode = treeNodes[0];
-      const nodesToFilter = rootNode.children;
-      const fileFilterMap = new Map<string, TreeNode[]>();
+  const filterMap = new Map<string, Map<string, TreeNode[]>>();
+  const filteredData: Writable<TreeNode[]>[] = [];
 
-      Object.keys(filters).forEach(filterType => {
-        const filterFunction = filters[filterType];
-        const filteredNodes = filterFunction(nodesToFilter, $filterCriteria.replace(/^[a-z]+:/, ''));
-        fileFilterMap.set(filterType, [{ ...rootNode, children: filteredNodes }]);
+  Object.entries(treeFilesData).forEach(([fileHash, treeNodes]) => {
+    const rootNode = treeNodes[0];
+    const nodesToFilter = rootNode.children;
+    const fileFilterMap = new Map<string, TreeNode[]>();
+    const fileStatusMap = statusMap.get(fileHash);
+
+    if (fileStatusMap) {
+      fileStatusMap.forEach((status, filterType) => {
+        if (status.enabled) {
+          const filterFunction = filterManager.filters[filterType];
+          const filteredNodes = filterFunction(nodesToFilter, criteriaValue);
+          fileFilterMap.set(filterType, [{ ...rootNode, children: filteredNodes }]);
+        }
       });
-
-      filterMap.set(fileHash, fileFilterMap);
-    });
-
-    console.log('ActiveFilterMap data:', filterMap);
-    set(filterMap);
-    console.groupEnd();
-  }
-);
-
-export const filteredTreeFilesData = derived<
-  [Writable<ITreeFileMap>, Writable<string>],
-  Writable<TreeNode[]>[]
->(
-  [treeFilesData, filterCriteria],
-  ([$treeFilesData, $filterCriteria], set) => {
-    console.groupCollapsed('Derived Store Calculation');
-    console.log(`Current filter criteria: ${$filterCriteria}`);
-    console.log('Tree files data:', $treeFilesData);
-
-    if (!$filterCriteria) {
-      console.log('No filter criteria provided. Returning original tree data.');
-      set(Object.values($treeFilesData).map(treeNodes => writable(treeNodes)));
-      console.groupEnd();
-      return;
     }
 
-    const criteriaValue = $filterCriteria.replace(/^[a-z]+:/, '');
-    console.log(`Extracted filter criteria: ${criteriaValue}`);
+    filterMap.set(fileHash, fileFilterMap);
 
-    const filterFunction = filterRouter($filterCriteria);
-
-    const filteredData = Object.values($treeFilesData).map(treeNodes => {
-      const filteredStore: Writable<TreeNode[]> = writable([]);
-      const rootNode = treeNodes[0];
-      const nodesToFilter = rootNode.children;
-      const filteredNodes = filterFunction(nodesToFilter, criteriaValue);
-      console.log(`Filtered nodes for file ${rootNode.key}:`, filteredNodes);
-      filteredStore.set([{ ...rootNode, children: filteredNodes }]);
-      return filteredStore;
-    });
-
-    console.log('Filtered data:', filteredData);
-    set(filteredData);
-    console.groupEnd();
-  }
-);
-
-filteredTreeFilesData.subscribe((value: Writable<TreeNode[]>[]) => {
-  console.groupCollapsed('Current filteredTreeFilesData:');
-  value.forEach(filteredStore => {
-    filteredStore.subscribe((treeNodes: TreeNode[]) => {
-      const rootNode = treeNodes[0];
-      console.groupCollapsed(`Filtered Tree File Name: ${rootNode.key}`);
-      console.dir(treeNodes, { depth: null });
-      console.groupEnd();
-    });
+    const filteredStore: Writable<TreeNode[]> = writable([]);
+    const filterFunction = filterManager.getFilter(filterCriteria);
+    const filteredNodes = filterFunction(nodesToFilter, criteriaValue);
+    filteredStore.set([{ ...rootNode, children: filteredNodes }]);
+    filteredData.push(filteredStore);
   });
-  console.groupEnd();
-});
 
-ActiveFilterMap.subscribe((value) => {
-  console.groupCollapsed('⭐️🗄️⭐️  Current ActiveFilterMap:');
-  for (const [fileHash, filterMap] of value.entries()) {
-    for (const [filterType, treeNodes] of filterMap.entries()) {
-      const rootNode = treeNodes[0];
-      console.groupCollapsed(`['filtertype:${filterType}', 'filename:${rootNode.key}']`);
-      console.dir(treeNodes, { depth: null });
-      console.groupEnd();
+  return { filterMap, filteredData };
+}
+
+// MAP OF FILTERED DATA
+export const ActiveFilterMap = derived(
+  [tsaveStore, filterCriteria, filterStatusMap],
+  ([$treeFilesData, $filterCriteria, $filterStatusMap], set) => {
+    const { filterMap } = filterNodes($treeFilesData, $filterCriteria, $filterStatusMap);
+    set(filterMap);
+  }
+);
+
+//ACTUAL FILTERED DATA
+export const filteredTreeFilesData = derived(
+  [tsaveStore, filterCriteria, filterStatusMap],
+  ([$treeFilesData, $filterCriteria, $filterStatusMap], set) => {
+    const { filteredData } = filterNodes($treeFilesData, $filterCriteria, $filterStatusMap);
+    set(filteredData);
+  }
+);
+
+if (process.env.NODE_ENV === 'development') {
+  const logState = (trigger: string) => {
+    console.groupCollapsed(`⭐️🗄️⭐️ Current State of All Stores (Triggered by: ${trigger})`);
+    console.groupCollapsed('Current Stores');
+    console.log('Current filterCriteria:', get(filterCriteria), 'Triggered by changes in filter criteria.');
+    console.log('Current filterStatusMap:', get(filterStatusMap), 'Triggered by updates in filter status map.');
+    console.log('Current tsaveStore:', get(tsaveStore), 'Triggered by updates in tree files data.');
+    console.groupEnd();
+
+    console.groupCollapsed('Active Filter Map');
+    console.log('Derived ActiveFilterMap:', get(ActiveFilterMap), 'Reflects the active filters applied.');
+    console.groupEnd();
+
+    console.groupCollapsed('Filtered Tree Files Data');
+    console.log('Derived filteredTreeFilesData:', get(filteredTreeFilesData), 'Reflects the tree files data after applying active filters.');
+    console.groupEnd();
+    console.groupEnd();
+  };
+
+  filterCriteria.subscribe(() => logState('filterCriteria'));
+  filterStatusMap.subscribe(() => logState('filterStatusMap'));
+  tsaveStore.subscribe(() => logState('tsaveStore'));
+  ActiveFilterMap.subscribe(() => logState('ActiveFilterMap'));
+  filteredTreeFilesData.subscribe(() => logState('filteredTreeFilesData'));
+}
+
+export function toggleFilter(fileHash: string, filterType: FilterType) {
+  filterStatusMap.update(statusMap => {
+    const fileStatusMap = statusMap.get(fileHash);
+    if (fileStatusMap) {
+      const currentStatus = fileStatusMap.get(filterType);
+      if (currentStatus) {
+        fileStatusMap.set(filterType, { enabled: !currentStatus.enabled });
+        console.log(`Toggled filter: ${filterType} for fileHash: ${fileHash} to ${!currentStatus.enabled}`, 'This log indicates a filter status change.');
+      }
     }
-  }
-  console.groupEnd();
-});
-
-export function getFilteredData(fileHash: string, filterType: string): TreeNode[] {
-  const filterMap = get(ActiveFilterMap);
-  if (!filterMap.has(fileHash)) {
-    console.log(`filehash of ${fileHash} doesn't exist in FilterMap`);
-    return [];
-  }
-
-  const fileFilterMap = filterMap.get(fileHash);
-  if (!fileFilterMap || !fileFilterMap.has(filterType)) {
-    console.log(`filtertype of ${filterType} doesn't exist in FilterMap`);
-    return [];
-  }
-
-  return fileFilterMap.get(filterType) || [];
+    return statusMap;
+  });
 }

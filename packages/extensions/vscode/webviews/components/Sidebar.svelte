@@ -9,7 +9,7 @@
   import { writable } from 'svelte/store';
   import { openFilesData, addFile  } from '../stores/fileMgmt/openStore';
   import DisplayArea from './sidebar/DisplayArea.svelte';
-  import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
+  // import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
   import { filterCriteria } from '../stores/fileMgmt/viewDerivedStore'; // Import the filterCriteria store
   import SplitViewButton from './asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
 
@@ -137,10 +137,6 @@
     }
   });
 
-  // function handleCheckboxChange(event) {
-  //   responsesIncluded.set(event.target.checked);  // Update store value based on checkbox state
-  //   console.log("responsesIncluded set to", event.target.checked);
-  // }
 
   let actions = [
     { label: "Open API File", action: handleOpenAPIWithoutServer },
@@ -149,17 +145,6 @@
 
   let isRequestsFilter = false;
 
-  // function handleFilterChange(event) {
-  //   isRequestsFilter = event.target.checked;
-  //   filterCriteria.set(isRequestsFilter ? 'requests' : ''); // Update the filter criteria based on the toggle state
-  //   console.log('Filter Criteria Set:', isRequestsFilter ? 'requests' : '');
-  // }
-
-  // function handleFilterChange2(event) {
-  //   isRequestsFilter = event.target.checked;
-  //   filterCriteria.set(isRequestsFilter ? 'requests' : ''); // Update the filter criteria based on the toggle state
-  //   console.log('Filter Criteria Set:', isRequestsFilter ? 'requests' : '');
-  // }
 </script>
 
 <div>
@@ -176,25 +161,9 @@
 
   <SplitViewButton on:updateSplit={handleUpdateSplit} />
 
-  <div class="flex flex-col space-y-4">
-    <div class="flex items-center">
-      <SliderButton filterType="paths" />
-      <span class="ml-2">Path</span>
-    </div>
-    <div class="flex items-center">
-      <SliderButton filterType="servers" />
-      <span class="ml-2">Servers</span>
-    </div>
-    <div class="flex items-center">
-      <SliderButton filterType="components" />
-      <span class="ml-2">Components</span>
-    </div>
-  </div>
-
   <hr class="border-2 my-4" />
 
   <div class="w-full p-5 text-white box-border">
-    <!-- <SidebarTabs /> -->
     <DisplayArea />
   </div>
 
