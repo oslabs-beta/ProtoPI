@@ -50,7 +50,7 @@
   }
 
   function handleOpenAPIWithoutServer() {
-    console.log("Open API File triggered");
+    if (process.env.NODE_ENV === 'development') {console.log("[Sidebar.svelte]  Open API File triggered");};
     openFileDialog(); // For both web browser and VS Code webview
   }
 
@@ -87,7 +87,7 @@
     } else {
       // In a browser
       fileInput.click();
-      console.log("File input clicked in browser");
+      if (process.env.NODE_ENV === 'development'){console.log("[Sidebar.svelte]  File input clicked in browser");};
     }
   }
 

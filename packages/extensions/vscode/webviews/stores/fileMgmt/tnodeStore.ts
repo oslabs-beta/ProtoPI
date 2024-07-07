@@ -77,7 +77,7 @@ function createTreeStore(initialData: Record<string, any>, fileHash: string, nam
 
 parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
   if (parsedFiles && typeof parsedFiles === 'object') {
-    console.groupCollapsed('📚4️⃣📚 tnodeStore::in - from parsedStore:');
+    console.groupCollapsed('📚4️⃣📚 [tnodeStore.ts]  data in  (from parsedStore)');
 
     const treeData: ITreeFileMap = Object.entries(parsedFiles).reduce((acc, [fileHash, file]: [string, ParsedFileData]) => {
       console.groupCollapsed(`File Name: ${file.name}`);
@@ -108,7 +108,7 @@ parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
 });
 
 treeFilesData.subscribe((value: ITreeFileMap) => {
-  console.groupCollapsed('📚5️⃣📚 tnodeStore::out - to tsaveStore');
+  console.groupCollapsed('📚5️⃣📚 [tnodeStore.ts]  data out (to tsaveStore)');
 
   console.groupCollapsed('Keys of Tree File Map');
   Object.keys(value).forEach(key => console.log(key));

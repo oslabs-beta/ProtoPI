@@ -10,7 +10,7 @@ import type { FilterType, FileFilterStatusMap } from './viewDerivedStore/types';
 export const filterCriteria = writable<string>('');
 export const filterStatusMap: Writable<FileFilterStatusMap> = writable(new Map());
 
-console.log('Initializing filterStatusMap...');
+if (process.env.NODE_ENV === 'development'){console.log('[viewDerivedStore.ts]  Initializing filterStatusMap...');};
 
 // Initialize the filterStatusMap with default values
 function initializeFilterStatusMap(treeFilesData: ITreeFileMap, filters: FilterType[]) {
@@ -25,7 +25,7 @@ function initializeFilterStatusMap(treeFilesData: ITreeFileMap, filters: FilterT
   });
 
   filterStatusMap.set(statusMap);
-  console.log('filterStatusMap initialized:', get(filterStatusMap));
+  if (process.env.NODE_ENV === 'development') {console.log('[viewDerivedStore.ts]  filterStatusMap initialized:', get(filterStatusMap));};
 }
 
 initializeFilterStatusMap(get(tsaveStore), ['contains', 'paths', 'servers', 'components']);
@@ -115,7 +115,7 @@ export function toggleFilter(fileHash: string, filterType: FilterType) {
       const currentStatus = fileStatusMap.get(filterType);
       if (currentStatus) {
         fileStatusMap.set(filterType, { enabled: !currentStatus.enabled });
-        console.log(`Toggled filter: ${filterType} for fileHash: ${fileHash} to ${!currentStatus.enabled}`, 'This log indicates a filter status change.');
+        if (process.env.NODE_ENV === 'development') {console.log(`Toggled filter: ${filterType} for fileHash: ${fileHash} to ${!currentStatus.enabled}`, 'This log indicates a filter status change.');};
       }
     }
     return statusMap;

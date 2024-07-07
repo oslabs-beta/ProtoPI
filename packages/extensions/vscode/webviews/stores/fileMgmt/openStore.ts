@@ -1,21 +1,25 @@
 import { writable } from 'svelte/store';
 import CryptoJS from 'crypto-js';
+import { 
+  type FileData, 
+  type FileDataMap 
+} from './types';
 
-export interface FileData {
-  name: string;
-  content: string;
-  hash?: string; 
-}
+// export interface FileData {
+//   name: string;
+//   content: string;
+//   hash?: string;
+// }
 
-export interface FileDataMap {
-  [hash: string]: FileData;
-}
+// export interface FileDataMap {
+//   [hash: string]: FileData;
+// }
 
 export const openFilesData = writable<FileDataMap>({});
 
 openFilesData.subscribe((value: FileDataMap) => {
   if (value && typeof value === 'object') {
-    console.groupCollapsed('📚1️⃣📚 openStore:: File(s) Opened:');
+    console.groupCollapsed('📚1️⃣📚 [openStore.ts]  File(s) Opened:');
     Object.values(value).forEach((file: FileData) => {
       console.groupCollapsed(`File Name: ${file.name}`);
       console.log('Hash:', file.hash);
