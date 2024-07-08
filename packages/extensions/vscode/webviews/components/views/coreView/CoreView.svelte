@@ -75,10 +75,11 @@
       {#each $leftData as treeStore}
         {#if get(treeStore) && get(treeStore).length > 0}
           <div>
-            <div class="mb-4">
+            <div class="inline-block mb-4">
               <FilterDropdown fileHash={get(treeStore)[0].fileHash}/>
+              <span class="filename-label">FILENAME:</span>
             </div>
-            <h2>FILENAME: {get(treeStore)[0].key}</h2>
+            <h2 class="inline">{get(treeStore)[0].key}</h2>
             <TreeCoreView {treeStore} />
           </div>
           <hr class="border-2 my-4" />
@@ -89,10 +90,11 @@
       {#each $rightData as treeStore}
         {#if get(treeStore) && get(treeStore).length > 0}
           <div>
-            <div class="mb-4">
+            <div class="inline-block mb-4">
               <FilterDropdown fileHash={get(treeStore)[0].fileHash}/>
+              <span class="filename-label">FILENAME:</span>
             </div>
-            <h2>FILENAME: {get(treeStore)[0].key}</h2>
+            <h2 class="inline">{get(treeStore)[0].key}</h2>
             <TreeCoreView {treeStore} />
           </div>
           <hr class="border-2 my-4" />
@@ -105,10 +107,11 @@
     {#each $leftData as treeStore}
       {#if get(treeStore) && get(treeStore).length > 0}
         <div>
-          <div class="mb-4">
+          <div class="inline-block mb-4">
             <FilterDropdown fileHash={get(treeStore)[0].fileHash}/>
+            <span class="filename-label">FILENAME:</span>
           </div>
-          <h2>FILENAME: {get(treeStore)[0].key}</h2>
+          <h2 class="inline">{get(treeStore)[0].key}</h2>
           <TreeCoreView {treeStore} />
         </div>
         <hr class="border-2 my-4" />
