@@ -10,7 +10,10 @@
   import { openFilesData, addFile  } from '../stores/fileMgmt/openStore';
   import DisplayArea from './sidebar/DisplayArea.svelte';
   // import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
-  import { filterCriteria } from '../stores/fileMgmt/viewDerivedStore'; // Import the filterCriteria store
+  import { 
+    filterCriteria, 
+    initDerivedStore 
+  } from '../stores/fileMgmt/viewDerivedStore'; // Import the filterCriteria store
   import SplitViewButton from './asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
 
   let fileInput;
@@ -50,7 +53,9 @@
   }
 
   function handleOpenAPIWithoutServer() {
-    if (process.env.NODE_ENV === 'development') {console.log("[Sidebar.svelte]  Open API File triggered");};
+    if (process.env.NODE_ENV === 'development') {
+      console.log("[Sidebar.svelte]  Open API File triggered");
+    };
     openFileDialog(); // For both web browser and VS Code webview
   }
 
@@ -87,7 +92,9 @@
     } else {
       // In a browser
       fileInput.click();
-      if (process.env.NODE_ENV === 'development'){console.log("[Sidebar.svelte]  File input clicked in browser");};
+      if (process.env.NODE_ENV === 'development'){
+        console.log("[Sidebar.svelte]  File input clicked in browser");
+      };
     }
   }
 
@@ -98,6 +105,7 @@
         const reader = new FileReader();
         reader.onload = (e) => {
           addFile({ name: file.name, content: e.target.result });
+          initDerivedStore();
         };
         reader.readAsText(file);
       });

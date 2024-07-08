@@ -4,19 +4,24 @@
 <script>
   import CoreView from '../views/coreView/CoreView.svelte';
   import { displayState } from '../../stores/displayStore';
-  import { filteredTreeFilesData } from '../../stores/fileMgmt/viewDerivedStore';
+  import { 
+    filteredTreeFilesData, 
+    initDerivedStore 
+  } from '../../stores/fileMgmt/viewDerivedStore';
 
   let isSplit = false;
   let treeData = [];
 
   displayState.subscribe($state => {
     isSplit = $state.isSplit;
+    console.log("[DisplayArea.svelte]  Display state updated:", $state);
   });
 
   filteredTreeFilesData.subscribe($data => {
-    treeData = $data;
+    treeData = $data || [];
+    console.log("[DisplayArea.svelte]  Filtered Tree Files Data updated:", $data);
   });
-
+  initDerivedStore();
 </script>
 
 <div>

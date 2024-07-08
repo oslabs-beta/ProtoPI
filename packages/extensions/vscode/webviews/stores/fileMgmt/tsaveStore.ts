@@ -1,7 +1,7 @@
 import { treeFilesData, type ITreeFileMap, type TreeNode } from './tnodeStore';
 
 treeFilesData.subscribe((value: ITreeFileMap) => {
-  console.groupCollapsed('📚6️⃣📚 [tsaveStore]  data in  (from tnodeStore)');
+  console.groupCollapsed('📚6️⃣📚 [tsaveStore.ts]  data in  (from tnodeStore)');
 
   console.groupCollapsed('Keys of Tree File Map (Entering)');
   Object.keys(value).forEach(key => console.log(key));

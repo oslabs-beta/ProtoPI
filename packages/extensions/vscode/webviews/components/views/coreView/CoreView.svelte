@@ -56,7 +56,6 @@
           <div>
             <h2>FILENAME: {get(treeStore)[0].key}</h2>
             <TreeCoreView {treeStore} />
-
           </div>
         {/if}
       {/each}
@@ -67,7 +66,6 @@
           <div>
             <h2>FILENAME: {get(treeStore)[0].key}</h2>
             <TreeCoreView {treeStore} />
-
           </div>
         {/if}
       {/each}
