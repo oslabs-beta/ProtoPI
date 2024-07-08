@@ -66,6 +66,9 @@ export function initDerivedStore() {
   if (process.env.NODE_ENV === 'development') {
     console.log("[viewDerivedStore.ts] Derived Store Initialization Completed");
   }
+    // Trigger updates for derived stores
+    filterCriteria.update(value => value); 
+    filterStatusMap.update(value => value); 
 }
 
 function initFilterStatusMap(treeFilesData: ITreeFileMap, filters: FilterType[]) {

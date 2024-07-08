@@ -6,7 +6,6 @@
   import { displayState } from '../../stores/displayStore';
   import { 
     filteredTreeFilesData, 
-    initDerivedStore 
   } from '../../stores/fileMgmt/viewDerivedStore';
 
   let isSplit = false;
@@ -21,7 +20,6 @@
     treeData = $data || [];
     console.log("[DisplayArea.svelte]  Filtered Tree Files Data updated:", $data);
   });
-  initDerivedStore();
 </script>
 
 <div>
