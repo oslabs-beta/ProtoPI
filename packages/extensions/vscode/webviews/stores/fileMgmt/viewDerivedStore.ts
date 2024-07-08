@@ -61,7 +61,7 @@ export function initDerivedStore() {
   if (process.env.NODE_ENV === 'development'){
     console.log("[viewDerivedStore.ts] Initializing Derived Store");
   };
-  initFilterStatusMap(get(tsaveStore), ['contains', 'paths', 'servers', 'components']);
+  initFilterStatusMap(get(tsaveStore), filterManager.availableFilters);
   initializationCompleted = true;
   if (process.env.NODE_ENV === 'development') {
     console.log("[viewDerivedStore.ts] Derived Store Initialization Completed");

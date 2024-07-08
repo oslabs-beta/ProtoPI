@@ -35,9 +35,13 @@ const createFilters = () => {
     return filters.default;
   }
 
+  // ASSIGN AVAILABLE FILTERS TO A VARIABLE
+  const availableFilters: FilterType[] = Object.keys(filters) as FilterType[];
+
   return {
     getFilter,
-    filters
+    filters,
+    availableFilters  // EXPORT THE AVAILABLE FILTERS
   };
 };
 
