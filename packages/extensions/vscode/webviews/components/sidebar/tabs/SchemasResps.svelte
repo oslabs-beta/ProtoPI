@@ -1,7 +1,7 @@
 <script>
   let filterText = '';
 </script>
-
+ 
 <div>
   <input type="text" class="rounded-full px-2 py-1 border-2 border-dashed border-blue-500 focus:border-solid focus:border-blue-500 outline-none transition duration-200" bind:value={filterText} placeholder="Filter Resps ...">
 </div>

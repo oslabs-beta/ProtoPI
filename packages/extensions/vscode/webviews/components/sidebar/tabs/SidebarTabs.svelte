@@ -5,7 +5,7 @@
     activeTab.set(tab);
   }
 </script>
-
+ 
 <div class="flex justify-around bg-gray-900 text-white mb-5" role="tablist">
   <button
     class="px-5 py-2 cursor-pointer bg-gray-900 text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none"

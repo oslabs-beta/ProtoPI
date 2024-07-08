@@ -17,7 +17,7 @@
       summary: parsedData.paths[path][method].summary,
     }))
   }));
-
+ 
   function isObject(value) {
     return value && typeof value === 'object' && value.constructor === Object;
   }
