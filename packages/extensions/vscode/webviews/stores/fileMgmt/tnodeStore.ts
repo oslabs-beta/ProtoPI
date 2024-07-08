@@ -1,11 +1,9 @@
+// tnodeStore.ts
 import { writable, type Writable } from 'svelte/store';
 import { v4 as uuidv4 } from 'uuid';
-import { parsedFilesData, type ParsedFileData, type ParsedFileMap } from './parseStore';
+import { type ParsedFileData, type ParsedFileMap } from './parseStore'; // Correct path to types
+import { parsedFilesData } from './parseStore';  // Ensure this is the correct import path
 import CryptoJS from 'crypto-js';
-
-export interface ITreeFileMap {
-  [fileHash: string]: TreeNode[];
-}
 
 export interface TreeNode {
   readonly id: string;
@@ -14,76 +12,66 @@ export interface TreeNode {
   isOpen: boolean;
   children: TreeNode[];
   path: string[];
-  fileHash: string;      // Hash from the filename
-  nodeHash: string;  // Hash based on the node
-  parentId: string | null; // ID of the parent node
-  level: number;     // Level based on the path length
+  readonly fileHash: string;
+  nodeHash: string;
+  parentId: string | null;
+  level: number;
 }
 
-const treeFilesData: Writable<ITreeFileMap> = writable<ITreeFileMap>({});
+// Directly exporting treeFilesData
+export const treeFilesData: Writable<{[fileHash: string]: TreeNode[]}> = writable({});
 
-function createTreeStore(initialData: Record<string, any>, fileHash: string, name: string): Writable<TreeNode[]> {
+function createTreeStore(fileContent: Record<string, any>, hash: string, fileName: string): Writable<TreeNode[]> {
   const rootNode: TreeNode = {
-    id: fileHash,
-    key: name,
+    id: uuidv4(),
+    key: fileName,
     value: null,
     isOpen: true,
-    children: parseItems(initialData, [fileHash], fileHash),
-    path: [fileHash],
-    fileHash: fileHash,
-    nodeHash: generateHash(name),
+    children: parseItems(fileContent, [fileName], hash, null),
+    path: [fileName],
+    fileHash: hash,
+    nodeHash: generateHash(fileName),
     parentId: null,
     level: 1,
   };
+  return writable<TreeNode[]>([rootNode]);
+}
 
-  const { subscribe, set, update } = writable<TreeNode[]>([rootNode]);
+function parseItems(data: Record<string, any>, path: string[], fileHash: string, parentId: string | null): TreeNode[] {
+  return Object.entries(data).map(([key, value]) =>
+    createItem({ key, keyData: value }, path, fileHash, parentId));
+}
 
-  function parseItems(data: Record<string, any>, path: string[], parentHash: string): TreeNode[] {
-    return Object.entries(data).map(([key, value]) => createItem({ key, keyData: value }, path, parentHash));
-  }
+function createItem(item: { key: string; keyData: any }, parentPath: string[], fileHash: string, parentId: string | null): TreeNode {
+  const newPath = [...parentPath, item.key];
+  const nodeHash = generateHash(item.key + newPath.join('/'));
+  return {
+    id: uuidv4(),
+    key: item.key,
+    value: item.keyData,
+    isOpen: false,
+    children: typeof item.keyData === 'object' ? parseItems(item.keyData, newPath, fileHash, uuidv4()) : [],
+    path: newPath,
+    fileHash,
+    nodeHash,
+    parentId,
+    level: newPath.length
+  };
+}
 
-  function createItem(item: { key: string; keyData: any }, parentPath: string[], parentHash: string): TreeNode {
-    const newPath = [...parentPath, item.key];
-    const id = generateUUID();
-    const nodeHash = generateHash(item.key);
-    const parentId = parentHash;
-    const level = newPath.length;
-
-    let children: TreeNode[] = [];
-
-    if (item.keyData && typeof item.keyData === 'object' && !Array.isArray(item.keyData)) {
-      children = parseItems(item.keyData, newPath, nodeHash);
-    } else if (Array.isArray(item.keyData)) {
-      item.keyData.forEach((element, index) => {
-        children.push(createItem({ key: `${item.key}[${index}]`, keyData: element }, newPath, nodeHash));
-      });
-    } else {
-      children = [];
-    }
-
-    return { id, key: item.key, value: item.keyData, isOpen: false, children, path: newPath, fileHash: parentHash, nodeHash, parentId, level };
-  }
-
-  function generateUUID(): string {
-    return uuidv4();
-  }
-
-  function generateHash(input: string): string {
-    return CryptoJS.SHA256(input).toString(CryptoJS.enc.Hex);
-  }
-
-  return { subscribe, set, update };
+function generateHash(input: string): string {
+  return CryptoJS.SHA256(input).toString(CryptoJS.enc.Hex);
 }
 
 parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
   if (parsedFiles && typeof parsedFiles === 'object') {
-    console.groupCollapsed('📚4️⃣📚 [tnodeStore.ts]  data in  (from parsedStore)');
+    console.groupCollapsed('📚4️⃣📚 [tnodeStore.ts] data in (from parsedStore)');
 
-    const treeData: ITreeFileMap = Object.entries(parsedFiles).reduce((acc, [fileHash, file]: [string, ParsedFileData]) => {
+    const treeData: {[fileHash: string]: Writable<TreeNode[]>} = Object.entries(parsedFiles).reduce((acc, [fileHash, file]: [string, ParsedFileData]) => {
       console.groupCollapsed(`File Name: ${file.name}`);
-      console.log('Hash:', file.fileHash);
+      console.log('Hash:', fileHash);
 
-      const treeStore: Writable<TreeNode[]> = createTreeStore(file.content, file.fileHash, file.name);
+      const treeStore: Writable<TreeNode[]> = createTreeStore(file.content, fileHash, file.name);
 
       treeStore.subscribe((storeValue: TreeNode[]) => {
         acc[fileHash] = storeValue;
@@ -98,17 +86,17 @@ parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
       console.groupEnd();
 
       return acc;
-    }, {} as ITreeFileMap);
+    }, {} as {[fileHash: string]: Writable<TreeNode[]>});
 
     treeFilesData.set(treeData);
     console.groupEnd();
   } else {
-    console.error('parsedFiles is not an object:', parsedFiles);
+    console.error('parsedFilesData subscription received invalid data:', parsedFiles);
   }
 });
 
-treeFilesData.subscribe((value: ITreeFileMap) => {
-  console.groupCollapsed('📚5️⃣📚 [tnodeStore.ts]  data out (to tsaveStore)');
+treeFilesData.subscribe((value: {[fileHash: string]: TreeNode[]}) => {
+  console.groupCollapsed('📚5️⃣📚 [tnodeStore.ts] data out (to tsaveStore)');
 
   console.groupCollapsed('Keys of Tree File Map');
   Object.keys(value).forEach(key => console.log(key));
@@ -127,5 +115,3 @@ treeFilesData.subscribe((value: ITreeFileMap) => {
   });
   console.groupEnd();
 });
-
-export { createTreeStore, treeFilesData, type TreeNode, type ITreeFileMap };

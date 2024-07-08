@@ -9,7 +9,7 @@ export interface FileData {
   name: string;
   content: string;
   hash?: string;
-  isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
+  // isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
 }
 
 export interface FileDataMap {
@@ -21,13 +21,13 @@ export interface FileDataMap {
  *  Data Types for parseStore.ts
  */ 
 
-export interface ParsedFileData {
-  name: string;
-  content: any;
-  hash: string;
-  isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
-}
+// export interface ParsedFileData {
+//   name: string;
+//   content: any;
+//   hash: string;
+//   // isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
+// }
 
-export interface ParsedFileMap {
-  [hash: string]: ParsedFileData;
-}
+// export interface ParsedFileMap {
+//   [hash: string]: ParsedFileData;
+// }

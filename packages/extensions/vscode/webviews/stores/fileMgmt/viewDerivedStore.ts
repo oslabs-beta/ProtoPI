@@ -13,7 +13,7 @@ import type { FilterType, FileFilterStatusMap } from './viewDerivedStore/types';
 /**
  *   STORE DECLARATIONS
  */
-export const filterCriteria = writable<string>('');
+export const filterCriteriaMap: Writable<Map<string, string>> = writable(new Map());
 export const filterStatusMap: Writable<FileFilterStatusMap> = writable(new Map());
 let initializationCompleted = false; 
 
@@ -25,14 +25,14 @@ let initializationCompleted = false;
 
 //  MAP OF FILTERED DATA
 export const ActiveFilterMap = derived(
-  [tsaveStore, filterCriteria, filterStatusMap],
-  ([$treeFilesData, $filterCriteria, $filterStatusMap], set) => {
+  [tsaveStore, filterCriteriaMap, filterStatusMap],
+  ([$treeFilesData, $filterCriteriaMap, $filterStatusMap], set) => {
     if (initializationCompleted){
       if (process.env.NODE_ENV === 'development'){
         console.log("[viewDerivedStore.ts] ActiveFilterMap derivation triggered");
-        console.log("[viewDerivedStore.ts] ActiveFilterMap data:", $treeFilesData, $filterCriteria, $filterStatusMap);
+        console.log("[viewDerivedStore.ts] ActiveFilterMap data:", $treeFilesData, $filterCriteriaMap, $filterStatusMap);
       };
-      const { filterMap } = filterNodes($treeFilesData, $filterCriteria, $filterStatusMap);
+      const { filterMap } = filterNodes($treeFilesData, $filterCriteriaMap, $filterStatusMap);
       set(filterMap);
     }
   }
@@ -40,14 +40,14 @@ export const ActiveFilterMap = derived(
 
 //  FILTERED DATA
 export const filteredTreeFilesData = derived(
-  [tsaveStore, filterCriteria, filterStatusMap],
-  ([$treeFilesData, $filterCriteria, $filterStatusMap], set) => {
+  [tsaveStore, filterCriteriaMap, filterStatusMap],
+  ([$treeFilesData, $filterCriteriaMap, $filterStatusMap], set) => {
     if (process.env.NODE_ENV === 'development'){
       console.log("[viewDerivedStore.ts]  filteredTreeFilesData derivation triggered");
-      console.log("[viewDerivedStore.ts]  filteredTreeFilesData data:", $treeFilesData, $filterCriteria, $filterStatusMap);
+      console.log("[viewDerivedStore.ts]  filteredTreeFilesData data:", $treeFilesData, $filterCriteriaMap, $filterStatusMap);
     };
     if (initializationCompleted) {
-      const { filteredData } = filterNodes($treeFilesData, $filterCriteria, $filterStatusMap);
+      const { filteredData } = filterNodes($treeFilesData, $filterCriteriaMap, $filterStatusMap);
       set(filteredData);
     }
   }
@@ -61,14 +61,21 @@ export function initDerivedStore() {
   if (process.env.NODE_ENV === 'development'){
     console.log("[viewDerivedStore.ts] Initializing Derived Store");
   };
-  initFilterStatusMap(get(tsaveStore), filterManager.availableFilters);
+  initFilterStatusMap(get(tsaveStore), filterManager.availableFilters as FilterType[]);
   initializationCompleted = true;
   if (process.env.NODE_ENV === 'development') {
     console.log("[viewDerivedStore.ts] Derived Store Initialization Completed");
   }
     // Trigger updates for derived stores
-    filterCriteria.update(value => value); 
+    filterCriteriaMap.update(value => value); 
     filterStatusMap.update(value => value); 
+}
+
+export function setFilterCriteria(fileHash: string, criteria: string) {
+  filterCriteriaMap.update(criteriaMap => {
+    criteriaMap.set(fileHash, criteria);
+    return criteriaMap;
+  });
 }
 
 function initFilterStatusMap(treeFilesData: ITreeFileMap, filters: FilterType[]) {
@@ -103,7 +110,7 @@ if (process.env.NODE_ENV === 'development'){
   const logState = (trigger: string) => {
     console.groupCollapsed(`⭐️🗄️⭐️ [viewDerivedStore.ts] [trigger, ${trigger}]  State of All Stores`);
     console.groupCollapsed('Current Stores');
-    console.log('Current filterCriteria:', get(filterCriteria), 'Triggered by changes in filter criteria.');
+    console.log('Current filterCriteriaMap:', get(filterCriteriaMap), 'Triggered by changes in filter criteria map.');
     console.log('Current filterStatusMap:', get(filterStatusMap), 'Triggered by updates in filter status map.');
     console.log('Current tsaveStore:', get(tsaveStore), 'Triggered by updates in tree files data.');
     console.groupEnd();
@@ -118,7 +125,7 @@ if (process.env.NODE_ENV === 'development'){
     console.groupEnd();
   };
 
-  filterCriteria.subscribe(() => logState('filterCriteria'));
+  filterCriteriaMap.subscribe(() => logState('filterCriteriaMap'));
   filterStatusMap.subscribe(() => logState('filterStatusMap'));
   tsaveStore.subscribe(() => logState('tsaveStore'));
   ActiveFilterMap.subscribe(() => logState('ActiveFilterMap'));
@@ -129,13 +136,11 @@ if (process.env.NODE_ENV === 'development'){
 /**
  *  FILTER FUNCTIONS
  */
-function filterNodes(treeFilesData: ITreeFileMap, filterCriteria: string, statusMap: FileFilterStatusMap) {
+function filterNodes(treeFilesData: ITreeFileMap, filterCriteriaMap: Map<string, string>, statusMap: FileFilterStatusMap) {
   if (process.env.NODE_ENV === 'development') {
-    console.log("[viewDerivedStore.ts] filterNodes called with:", treeFilesData, filterCriteria, statusMap);
+    console.log("[viewDerivedStore.ts] filterNodes called with:", treeFilesData, filterCriteriaMap, statusMap);
   }
-  const criteriaValue = filterCriteria.replace(/^[a-z]+:/, '');
-
-  const filterMap = new Map<string, Map<string, TreeNode[]>>();
+   const filterMap = new Map<string, Map<string, TreeNode[]>>();
   const filteredData: Writable<TreeNode[]>[] = [];
 
   Object.entries(treeFilesData).forEach(([fileHash, treeNodes]) => {
@@ -143,6 +148,8 @@ function filterNodes(treeFilesData: ITreeFileMap, filterCriteria: string, status
     const nodesToFilter = rootNode.children;
     const fileFilterMap = new Map<string, TreeNode[]>();
     const fileStatusMap = statusMap.get(fileHash);
+    const filterCriteria = filterCriteriaMap.get(fileHash) || '';
+    const criteriaValue = filterCriteria.replace(/^[a-z]+:/, '');
 
     if (fileStatusMap) {
       fileStatusMap.forEach((status, filterType) => {

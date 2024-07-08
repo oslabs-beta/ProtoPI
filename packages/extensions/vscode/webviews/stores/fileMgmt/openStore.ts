@@ -1,19 +1,19 @@
 import { writable } from 'svelte/store';
 import CryptoJS from 'crypto-js';
-import { 
-  type FileData, 
-  type FileDataMap 
-} from './types';
+// import { 
+//   type FileData, 
+//   type FileDataMap 
+// } from './types';
 
-// export interface FileData {
-//   name: string;
-//   content: string;
-//   hash?: string;
-// }
+export interface FileData {
+  name: string;
+  content: string;
+  hash?: string;
+}
 
-// export interface FileDataMap {
-//   [hash: string]: FileData;
-// }
+export interface FileDataMap {
+  [hash: string]: FileData;
+}
 
 export const openFilesData = writable<FileDataMap>({});
 

@@ -10,8 +10,7 @@
   import { openFilesData, addFile  } from '../stores/fileMgmt/openStore';
   import DisplayArea from './sidebar/DisplayArea.svelte';
   // import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
-  import { 
-    filterCriteria, 
+  import {
     initDerivedStore 
   } from '../stores/fileMgmt/viewDerivedStore'; // Import the filterCriteria store
   import SplitViewButton from './asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton

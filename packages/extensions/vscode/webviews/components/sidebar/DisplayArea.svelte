@@ -4,8 +4,7 @@
 <script>
   import CoreView from '../views/coreView/CoreView.svelte';
   import { displayState } from '../../stores/displayStore';
-  import FilterDropdown from '../asset-library/dropdown/FilterDropdown.svelte';
-  import { 
+    import { 
     filteredTreeFilesData, 
   } from '../../stores/fileMgmt/viewDerivedStore';
 
@@ -24,15 +23,9 @@
 </script>
 
 <div>
-    <!-- Include FilterDropdown at the top -->
-    <div class="mb-4">
-      <FilterDropdown />
-    </div>
+
   <CoreView 
     {isSplit} 
     {treeData} 
   />
-
-  <hr class="border-2 my-4" />
-  <hr class="border-2 my-4" />
 </div>

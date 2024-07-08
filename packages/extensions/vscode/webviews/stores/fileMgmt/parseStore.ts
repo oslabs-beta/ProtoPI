@@ -2,6 +2,10 @@
 import { writable } from 'svelte/store';
 import { parse as parseYAML } from 'yaml';
 import { openFilesData } from './openStore';
+import { 
+  type ParsedFileData, 
+  type ParsedFileMap, 
+} from './types';
 
 import { type FileData, type FileDataMap  } from './openStore';  // Import FileData and FileDataMap as types
 // import { 
@@ -11,10 +15,20 @@ import { type FileData, type FileDataMap  } from './openStore';  // Import FileD
 //   type FileDataMap 
 // } from './fileMgmtTypes';
 
+// export interface ParsedFileData {
+//   name: string;
+//   content: any;
+//   hash: string;
+// }
+
+// export interface ParsedFileMap {
+//   [hash: string]: ParsedFileData;
+// }
 export interface ParsedFileData {
   name: string;
   content: any;
   hash: string;
+  // isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
 }
 
 export interface ParsedFileMap {

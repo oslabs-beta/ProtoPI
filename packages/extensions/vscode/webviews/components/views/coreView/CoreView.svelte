@@ -8,6 +8,8 @@
   import TreeCoreView from './TreeCoreView.svelte';
   import { onDestroy, onMount } from 'svelte';
   import { writable, get, type Writable } from 'svelte/store';
+  import FilterDropdown from '../../asset-library/dropdown/FilterDropdown.svelte';
+
   import type { TreeNode } from '../../../stores/fileMgmt/tnodeStore';
 
   export let isSplit: boolean;
@@ -34,8 +36,27 @@
     updateData();
   }
   onMount(() => {
-    leftDataUnsubscribe = leftData.subscribe(() => {});
-    rightDataUnsubscribe = rightData.subscribe(() => {});
+    leftDataUnsubscribe = leftData.subscribe(data => {
+      data.forEach(store => {
+        const nodeArray = get(store);
+        if (nodeArray && nodeArray.length > 0 && nodeArray[0].fileHash) {
+          console.log("Left data loaded with file hash:", nodeArray[0].fileHash);
+        } else {
+          console.log("No valid nodeHash found in left data.");
+        }
+      });
+    });
+
+    rightDataUnsubscribe = rightData.subscribe(data => {
+      data.forEach(store => {
+        const nodeArray = get(store);
+        if (nodeArray && nodeArray.length > 0 && nodeArray[0].fileHash) {
+          console.log("Right data loaded with file hash:", nodeArray[0].fileHash);
+        } else {
+          console.log("No valid nodeHash found in right data.");
+        }
+      });
+    });
   });
 
   onDestroy(() => {
@@ -54,9 +75,13 @@
       {#each $leftData as treeStore}
         {#if get(treeStore) && get(treeStore).length > 0}
           <div>
+            <div class="mb-4">
+              <FilterDropdown fileHash={get(treeStore)[0].fileHash}/>
+            </div>
             <h2>FILENAME: {get(treeStore)[0].key}</h2>
             <TreeCoreView {treeStore} />
           </div>
+          <hr class="border-2 my-4" />
         {/if}
       {/each}
     </div>
@@ -64,9 +89,13 @@
       {#each $rightData as treeStore}
         {#if get(treeStore) && get(treeStore).length > 0}
           <div>
+            <div class="mb-4">
+              <FilterDropdown fileHash={get(treeStore)[0].fileHash}/>
+            </div>
             <h2>FILENAME: {get(treeStore)[0].key}</h2>
             <TreeCoreView {treeStore} />
           </div>
+          <hr class="border-2 my-4" />
         {/if}
       {/each}
     </div>
@@ -76,9 +105,13 @@
     {#each $leftData as treeStore}
       {#if get(treeStore) && get(treeStore).length > 0}
         <div>
+          <div class="mb-4">
+            <FilterDropdown fileHash={get(treeStore)[0].fileHash}/>
+          </div>
           <h2>FILENAME: {get(treeStore)[0].key}</h2>
           <TreeCoreView {treeStore} />
         </div>
+        <hr class="border-2 my-4" />
       {/if}
     {/each}
   </div>
