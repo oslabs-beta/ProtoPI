@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: Library Catalog API
+  description: API for managing a library catalog.
+  version: 1.0.0
+  termsOfService: http://example.com/terms/
+  contact:
+    name: API Support
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+servers:
+  - url: https://api.example.com/v1
+    description: Main (production) server
+  - url: https://staging-api.example.com/v1
+    description: Staging server
+tags:
+  - name: Books
+    description: Operations related to books in the catalog
+
+paths:
+  /books:
+    post:
+      tags:
+        - Books
+      summary: Add a new book to the catalog
+      description: This endpoint allows users to add a new book to the library catalog.
+      operationId: addBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - author
+                - published_date
+              properties:
+                title:
+                  type: string
+                  description: Title of the book
+                  example: "The Great Gatsby"
+                author:
+                  type: string
+                  description: Author of the book
+                  example: "F. Scott Fitzgerald"
+                published_date:
+                  type: string
+                  format: date
+                  description: Date when the book was published
+                  example: "1925-04-10"
+                isbn:
+                  type: string
+                  description: International Standard Book Number
+                  example: "9780743273565"
+                genre:
+                  type: string
+                  description: Genre of the book
+                  example: "Fiction"
+                summary:
+                  type: string
+                  description: Short summary of the book
+                  example: "A novel set in the 1920s that tells the story of Jay Gatsby's unrequited love for Daisy Buchanan."
+            examples:
+              bookExample1:
+                summary: Classic Literature
+                value:
+                  title: "To Kill a Mockingbird"
+                  author: "Harper Lee"
+                  published_date: "1960-07-11"
+                  isbn: "9780061120084"
+                  genre: "Fiction"
+                  summary: "A novel about the serious issues of rape and racial inequality."
+              bookExample2:
+                summary: Science Fiction
+                value:
+                  title: "Dune"
+                  author: "Frank Herbert"
+                  published_date: "1965-08-01"
+                  isbn: "9780441013593"
+                  genre: "Science Fiction"
+                  summary: "A science fiction novel about the complex and multilayered interactions of politics, religion, and ecology."
+              bookExample3:
+                summary: Mystery
+                value:
+                  title: "The Girl with the Dragon Tattoo"
+                  author: "Stieg Larsson"
+                  published_date: "2005-08-01"
+                  isbn: "9780307269751"
+                  genre: "Mystery"
+                  summary: "A mystery novel that involves the investigation of a wealthy family's secrets."
+      responses:
+        '201':
+          description: Book added successfully
+          headers:
+            Location:
+              description: URL to the newly created resource
+              schema:
+                type: string
+                format: uri
+                example: "https://api.example.com/v1/books/1"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier of the book
+                    example: "1"
+                  title:
+                    type: string
+                    description: Title of the book
+                    example: "The Great Gatsby"
+                  author:
+                    type: string
+                    description: Author of the book
+                    example: "F. Scott Fitzgerald"
+                  published_date:
+                    type: string
+                    format: date
+                    description: Date when the book was published
+                    example: "1925-04-10"
+                  isbn:
+                    type: string
+                    description: International Standard Book Number
+                    example: "9780743273565"
+                  genre:
+                    type: string
+                    description: Genre of the book
+                    example: "Fiction"
+                  summary:
+                    type: string
+                    description: Short summary of the book
+                    example: "A novel set in the 1920s that tells the story of Jay Gatsby's unrequited love for Daisy Buchanan."
+              examples:
+                successResponse1:
+                  summary: Classic Literature Added
+                  value:
+                    id: "1"
+                    title: "To Kill a Mockingbird"
+                    author: "Harper Lee"
+                    published_date: "1960-07-11"
+                    isbn: "9780061120084"
+                    genre: "Fiction"
+                    summary: "A novel about the serious issues of rape and racial inequality."
+                successResponse2:
+                  summary: Science Fiction Added
+                  value:
+                    id: "2"
+                    title: "Dune"
+                    author: "Frank Herbert"
+                    published_date: "1965-08-01"
+                    isbn: "9780441013593"
+                    genre: "Science Fiction"
+                    summary: "A science fiction novel about the complex and multilayered interactions of politics, religion, and ecology."
+                successResponse3:
+                  summary: Mystery Added
+                  value:
+                    id: "3"
+                    title: "The Girl with the Dragon Tattoo"
+                    author: "Stieg Larsson"
+                    published_date: "2005-08-01"
+                    isbn: "9780307269751"
+                    genre: "Mystery"
+                    summary: "A mystery novel that involves the investigation of a wealthy family's secrets."
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Invalid input data"
+              examples:
+                errorResponse1:
+                  summary: Missing Title
+                  value:
+                    error: "Title is required"
+                errorResponse2:
+                  summary: Invalid Date
+                  value:
+                    error: "Published date must be a valid date"
+                errorResponse3:
+                  summary: Empty Author
+                  value:
+                    error: "Author cannot be empty"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Internal server error"
+              examples:
+                errorResponse500:
+                  summary: Generic Server Error
+                  value:
+                    error: "Internal server error"
+
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the book
+          example: "1"
+        title:
+          type: string
+          description: Title of the book
+          example: "The Great Gatsby"
+        author:
+          type: string
+          description: Author of the book
+          example: "F. Scott Fitzgerald"
+        published_date:
+          type: string
+          format: date
+          description: Date when the book was published
+          example: "1925-04-10"
+        isbn:
+          type: string
+          description: International Standard Book Number
+          example: "9780743273565"
+        genre:
+          type: string
+          description: Genre of the book
+          example: "Fiction"
+        summary:
+          type: string
+          description: Short summary of the book
+          example: "A novel set in the 1920s that tells the story of Jay Gatsby's unrequited love for Daisy Buchanan."

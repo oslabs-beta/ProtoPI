@@ -1,0 +1,550 @@
+openapi: 3.0.1
+info:
+  title: Star Wars API
+  description: An API to manage information about the Star Wars movie franchise.
+  version: 1.0.0
+servers:
+  - url: https://api.starwars.com/v1
+paths:
+  /movies:
+    get:
+      summary: Get all movies
+      responses:
+        '200':
+          description: A list of Star Wars movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+    post:
+      summary: Add a new movie
+      requestBody:
+        description: Movie to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+      responses:
+        '201':
+          description: Movie added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+  /movies/{movieId}:
+    get:
+      summary: Get a movie by ID
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A Star Wars movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+    put:
+      summary: Update a movie by ID
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Movie data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Movie'
+      responses:
+        '200':
+          description: Movie updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+    delete:
+      summary: Delete a movie by ID
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Movie deleted
+
+  /characters:
+    get:
+      summary: Get all characters
+      responses:
+        '200':
+          description: A list of Star Wars characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Character'
+    post:
+      summary: Add a new character
+      requestBody:
+        description: Character to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Character'
+      responses:
+        '201':
+          description: Character added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+  /characters/{characterId}:
+    get:
+      summary: Get a character by ID
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A Star Wars character
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+    put:
+      summary: Update a character by ID
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Character data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Character'
+      responses:
+        '200':
+          description: Character updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+    delete:
+      summary: Delete a character by ID
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Character deleted
+
+  /planets:
+    get:
+      summary: Get all planets
+      responses:
+        '200':
+          description: A list of Star Wars planets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Planet'
+    post:
+      summary: Add a new planet
+      requestBody:
+        description: Planet to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Planet'
+      responses:
+        '201':
+          description: Planet added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Planet'
+  /planets/{planetId}:
+    get:
+      summary: Get a planet by ID
+      parameters:
+        - name: planetId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A Star Wars planet
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Planet'
+    put:
+      summary: Update a planet by ID
+      parameters:
+        - name: planetId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Planet data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Planet'
+      responses:
+        '200':
+          description: Planet updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Planet'
+    delete:
+      summary: Delete a planet by ID
+      parameters:
+        - name: planetId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Planet deleted
+
+  /starships:
+    get:
+      summary: Get all starships
+      responses:
+        '200':
+          description: A list of Star Wars starships
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Starship'
+    post:
+      summary: Add a new starship
+      requestBody:
+        description: Starship to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Starship'
+      responses:
+        '201':
+          description: Starship added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starship'
+  /starships/{starshipId}:
+    get:
+      summary: Get a starship by ID
+      parameters:
+        - name: starshipId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A Star Wars starship
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starship'
+    put:
+      summary: Update a starship by ID
+      parameters:
+        - name: starshipId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Starship data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Starship'
+      responses:
+        '200':
+          description: Starship updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Starship'
+    delete:
+      summary: Delete a starship by ID
+      parameters:
+        - name: starshipId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Starship deleted
+
+  /species:
+    get:
+      summary: Get all species
+      responses:
+        '200':
+          description: A list of Star Wars species
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Species'
+    post:
+      summary: Add a new species
+      requestBody:
+        description: Species to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Species'
+      responses:
+        '201':
+          description: Species added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Species'
+  /species/{speciesId}:
+    get:
+      summary: Get a species by ID
+      parameters:
+        - name: speciesId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A Star Wars species
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Species'
+    put:
+      summary: Update a species by ID
+      parameters:
+        - name: speciesId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Species data to update
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Species'
+      responses:
+        '200':
+          description: Species updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Species'
+    delete:
+      summary: Delete a species by ID
+      parameters:
+        - name: speciesId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Species deleted
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        releaseDate:
+          type: string
+          format: date
+        director:
+          type: string
+        producer:
+          type: string
+        episodeId:
+          type: integer
+        openingCrawl:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Character:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        gender:
+          type: string
+        birthYear:
+          type: string
+        eyeColor:
+          type: string
+        hairColor:
+          type: string
+        height:
+          type: string
+        mass:
+          type: string
+        homeworld:
+          type: string
+        species:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Planet:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        diameter:
+          type: string
+        rotationPeriod:
+          type: string
+        orbitalPeriod:
+          type: string
+        gravity:
+          type: string
+        population:
+          type: string
+        climate:
+          type: string
+        terrain:
+          type: string
+        surfaceWater:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Starship:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        model:
+          type: string
+        starshipClass:
+          type: string
+        manufacturer:
+          type: string
+        costInCredits:
+          type: string
+        length:
+          type: string
+        crew:
+          type: string
+        passengers:
+          type: string
+        maxAtmospheringSpeed:
+          type: string
+        hyperdriveRating:
+          type: string
+        MGLT:
+          type: string
+        cargoCapacity:
+          type: string
+        consumables:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    Species:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        classification:
+          type: string
+        designation:
+          type: string
+        averageHeight:
+          type: string
+        skinColors:
+          type: string
+        hairColors:
+          type: string
+        eyeColors:
+          type: string
+        averageLifespan:
+          type: string
+        homeworld:
+          type: string
+        language:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time

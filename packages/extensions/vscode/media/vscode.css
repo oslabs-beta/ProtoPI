@@ -89,3 +89,23 @@ input::placeholder,
 textarea::placeholder {
   color: var(--vscode-input-placeholderForeground);
 }
+
+.client-form-tabs {
+  display: flex;
+  cursor: pointer;
+}
+.client-form-tab {
+  padding: 1%;
+  border: 1px solid #ccc;
+  border-radius: 12px 2px 0px 0px;
+  border-bottom: none;
+  font-weight: 700;
+}
+.tab-active {
+  background-color: #5f6158;
+  border-top: 2px solid #007acc;
+}
+.tab-content {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
