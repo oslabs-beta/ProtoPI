@@ -81,7 +81,7 @@ export function activate(context: vscode.ExtensionContext) {
         statusBarItem.text = `$(stop) Stop Mock Server`;
         statusBarItem.command = statusBarCommandStop;
         statusBarItem.tooltip = `Click to stop mock server`;
-        statusBarItem.show()
+        statusBarItem.show();
 
 
       } else {
@@ -108,9 +108,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage("Mock server is stopped");
         // update status bar item:
         statusBarItem.text = `$(gear~spin) Start Mock Server`;
-        statusBarItem.tooltip = "Click to start mock server"
+        statusBarItem.tooltip = "Click to start mock server";
         statusBarItem.command = statusBarCommandStart;
-        statusBarItem.show()
+        statusBarItem.show();
 
       });
     })
