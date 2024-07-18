@@ -12,7 +12,7 @@ export interface SpecTreeDirectory {
 }
 
 export async function findSpecFiles(): Promise<vscode.Uri[]> {
-  const glob = "**/*.yml";
+  const glob = "**/*.yaml";
   const files = await vscode.workspace.findFiles(glob, "**/node_modules/**");
   return files;
 }
@@ -40,5 +40,3 @@ export function groupFilesByDirectory(
     files: dirMap[dir],
   }));
 }
-
-

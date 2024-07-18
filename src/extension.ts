@@ -8,23 +8,22 @@ import { HelloWorldPanel } from "./HelloWorldPanel";
 import { SidebarProvider } from "./SidebarProvider";
 import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
 
-// Prism binary from local extension
+// Fetch user's extension settings
+const config = vscode.workspace.getConfiguration("protopi");
 const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
-const prismPort = 3141;
-// const specPath = path.join(__dirname, "..", "examples", "spec.yaml");
-// const specURL =
-//   "https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml";
+const prismPort = config.get<number>("mockServer.port", 3141);
 
 let mockServer: ChildProcess | null = null;
 
-
-let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
+  vscode.StatusBarAlignment.Right,
+  100
+);
 
 export function activate(context: vscode.ExtensionContext) {
-  //
-  const statusBarCommandStart = 'ProtoPI.runPrismMock';
-  const statusBarCommandStop = 'ProtoPI.stopPrismMock';
-  
+  const statusBarCommandStart = "ProtoPI.runPrismMock";
+  const statusBarCommandStop = "ProtoPI.stopPrismMock";
+
   // Create and show the status bar item
   statusBarItem.text = `$(gear~spin) Start Mock Server`;
   statusBarItem.tooltip = "Click to start Mock Server";
@@ -34,8 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Add to context subscriptions for proper disposal
   context.subscriptions.push(statusBarItem);
 
-
-  // Creates mock server for first .yaml file found in workspace
+  // Creates mock server for first yaml file found in workspace
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.runPrismMock", async () => {
       if (mockServer) {
@@ -81,9 +79,7 @@ export function activate(context: vscode.ExtensionContext) {
         statusBarItem.text = `$(stop) Stop Mock Server`;
         statusBarItem.command = statusBarCommandStop;
         statusBarItem.tooltip = `Click to stop mock server`;
-        statusBarItem.show()
-
-
+        statusBarItem.show();
       } else {
         vscode.window.showErrorMessage("No file selected");
       }
@@ -108,10 +104,9 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showInformationMessage("Mock server is stopped");
         // update status bar item:
         statusBarItem.text = `$(gear~spin) Start Mock Server`;
-        statusBarItem.tooltip = "Click to start mock server"
+        statusBarItem.tooltip = "Click to start mock server";
         statusBarItem.command = statusBarCommandStart;
-        statusBarItem.show()
-
+        statusBarItem.show();
       });
     })
   );
@@ -158,7 +153,6 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-
   // Reload Side Panel Webview
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.refresh", async () => {
@@ -169,8 +163,17 @@ export function activate(context: vscode.ExtensionContext) {
     })
   );
 
-  statusBarItem.show();
+  // Open Extension Settings
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.openSettings", () => {
+      vscode.commands.executeCommand(
+        "workbench.action.openSettings",
+        "protopi"
+      );
+    })
+  );
 
+  statusBarItem.show();
 }
 
 // This method is called when your extension is deactivated
