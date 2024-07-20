@@ -1,10 +1,11 @@
 <!-- DisplayArea.svelte  (Tree View Data Input)
   Tree data input through here for Tree View Generation 
 -->
-<script>
-  import SidebarTabs from './SidebarTabs'
+<script lang='ts'>
+  import SidebarTabs from './SidebarTabs.svelte'
   // import MasterView from './views/MasterView.svelte';
-  import { displayState } from '../../stores/displayStore';
+  // import { displayState } from '../../stores/displayStore';
+  import type { TreeNode } from '../../types/types';
   import { 
     filteredTreeFilesData, 
   } from '../../stores/fileMgmt/viewDerivedStore';

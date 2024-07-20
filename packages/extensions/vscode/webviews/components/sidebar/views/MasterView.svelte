@@ -12,10 +12,11 @@
   import { displayState } from '../../../stores/displayStore';
 
 
-  import type { TreeNode } from '../../../stores/fileMgmt/tnodeStore';
+  import type { TreeNode } from '../../../types/types';
 
 
   let isSplit: boolean = false;
+  
   export let treeData: Writable<TreeNode[]>[];
 
   const leftData = writable<Writable<TreeNode[]>[]>([]);

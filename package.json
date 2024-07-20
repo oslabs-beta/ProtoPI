@@ -10,7 +10,7 @@
     "build": "yarn workspaces run build",
     "test": "yarn workspaces run test",
     "cleanup:yarn": "yarn cache clean",
-    "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' \\) -exec rm -f {} + && echo -n > yarn.lock && echo 'Cleanup completed!'",
+    "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
     "cleanup": "concurrently \"yarn cleanup:yarn\" \"yarn cleanup:files\" ",
     "empty:trash": "sudo rm -rf ~/.Trash/*",
     "wrkspc:ls": "yarn workspaces info | grep '\"location\"' | sed 's/.*: \\\"\\(.*\\)\\\",/\\1/'"

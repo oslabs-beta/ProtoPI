@@ -1,11 +1,16 @@
-<script>
+<script lang='ts'>
   import { activeTab } from '../../stores/tabStore.js';
-  import MasterView from './views/MasterView.svelte'
+  import MasterView from './views/MasterView.svelte';
+  import ResponsesView from './views/ResponsesView.svelte';
+  import RequestsView from './views/RequestsView.svelte';
+
   function setTab(tab) {
     activeTab.set(tab);
   }
+
   import SplitViewButton from './../asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
-    export let treeData = [] || [];
+  
+  export let treeData = [] || [];
 
   let isSplit = false; 
 
@@ -13,6 +18,7 @@
     isSplit = event.detail.isSplit;
     console.log('Split View state updated:', isSplit);
   }
+
 </script>
  
 
@@ -61,8 +67,10 @@
 
 <div>
   {#if $activeTab === 'Master'}
-    <MasterView 
-      {treeData} 
-    />
+    <MasterView {treeData} />
+  {:else if $activeTab === 'Requests'}
+    <RequestsView {treeData} />
+  {:else if $activeTab === 'Responses'}
+    <ResponsesView {treeData} />
   {/if}
 </div>

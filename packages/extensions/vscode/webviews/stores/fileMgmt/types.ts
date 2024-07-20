@@ -5,16 +5,16 @@
  *  Data Types for openStore.ts
  */
 
-export interface FileData {
-  name: string;
-  content: string;
-  hash?: string;
-  // isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
-}
+// export interface FileData {
+//   name: string;
+//   content: string;
+//   hash?: string;
+//   // isProcessed?: boolean; // INDICATES IF DATA HAS BEEN PROCESSED
+// }
 
-export interface FileDataMap {
-  [hash: string]: FileData;
-}
+// export interface FileDataMap {
+//   [hash: string]: FileData;
+// }
 
 
 /**

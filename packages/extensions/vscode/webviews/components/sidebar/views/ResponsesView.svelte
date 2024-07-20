@@ -1,10 +1,21 @@
-<script>
-  let filterText = '';
+<script lang='ts'>
+  import MasterTreeView from './MasterTreeView.svelte';
+  import type { TreeNode } from '../../../types/types';
+  export let treeData: TreeNode[] = [];
+
+  const isDevelopment = (import.meta.env.MODE === 'development');
+
 </script>
- 
+
 <div>
-  <input type="text" class="rounded-full px-2 py-1 border-2 border-dashed border-blue-500 focus:border-solid focus:border-blue-500 outline-none transition duration-200" bind:value={filterText} placeholder="Filter Resps ...">
-</div>
-<div class="h-80 overflow-y-auto bg-white p-2 border border-gray-300 mt-5">
-  <!-- Content filtered based on filterText --> 
+  {#if treeData && treeData.length > 0}
+    {#if isDevelopment}
+      <p>[DevMode] File opened ... RequestsView.svelte rendered ... </p>
+    {/if}
+    {#each treeData as node}
+      <MasterTreeView treeStore={node} />
+    {/each}
+  {:else}
+    <p class="text-white">Error parsing OpenAPI specification.</p>
+  {/if}
 </div>
