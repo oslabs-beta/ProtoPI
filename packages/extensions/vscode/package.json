@@ -104,6 +104,7 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "@tsconfig/svelte": "^5.0.4",
     "@types/crypto-js": "^4.2.2",
+    "@types/lodash": "^4.17.7",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
     "@types/sortablejs": "^1.15.8",

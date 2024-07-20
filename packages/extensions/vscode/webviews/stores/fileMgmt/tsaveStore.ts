@@ -1,6 +1,6 @@
-import { treeFilesData, type ITreeFileMap, type TreeNode } from './tnodeStore';
+import { treeFilesData, type TreeFileMap, type TreeNode } from './tnodeStore';
 
-treeFilesData.subscribe((value: ITreeFileMap) => {
+treeFilesData.subscribe((value: TreeFileMap) => {
   console.groupCollapsed('📚6️⃣📚 [tsaveStore.ts]  data in  (from tnodeStore)');
 
   console.groupCollapsed('Keys of Tree File Map (Entering)');
@@ -21,7 +21,7 @@ treeFilesData.subscribe((value: ITreeFileMap) => {
   console.groupEnd();
 });
 
-treeFilesData.subscribe((value: ITreeFileMap) => {
+treeFilesData.subscribe((value: TreeFileMap) => {
   console.groupCollapsed('📚7️⃣📚 [tsaveStore.ts]  data out  (to treefilterStore)');
 
   console.groupCollapsed('Keys of Tree File Map (Exiting)');

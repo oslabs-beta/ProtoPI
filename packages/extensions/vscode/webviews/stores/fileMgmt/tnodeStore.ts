@@ -18,6 +18,10 @@ export interface TreeNode {
   level: number;
 }
 
+export interface TreeFileMap {
+  [fileHash: string]: TreeNode[];
+}
+
 // Directly exporting treeFilesData
 export const treeFilesData: Writable<{[fileHash: string]: TreeNode[]}> = writable({});
 

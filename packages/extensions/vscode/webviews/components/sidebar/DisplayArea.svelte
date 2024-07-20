@@ -8,7 +8,7 @@
   import type { TreeNode } from '../../types/types';
   import { 
     filteredTreeFilesData, 
-  } from '../../stores/fileMgmt/viewDerivedStore';
+  } from '../../stores/fileMgmt/viewStoreInterface';
 
   let treeData = [] || [];
 

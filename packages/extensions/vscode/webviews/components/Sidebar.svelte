@@ -12,7 +12,7 @@
   // import SliderButton from './asset-library/buttons/ToOrganizeGeneralize/SliderButton.svelte';
   import {
     initDerivedStore 
-  } from '../stores/fileMgmt/viewDerivedStore'; // Import the filterCriteria store
+  } from '../stores/fileMgmt/viewStoreInterface'; // Import the filterCriteria store
   // import SplitViewButton from './asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
 
   let fileInput;

@@ -1,7 +1,7 @@
 // src/filters.ts
 
 import memoize from 'lodash/memoize';
-import type { TreeNode } from './../tnodeStore';
+import type { TreeNode } from './../../tnodeStore';
 import type { FilterType, FilterStatus } from './types';
 
 type FilterFunction = (nodes: TreeNode[], criteria?: string) => TreeNode[];

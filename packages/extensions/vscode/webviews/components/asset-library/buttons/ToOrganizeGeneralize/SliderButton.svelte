@@ -1,5 +1,5 @@
 <script>
-  import { filterCriteria } from '../../../../stores/fileMgmt/viewDerivedStore';
+  import { filterCriteria } from '../../../../stores/fileMgmt/viewStoreInterface';
   import { get } from 'svelte/store';
 
   export let filterType = '';
