@@ -7,7 +7,7 @@ import { ActiveFilterMap } from './activeFilterMap';
 import { filteredTreeFilesData } from './filteredTreeFilesData';
 
 export function initializeDebugging() {
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log('[viewStore] Initializing filterStatusMap...');
 
     const logState = (trigger: string) => {
@@ -33,5 +33,5 @@ export function initializeDebugging() {
     tsaveStore.subscribe(() => logState('tsaveStore'));
     ActiveFilterMap.subscribe(() => logState('ActiveFilterMap'));
     filteredTreeFilesData.subscribe(() => logState('filteredTreeFilesData'));
-  }
+  // }
 }

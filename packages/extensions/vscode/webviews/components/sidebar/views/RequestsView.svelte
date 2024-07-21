@@ -5,7 +5,8 @@
 
   export let treeData: TreeNode[] = [];
 
-  const isDevelopment: boolean = (import.meta.env.MODE === 'development');
+  // const isDevelopment: boolean = (import.meta.env.MODE === 'development');
+  const isDevelopment: boolean = true;
 
 </script>
 
@@ -18,6 +19,6 @@
       <MasterTreeView treeStore={node} />
     {/each}
   {:else}
-    <p class="text-white">Error parsing OpenAPI specification.</p>
+    <p class="text-white">[RequestsView] Open a file.  Or, if you tired, there's  maybe an error parsing OpenAPI specification.</p>
   {/if}
 </div>

@@ -154,7 +154,7 @@ export class Workshop {
     });
   }
 
-  private _getHtmlForWebview(webview: vscode.Webview) {
+  private _getHtmlForWebview(webview: vscode.Webview): string {
     // // And the uri we use to load this script in the webview
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "out/compiled", "Workshop.js")
@@ -190,7 +190,9 @@ export class Workshop {
         <link href="${stylesResetUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
         <script nonce="${nonce}">
-          const tsvscode = acquireVsCodeApi();
+
+          const vscode = acquireVsCodeApi();
+          window.vscode = vscode;
         </script>
 	    </head>
       <body>

@@ -19,12 +19,12 @@ let initializationCompleted = false;
 export const ActiveFilterMap = derived(
   [tsaveStore, filterCriteriaMap, filterStatusMap],
   ([$treeFilesData, $filterCriteriaMap, $filterStatusMap], set) => {
-    if (initializationCompleted && process.env.NODE_ENV === 'development') {
+    // if (initializationCompleted && process.env.NODE_ENV === 'development') {
       console.log("[ActiveFilterMap.ts] ActiveFilterMap derivation triggered");
       console.log("[ActiveFilterMap.ts] ActiveFilterMap data:", $treeFilesData, $filterCriteriaMap, $filterStatusMap);
       const { filterMap } = filterNodes($treeFilesData, $filterCriteriaMap, $filterStatusMap);
       set(filterMap);
-    }
+    // }
   }
 );
 

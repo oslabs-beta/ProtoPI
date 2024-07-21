@@ -18,9 +18,9 @@ export const filterStatusMap: Writable<FileFilterStatusMap> = writable(new Map()
 // Function to initialize the filter status map with data and filters.
 export function initFilterStatusMap(treeFilesData: TreeFileMap, filters: FilterType[]) {
   const statusMap: FileFilterStatusMap = new Map();
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log("[filterMaps.ts] Initializing Filter Status Map with:", treeFilesData, filters);
-  }
+  // }
 
   Object.keys(treeFilesData).forEach(fileHash => {
     const fileFilterMap = new Map<FilterType, { enabled: boolean }>();
@@ -31,7 +31,7 @@ export function initFilterStatusMap(treeFilesData: TreeFileMap, filters: FilterT
   });
 
   filterStatusMap.set(statusMap);
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log('[filterMaps.ts] filterStatusMap initialized:', get(filterStatusMap));
-  }
+  // }
 }

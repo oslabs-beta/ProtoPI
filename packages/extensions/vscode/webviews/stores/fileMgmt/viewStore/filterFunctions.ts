@@ -5,9 +5,9 @@ import { type TreeNode, type TreeFileMap } from './../tnodeStore';
 import { writable, type Writable } from 'svelte/store';
 
 export function filterNodes(treeFilesData: TreeFileMap, filterCriteriaMap: Map<string, string>, statusMap: FileFilterStatusMap) {
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log("[filterFunctions.ts] filterNodes called with:", treeFilesData, filterCriteriaMap, statusMap);
-  }
+  // }
   
   const filterMap = new Map<string, Map<string, TreeNode[]>>();
   const filteredData: Writable<TreeNode[]>[] = [];
@@ -39,9 +39,9 @@ export function filterNodes(treeFilesData: TreeFileMap, filterCriteriaMap: Map<s
     filteredData.push(filteredStore);
   });
 
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log("[filterFunctions.ts]  filterNodes result:", { filterMap, filteredData });
-  }
+  // }
 
   return { filterMap, filteredData };
 }

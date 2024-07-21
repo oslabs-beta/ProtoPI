@@ -19,12 +19,12 @@ let initializationCompleted = false;
 export const filteredTreeFilesData = derived(
   [tsaveStore, filterCriteriaMap, filterStatusMap],
   ([$treeFilesData, $filterCriteriaMap, $filterStatusMap], set) => {
-    if (initializationCompleted && process.env.NODE_ENV === 'development') {
+    // if (initializationCompleted && process.env.NODE_ENV === 'development') {
       console.log("[FilteredTreeFilesData.ts] filteredTreeFilesData derivation triggered");
       console.log("[FilteredTreeFilesData.ts] filteredTreeFilesData data:", $treeFilesData, $filterCriteriaMap, $filterStatusMap);
       const { filteredData } = filterNodes($treeFilesData, $filterCriteriaMap, $filterStatusMap);
       set(filteredData);
-    }
+    // }
   }
 );
 

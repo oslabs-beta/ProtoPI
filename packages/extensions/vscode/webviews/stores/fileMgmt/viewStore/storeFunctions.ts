@@ -19,15 +19,15 @@ import { initializeDebugging } from './_consoleLog';
  */
 
 export function initDerivedStore() {
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log("[storeFunctions.ts] Initializing Derived Store");
-  }
+  // }
   initFilterStatusMap(get(tsaveStore), filterManager.availableFilters as FilterType[]);
   setActiveFilterMapInitializationCompleted(true);
   setFilteredTreeFilesDataInitializationCompleted(true);
-  if (process.env.NODE_ENV === 'development') {
+  // if (process.env.NODE_ENV === 'development') {
     console.log("[storeFunctions.ts] Derived Store Initialization Completed");
-  }
+  // }
   // Trigger updates for derived stores
   filterCriteriaMap.update(value => value);
   filterStatusMap.update(value => value);
@@ -50,9 +50,9 @@ export function toggleFilter(fileHash: string, filterType: FilterType) {
       const currentStatus = fileStatusMap.get(filterType);
       if (currentStatus) {
         fileStatusMap.set(filterType, { enabled: !currentStatus.enabled });
-        if (process.env.NODE_ENV === 'development') {
+        // if (process.env.NODE_ENV === 'development') {
           console.log(`[storeFunctions.ts] Toggled filter: ${filterType} for fileHash: ${fileHash} to ${!currentStatus.enabled}`);
-        }
+        // }
       }
     }
     return statusMap;

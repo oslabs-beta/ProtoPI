@@ -52,7 +52,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     this._view = panel;
   }
 
-  private _getHtmlForWebview(webview: vscode.Webview) {
+  private _getHtmlForWebview(webview: vscode.Webview): string  {
     // uri to load script into webview
     const scriptUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Sidebar.js")
@@ -79,6 +79,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
 
+    // Prepare to inject environment variable
+    const nodeEnv = process.env.NODE_ENV || 'production';
+        
     return `<!DOCTYPE html>
 		<html lang="en">
 			<head>
@@ -94,7 +97,8 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
         <script nonce="${nonce}">
-          const tsvscode = acquireVsCodeApi();
+          const vscode = acquireVsCodeApi();
+          window.vscode = vscode;
         </script>
 			</head>
       <body>
