@@ -54,7 +54,7 @@
     const message = event.data;
     console.log("Message received in Sidebar:", message);
 
-    vscodeEventRouter(message, fileInput);    // CALL VSCODEMESSAGESROUTER TOHANDLE THE MESSAGE
+    vscodeEventRouter(message, fileInput);    // CALL VSCODEMESSAGESROUTER TO HANDLE THE MESSAGE
   })
 
   let actions = [
