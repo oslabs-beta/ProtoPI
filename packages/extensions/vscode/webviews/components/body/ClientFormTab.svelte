@@ -1,7 +1,7 @@
 <script>
   import { writable } from 'svelte/store';
-  let currentTab = writable('Test');
-  const tabs = ['Query', 'Headers', 'Auth', 'Body', 'Test'];
+  let currentTab = writable('Query');
+  const tabs = ['Query', 'Headers', 'Body', 'Test'];
 
   function changeTab(tab) {
     currentTab.set(tab);
@@ -23,30 +23,56 @@
 </div>
 <div class="tab-content">
   {#if $currentTab === 'Query'}
-    <div>
       <h2>Query</h2>
-      <input type="text" placeholder="Enter query parameters" />
+    <div class='form-field query'>
+      <input type="checkbox" class='input-cbox param-cbox' tabindex='-1' />
+      <input type="text" class='parameter1' placeholder="Parameter" />
+      <input type="text" class='value1' placeholder="Value" />
+    </div>
+    <div title="delete" class="icon-del icon-del-param disable-drop"></div>
+    
+    <div class='form-field query'>
+      <input type="checkbox" class='input-cbox param-cbox' tabindex='-1' />
+      <input type="text" class='parameter1' placeholder="Parameter" />
+      <input type="text" class='value1' placeholder="Value" />
+    </div>
+
+    <div class='form-field query'>
+      <input type="checkbox" class='input-cbox param-cbox' tabindex='-1' />
+      <input type="text" class='parameter1' placeholder="Parameter" />
+      <input type="text" class='value1' placeholder="Value" />
     </div>
   {/if}
 
   {#if $currentTab === 'Headers'}
-    <div>
-      <h2>Headers</h2>
-      <input type="text" placeholder="Enter headers" />
+
+     <h2>HTTP Headers</h2>
+    <div class='form-field headers'>
+      <input type="checkbox" class='input-cbox param-cbox' tabindex='-1' />
+      <input type="text" class='parameter1' placeholder="Header" />
+      <input type="text" class='value1' placeholder="Value" />
+    </div>
+    
+    <div class='form-field headers'>
+      <input type="checkbox" class='input-cbox param-cbox' tabindex='-1' />
+      <input type="text" class='parameter1' placeholder="Header" />
+      <input type="text" class='value1' placeholder="Value" />
+    </div>
+    
+    <div class='form-field headers'>
+      <input type="checkbox" class='input-cbox param-cbox' tabindex='-1' />
+      <input type="text" class='parameter1' placeholder="Header" />
+      <input type="text" class='value1' placeholder="Value" />
+
     </div>
   {/if}
 
-  {#if $currentTab === 'Auth'}
-    <div>
-      <h2>Auth</h2>
-      <input type="text" placeholder="Enter authentication details" />
-    </div>
-  {/if}
 
   {#if $currentTab === 'Body'}
-    <div>
-      <h2>Body</h2>
-      <input type="text" placeholder="Enter details" />
+    <div class="tab-content">
+      <h2>JSON</h2>
+      <textarea class='ace-text-input' wrap='off' autocorrect='off' 
+      ></textarea>
     </div>
   {/if}
 
@@ -54,7 +80,7 @@
     <div>
       <h2>Test</h2>
       <input type="text" placeholder="Enter test details" />
-      <button class="bg-blue-500 text-white p-2 rounded" on:click={() => console.log('Clicked Test Button ')}>Test</button
+      <button class="text-white p-2 rounded" on:click={() => console.log('Clicked Test Button ')}>Test</button
       >
     </div>
   {/if}
@@ -87,6 +113,6 @@
 .tab-content {
   border: 1px solid #ccc;
   padding: 10px;
-}
+} 
 
 </style>
