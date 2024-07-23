@@ -1,4 +1,4 @@
-<script>
+<!-- <script>
   import { writable } from 'svelte/store';
   import 'github-markdown-css/github-markdown.css';
   import { marked } from 'marked'; // Use named import
@@ -85,4 +85,4 @@
   button:hover {
     background-color: #0056b3;
   }
-</style>
+</style> -->

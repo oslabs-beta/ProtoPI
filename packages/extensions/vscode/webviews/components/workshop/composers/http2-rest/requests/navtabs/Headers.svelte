@@ -6,155 +6,122 @@
   export let active = false;
 
   // Sample data for demonstration
-  let headers = writable([
+  let queryParams = [
     { uid: 1, name: 'Content-Type', value: 'application/json', enabled: true },
     { uid: 2, name: 'Authorization', value: 'Bearer token', enabled: false }
-  ]);
+  ];
 
-  const addHeader = () => {
-    headers.update((headers) => [
-      ...headers,
-      { uid: Date.now(), name: '', value: '', enabled: true }
-    ]);
-  };
+  function handleAddParam(paramList, setter) {
+    const newId = paramList.length ? Math.max(...paramList.map(p => p.uid)) + 1 : 1;
+    setter([...paramList, { uid: newId, name: '', value: '', enabled: true }]);
+  }
 
-  const handleHeaderChange = (e, header, type) => {
-    headers.update((headers) =>
-      headers.map((h) => {
-        if (h.uid === header.uid) {
-          switch (type) {
-            case 'name':
-              h.name = e.target.value;
-              break;
-            case 'value':
-              h.value = e.target.value;
-              break;
-            case 'enabled':
-              h.enabled = e.target.checked;
-              break;
-          }
-        }
-        return h;
-      })
-    );
-  };
+  function handleRemoveParam(paramList, setter, uid) {
+    setter(paramList.filter(param => param.uid !== uid));
+  }
 
-  const removeHeader = (header) => {
-    headers.update((headers) => headers.filter((h) => h.uid !== header.uid));
-  };
+  function handleParamChange(param, key, event) {
+    param[key] = key === 'enabled' ? event.target.checked : event.target.value;
+  }
 </script>
 
-{#if active}
+<style>
+  .circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #007BFF;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    margin-right: 8px;
+  }
+  input[type="text"] {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .action-button, .icon-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: color 0.3s, background-color 0.3s;
+  }
+  .action-button:hover, .icon-button {
+    color: #ccc;
+    background-color: transparent;
+  }
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+</style>
+
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold my-4">Headers</h2>
   <div>
-    <h2>Headers</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <td class="name-column">Name</td>
-            <td class="value-column">Value</td>
-            <td class="enabled-column">Enabled</td>
-            <td class="no-border"></td>
-          </tr>
-        </thead>
-        <tbody>
-          {#each $headers as header}
-            <tr key={header.uid}>
-              <td class="name-column">
-                <input
-                  type="text"
-                  value={header.name}
-                  on:input={(e) => handleHeaderChange(e, header, 'name')}
-                  placeholder="Header Name"
-                />
-              </td>
-              <td class="value-column">
-                <input
-                  type="text"
-                  value={header.value}
-                  on:input={(e) => handleHeaderChange(e, header, 'value')}
-                  placeholder="Header Value"
-                />
-              </td>
-              <td class="enabled-column">
-                <input
-                  type="checkbox"
-                  checked={header.enabled}
-                  on:change={(e) => handleHeaderChange(e, header, 'enabled')}
-                />
-              </td>
-              <td class="trash-column">
-                <button on:click={() => removeHeader(header)}>
-                  <IconTrash strokeWidth={1.5} size={20} />
-                </button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-      <button class="add-button" on:click={addHeader}>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2 px-4 text-center"></th>
+          <th class="py-2 px-4 text-left">Name</th>
+          <th class="py-2 px-4 text-left">Value</th>
+          <th class="py-2 px-4 text-center">Enabled</th>
+          <th class="py-2 px-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each queryParams as param, index (param.uid)}
+        <tr class="border-b">
+          <td class="p-2 text-center">
+            <div class="circle">{index + 1}</div>
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a param" bind:value={param.name}
+                   on:input={(e) => handleParamChange(param, 'name', e)} />
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a value" bind:value={param.value}
+                   on:input={(e) => handleParamChange(param, 'value', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <input type="checkbox" class="align-middle" bind:checked={param.enabled}
+                   on:change={(e) => handleParamChange(param, 'enabled', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
+                    on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
+                    style="outline: none; box-shadow: none;">
+              <IconTrash strokeWidth={1.5} size={24} />
+            </button>
+          </td>
+        </tr>
+        {/each}
+      </tbody>
+    </table>
+    <div class="button-container ">
+      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hhover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+        on:click={() => handleAddParam(queryParams, (updated) => queryParams = updated)}
+        style="outline: none; box-shadow: none;">
         + Add Header
       </button>
     </div>
   </div>
-{/if}
 
-<style>
-  h2 {
-    margin-bottom: 10px;
-  }
-  .table-container {
-    max-width: 800px;
-    margin: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-  }
-  th, td {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-  }
-  .no-border {
-    border-top: none;
-    border-right: none;
-  }
-  .name-column {
-    width: 45%;
-  }
-  .value-column {
-    width: 45%;
-  }
-  .enabled-column {
-    width: 5%;
-    text-align: center;
-  }
-  .trash-column {
-    width: 5%;
-    text-align: center;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 0.25rem;
-    box-sizing: border-box;
-  }
-  button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  button:focus {
-    outline: none;
-  }
-  .flex {
-    display: flex;
-    align-items: center;
-  }
-  .items-center {
-    align-items: center;
-  }
-  .add-button {
-    margin-bottom: 2rem;
-  }
-</style>
+  
+</div>

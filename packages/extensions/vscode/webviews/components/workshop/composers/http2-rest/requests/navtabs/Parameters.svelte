@@ -1,7 +1,6 @@
 <script>
   import { IconTrash } from '@tabler/icons-svelte';
 
-  // Sample data for demonstration
   let queryParams = [
     { uid: 1, name: 'param1', value: 'value1', enabled: true },
     { uid: 2, name: 'param2', value: 'value2', enabled: false }
@@ -12,200 +11,165 @@
     { uid: 2, name: 'path2', value: 'value2', enabled: false }
   ];
 
-  const handleAddQueryParam = () => {
-    const newId = queryParams.length ? Math.max(...queryParams.map(p => p.uid)) + 1 : 1;
-    queryParams = [...queryParams, { uid: newId, name: '', value: '', enabled: true }];
-  };
+  function handleAddParam(paramList, setter) {
+    const newId = paramList.length ? Math.max(...paramList.map(p => p.uid)) + 1 : 1;
+    setter([...paramList, { uid: newId, name: '', value: '', enabled: true }]);
+  }
 
-  const handleRemoveQueryParam = (param) => {
-    queryParams = queryParams.filter(p => p.uid !== param.uid);
-  };
+  function handleRemoveParam(paramList, setter, uid) {
+    setter(paramList.filter(param => param.uid !== uid));
+  }
 
-  const handleQueryParamChange = (e, param, key) => {
-    param[key] = key === 'enabled' ? e.target.checked : e.target.value;
-    queryParams = [...queryParams];
-  };
-
-  const handleAddPathParam = () => {
-    const newId = pathParams.length ? Math.max(...pathParams.map(p => p.uid)) + 1 : 1;
-    pathParams = [...pathParams, { uid: newId, name: '', value: '', enabled: true }];
-  };
-
-  const handleRemovePathParam = (param) => {
-    pathParams = pathParams.filter(p => p.uid !== param.uid);
-  };
-
-  const handlePathParamChange = (e, param, key) => {
-    param[key] = key === 'enabled' ? e.target.checked : e.target.value;
-    pathParams = [...pathParams];
-  };
+  function handleParamChange(param, key, event) {
+    param[key] = key === 'enabled' ? event.target.checked : event.target.value;
+  }
 </script>
 
-{#if true} <!-- Replace with actual condition for showing this section -->
-  <div>
-    <h2>Query Parameters</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <td class="name-column">Name</td>
-            <td class="value-column">Value</td>
-            <td class="enabled-column">Enabled</td>
-            <td class="no-border"></td>
-          </tr>
-        </thead>
-        <tbody>
-          {#each queryParams as param}
-            <tr key={param.uid}>
-              <td class="name-column">
-                <input
-                  type="text"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck="false"
-                  value={param.name}
-                  on:input={(e) => handleQueryParamChange(e, param, 'name')}
-                />
-              </td>
-              <td class="value-column">
-                <input
-                  type="text"
-                  value={param.value}
-                  on:input={(e) => handleQueryParamChange(e, param, 'value')}
-                />
-              </td>
-              <td class="enabled-column">
-                <input
-                  type="checkbox"
-                  checked={param.enabled}
-                  on:change={(e) => handleQueryParamChange(e, param, 'enabled')}
-                />
-              </td>
-              <td class="trash-column">
-                <button on:click={() => handleRemoveQueryParam(param)}>
-                  <IconTrash strokeWidth={1.5} size={20} />
-                </button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-      <button class="add-button" on:click={handleAddQueryParam}>
-        + <span>Add Param</span>
-      </button>
-    </div>
+<style>
+  .circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #007BFF;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    margin-right: 8px;
+  }
+  input[type="text"] {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .action-button, .icon-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: color 0.3s, background-color 0.3s;
+  }
+  .action-button:hover, .icon-button {
+    color: #ccc;
+    background-color: transparent;
+  }
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+</style>
 
-    <h2>Path Parameters</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <td class="name-column">Name</td>
-            <td class="value-column">Value</td>
-            <td class="enabled-column">Enabled</td>
-            <td class="no-border"></td>
-          </tr>
-        </thead>
-        <tbody>
-          {#each pathParams as param}
-            <tr key={param.uid}>
-              <td class="name-column">
-                <input
-                  type="text"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  autoCapitalize="off"
-                  spellCheck="false"
-                  value={param.name}
-                  readonly
-                />
-              </td>
-              <td class="value-column">
-                <input
-                  type="text"
-                  value={param.value}
-                  on:input={(e) => handlePathParamChange(e, param, 'value')}
-                />
-              </td>
-              <td class="enabled-column">
-                <input
-                  type="checkbox"
-                  checked={param.enabled}
-                  on:change={(e) => handlePathParamChange(e, param, 'enabled')}
-                />
-              </td>
-              <td class="trash-column">
-                <button on:click={() => handleRemovePathParam(param)}>
-                  <IconTrash strokeWidth={1.5} size={20} />
-                </button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-      <button class="add-button" on:click={handleAddPathParam}>
-        + <span>Add Path</span>
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold my-4">Query Parameters</h2>
+  <div>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2 px-4 text-center"></th>
+          <th class="py-2 px-4 text-left">Name</th>
+          <th class="py-2 px-4 text-left">Value</th>
+          <th class="py-2 px-4 text-center">Enabled</th>
+          <th class="py-2 px-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each queryParams as param, index (param.uid)}
+        <tr class="border-b">
+          <td class="p-2 text-center">
+            <div class="circle">{index + 1}</div>
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a param" bind:value={param.name}
+                   on:input={(e) => handleParamChange(param, 'name', e)} />
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a value" bind:value={param.value}
+                   on:input={(e) => handleParamChange(param, 'value', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <input type="checkbox" class="align-middle" bind:checked={param.enabled}
+                   on:change={(e) => handleParamChange(param, 'enabled', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
+                    on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
+                    style="outline: none; box-shadow: none;">
+              <IconTrash strokeWidth={1.5} size={24} />
+            </button>
+          </td>
+        </tr>
+        {/each}
+      </tbody>
+    </table>
+    <div class="button-container">
+      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hhover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+        on:click={() => handleAddParam(queryParams, (updated) => queryParams = updated)}
+        style="outline: none; box-shadow: none;">
+        + Add Query Param
       </button>
     </div>
   </div>
-{/if}
 
-<style>
-  .flex {
-    display: flex;
-  }
-  .items-center {
-    align-items: center;
-  }
-  .table-container {
-    max-width: 800px;
-    margin: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-  }
-  th, td {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-  }
-  .no-border {
-    border-top: none;
-    border-right: none;
-  }
-  .name-column {
-    width: 45%;
-  }
-  .value-column {
-    width: 45%;
-  }
-  .enabled-column {
-    width: 5%;
-    text-align: center;
-  }
-  .trash-column {
-    width: 5%;
-    text-align: center;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 0.25rem;
-    box-sizing: border-box;
-    color: black;  /* Ensure text color is visible */
-    background-color: white;  /* Ensure background color is visible */
-    border: 1px solid #ccc;  /* Add border for better visibility */
-  }
-  button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  button:focus {
-    outline: none;
-  }
-  .add-button {
-    margin-bottom: 2rem;
-  }
-</style>
+  <h2 class="text-2xl font-semibold my-4">Path Parameters</h2>
+  <div>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2 px-4 text-center"></th>
+          <th class="py-2 px-4 text-left">Name</th>
+          <th class="py-2 px-4 text-left">Value</th>
+          <th class="py-2 px-4 text-center">Enabled</th>
+          <th class="py-2 px-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each pathParams as param, index (param.uid)}
+        <tr class="border-b">
+          <td class="p-2 text-center">
+            <div class="circle">{index + 1}</div>
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a path" bind:value={param.name}
+                   on:input={(e) => handleParamChange(param, 'name', e)} />
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a value" bind:value={param.value}
+                   on:input={(e) => handleParamChange(param, 'value', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <input type="checkbox" class="align-middle" bind:checked={param.enabled}
+                   on:change={(e) => handleParamChange(param, 'enabled', e)} />
+          </td>
+          <td class="p-2 text-center ">
+            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
+                    on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
+                    style="outline: none; box-shadow: none;">
+              <IconTrash strokeWidth={1.5} size={24} />
+            </button>
+          </td>
+        </tr>
+        {/each}
+      </tbody>
+    </table>
+    <div class="button-container">
+      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+              on:click={() => handleAddParam(pathParams, (updated) => pathParams = updated)}
+              style="outline: none; box-shadow: none;">
+        + Add Path Param
+      </button>
+    </div>
+  </div>
+</div>

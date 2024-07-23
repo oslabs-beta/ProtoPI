@@ -1,239 +1,175 @@
 <script>
-  import { onMount } from 'svelte';
-  import { writable } from 'svelte/store';
   import { IconTrash } from '@tabler/icons-svelte';
 
-  export let active = false;
-  
-  // Sample data for demonstration
-  let requestVars = writable([
+  let queryParams = [
     { uid: 1, name: 'var1', value: 'value1', enabled: true },
     { uid: 2, name: 'var2', value: 'value2', enabled: false }
-  ]);
+  ];
 
-  let responseVars = writable([
-    { uid: 1, name: 'resVar1', value: 'responseValue1', enabled: true },
-    { uid: 2, name: 'resVar2', value: 'responseValue2', enabled: false }
-  ]);
+  let pathParams = [
+    { uid: 1, name: 'resVar1', value: 'value1', enabled: true },
+    { uid: 2, name: 'resVar2', value: 'value2', enabled: false }
+  ];
 
-  const handleAddVar = (varType) => {
-    if (varType === 'request') {
-      requestVars.update(vars => [...vars, { uid: Date.now(), name: '', value: '', enabled: true }]);
-    } else {
-      responseVars.update(vars => [...vars, { uid: Date.now(), name: '', value: '', enabled: true }]);
-    }
-  };
+  function handleAddParam(paramList, setter) {
+    const newId = paramList.length ? Math.max(...paramList.map(p => p.uid)) + 1 : 1;
+    setter([...paramList, { uid: newId, name: '', value: '', enabled: true }]);
+  }
 
-  const handleVarChange = (e, v, type, varType) => {
-    if (varType === 'request') {
-      requestVars.update(vars =>
-        vars.map(_var => {
-          if (_var.uid === v.uid) {
-            switch (type) {
-              case 'name':
-                _var.name = e.target.value;
-                break;
-              case 'value':
-                _var.value = e.target.value;
-                break;
-              case 'enabled':
-                _var.enabled = e.target.checked;
-                break;
-            }
-          }
-          return _var;
-        })
-      );
-    } else {
-      responseVars.update(vars =>
-        vars.map(_var => {
-          if (_var.uid === v.uid) {
-            switch (type) {
-              case 'name':
-                _var.name = e.target.value;
-                break;
-              case 'value':
-                _var.value = e.target.value;
-                break;
-              case 'enabled':
-                _var.enabled = e.target.checked;
-                break;
-            }
-          }
-          return _var;
-        })
-      );
-    }
-  };
+  function handleRemoveParam(paramList, setter, uid) {
+    setter(paramList.filter(param => param.uid !== uid));
+  }
 
-  const handleRemoveVar = (_var, varType) => {
-    if (varType === 'request') {
-      requestVars.update(vars => vars.filter(v => v.uid !== _var.uid));
-    } else {
-      responseVars.update(vars => vars.filter(v => v.uid !== _var.uid));
-    }
-  };
+  function handleParamChange(param, key, event) {
+    param[key] = key === 'enabled' ? event.target.checked : event.target.value;
+  }
 </script>
 
-{#if active}
-  <div>
-    <h2>Pre Request Vars</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <td class="name-column">Name</td>
-            <td class="value-column">Value</td>
-            <td class="enabled-column">Enabled</td>
-            <td class="no-border"></td>
-          </tr>
-        </thead>
-        <tbody>
-          {#each $requestVars as _var}
-            <tr key={_var.uid}>
-              <td class="name-column">
-                <input
-                  type="text"
-                  value={_var.name}
-                  on:input={(e) => handleVarChange(e, _var, 'name', 'request')}
-                  placeholder="Variable Name"
-                />
-              </td>
-              <td class="value-column">
-                <input
-                  type="text"
-                  value={_var.value}
-                  on:input={(e) => handleVarChange(e, _var, 'value', 'request')}
-                  placeholder="Variable Value"
-                />
-              </td>
-              <td class="enabled-column">
-                <input
-                  type="checkbox"
-                  checked={_var.enabled}
-                  on:change={(e) => handleVarChange(e, _var, 'enabled', 'request')}
-                />
-              </td>
-              <td class="trash-column">
-                <button on:click={() => handleRemoveVar(_var, 'request')}>
-                  <IconTrash strokeWidth={1.5} size={20} />
-                </button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-      <button class="add-button" on:click={() => handleAddVar('request')}>
-        + Add
-      </button>
-    </div>
+<style>
+  .circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #007BFF;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    margin-right: 8px;
+  }
+  input[type="text"] {
+    width: 95%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  .action-button, .icon-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-weight: bold;
+    transition: color 0.3s, background-color 0.3s;
+  }
+  .action-button:hover, .icon-button {
+    color: #ccc;
+    background-color: transparent;
+  }
+  .icon-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+  }
+</style>
 
-    <h2>Post Response Vars</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <td class="name-column">Name</td>
-            <td class="value-column">Value</td>
-            <td class="enabled-column">Enabled</td>
-            <td class="no-border"></td>
-          </tr>
-        </thead>
-        <tbody>
-          {#each $responseVars as _var}
-            <tr key={_var.uid}>
-              <td class="name-column">
-                <input
-                  type="text"
-                  value={_var.name}
-                  on:input={(e) => handleVarChange(e, _var, 'name', 'response')}
-                  placeholder="Variable Name"
-                />
-              </td>
-              <td class="value-column">
-                <input
-                  type="text"
-                  value={_var.value}
-                  on:input={(e) => handleVarChange(e, _var, 'value', 'response')}
-                  placeholder="Variable Value"
-                />
-              </td>
-              <td class="enabled-column">
-                <input
-                  type="checkbox"
-                  checked={_var.enabled}
-                  on:change={(e) => handleVarChange(e, _var, 'enabled', 'response')}
-                />
-              </td>
-              <td class="trash-column">
-                <button on:click={() => handleRemoveVar(_var, 'response')}>
-                  <IconTrash strokeWidth={1.5} size={20} />
-                </button>
-              </td>
-            </tr>
-          {/each}
-        </tbody>
-      </table>
-      <button class="add-button" on:click={() => handleAddVar('response')}>
-        + Add
+<div class="max-w-4xl mx-auto">
+  <h2 class="text-2xl font-semibold my-4">Pre Request Vars</h2>
+  <div>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2 px-4 text-center"></th>
+          <th class="py-2 px-4 text-left">Name</th>
+          <th class="py-2 px-4 text-left">Value</th>
+          <th class="py-2 px-4 text-center">Enabled</th>
+          <th class="py-2 px-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each queryParams as param, index (param.uid)}
+        <tr class="border-b">
+          <td class="p-2 text-center">
+            <div class="circle">{index + 1}</div>
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a param" bind:value={param.name}
+                   on:input={(e) => handleParamChange(param, 'name', e)} />
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a value" bind:value={param.value}
+                   on:input={(e) => handleParamChange(param, 'value', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <input type="checkbox" class="align-middle" bind:checked={param.enabled}
+                   on:change={(e) => handleParamChange(param, 'enabled', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
+                    on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
+                    style="outline: none; box-shadow: none;">
+              <IconTrash strokeWidth={1.5} size={24} />
+            </button>
+          </td>
+        </tr>
+        {/each}
+      </tbody>
+    </table>
+    <div class="button-container">
+      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+        on:click={() => handleAddParam(queryParams, (updated) => queryParams = updated)}
+        style="outline: none; box-shadow: none;">
+        + Add Pre Request Var
       </button>
     </div>
   </div>
-{/if}
 
-<style>
-  h2 {
-    margin-bottom: 10px;
-  }
-  .table-container {
-    max-width: 800px;
-    margin: auto;
-  }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1rem;
-  }
-  th, td {
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-  }
-  .no-border {
-    border-top: none;
-    border-right: none;
-  }
-  .name-column {
-    width: 45%;
-  }
-  .value-column {
-    width: 45%;
-  }
-  .enabled-column {
-    width: 5%;
-    text-align: center;
-  }
-  .trash-column {
-    width: 5%;
-    text-align: center;
-  }
-  input[type="text"] {
-    width: 100%;
-    padding: 0.25rem;
-    box-sizing: border-box;
-  }
-  button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
-  button:focus {
-    outline: none;
-  }
-  .flex {
-    display: flex;
-    align-items: center;
-  }
-  .add-button {
-    margin-bottom: 2rem;
-  }
-</style>
+  <h2 class="text-2xl font-semibold my-4">Post Response Vars</h2>
+  <div>
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="border-b">
+          <th class="py-2 px-4 text-center"></th>
+          <th class="py-2 px-4 text-left">Name</th>
+          <th class="py-2 px-4 text-left">Value</th>
+          <th class="py-2 px-4 text-center">Enabled</th>
+          <th class="py-2 px-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {#each pathParams as param, index (param.uid)}
+        <tr class="border-b">
+          <td class="p-2 text-center">
+            <div class="circle">{index + 1}</div>
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a path" bind:value={param.name}
+                   on:input={(e) => handleParamChange(param, 'name', e)} />
+          </td>
+          <td class="p-2">
+            <input type="text" class="w-full p-1 border rounded text-black bg-white" placeholder="Enter a value" bind:value={param.value}
+                   on:input={(e) => handleParamChange(param, 'value', e)} />
+          </td>
+          <td class="p-2 text-center">
+            <input type="checkbox" class="align-middle" bind:checked={param.enabled}
+                   on:change={(e) => handleParamChange(param, 'enabled', e)} />
+          </td>
+          <td class="p-2 text-center ">
+            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
+                    on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
+                    style="outline: none; box-shadow: none;">
+              <IconTrash strokeWidth={1.5} size={24} />
+            </button>
+          </td>
+        </tr>
+        {/each}
+      </tbody>
+    </table>
+    <div class="button-container">
+      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+      on:click={() => handleAddParam(pathParams, (updated) => pathParams = updated)}
+      style="outline: none; box-shadow: none;">
+      + Add Pre Request Var
+     </button>
+    </div>
+  </div>
+</div>

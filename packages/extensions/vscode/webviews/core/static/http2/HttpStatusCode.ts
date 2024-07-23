@@ -1,9 +1,6 @@
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-interface HttpStatusCode {
-  [code: number]: string;
-}
-
-const httpStatusCode = {
+// Define all HTTP status codes and descriptions in one place using const assertion
+const VALID_STATUS_CODES = {
   100: 'Continue',
   101: 'Switching Protocols',
   102: 'Processing',
@@ -70,6 +67,13 @@ const httpStatusCode = {
   511: 'Network Authentication Required',
   598: 'Network read timeout error', // Unofficial
   599: 'Network connect timeout error' // Unofficial
-};
+} as const; // Const assertion helps TypeScript infer literal types
 
-export default httpStatusCode;
+// Derive the HttpStatusCode type directly from the const object
+type HttpStatusCode = typeof VALID_STATUS_CODES;
+
+// Optionally, you can define a type for just the keys if needed elsewhere
+type ValidStatusCode = keyof HttpStatusCode;
+
+// Export the VALID_STATUS_CODES object
+export default VALID_STATUS_CODES;

@@ -92,7 +92,8 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
-    "cleanup": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f -name 'yarn.lock' -exec sh -c '> {}' \\; && echo 'Cleanup completed!'"
+    "cleanup:files": "cd ../../.. && yarn run cleanup:files",
+    "cleanup:yarn": "cd ../../.. && yarn run cleanup:yarn"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
