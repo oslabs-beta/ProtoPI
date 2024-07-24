@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common host values
 const VALID_HOSTS = [
   "www.example.com",

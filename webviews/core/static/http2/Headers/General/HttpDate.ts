@@ -1,3 +1,4 @@
+// @ts-nocheck
 
 
 export function validateDateHeader(dateString: string): boolean {

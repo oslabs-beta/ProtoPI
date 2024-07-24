@@ -3,8 +3,6 @@
   import { writable } from 'svelte/store';
   import { IconTrash } from '@tabler/icons-svelte';
 
-  export let active = false;
-
   // Sample data for demonstration
   let queryParams = [
     { uid: 1, name: 'Content-Type', value: 'application/json', enabled: true },
@@ -48,27 +46,6 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
-  }
-  .action-button, .icon-button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: color 0.3s, background-color 0.3s;
-  }
-  .action-button:hover, .icon-button {
-    color: #ccc;
-    background-color: transparent;
-  }
-  .icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
   }
 </style>
 

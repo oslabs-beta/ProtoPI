@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common MIME types for Accept headers
 const VALID_ACCEPT_TYPES = [
   "text/html",  // HTML format

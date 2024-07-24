@@ -55,6 +55,7 @@ module.exports = fs
           tsconfig: "webviews/tsconfig.json",
           sourceMap: !production,
           inlineSources: !production,
+          exclude: ["node_modules", "**/__tests__/**"],
         }),
 
         // In dev mode, call `npm run start` once

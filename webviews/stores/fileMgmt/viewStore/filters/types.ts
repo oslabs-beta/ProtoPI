@@ -1,6 +1,6 @@
 // src/types.ts
 
-import type { TreeNode } from './../tnodeStore';
+import type { TreeNode } from './../../tnodeStore';
 
 export type FilterType = 'contains' | 'paths' | 'servers' | 'components';
 

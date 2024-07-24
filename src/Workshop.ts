@@ -184,7 +184,7 @@ export class Workshop {
 			    Use a content security policy to only allow loading images from https or from our extension directory,
 			    and only allow scripts that have a specific nonce.
         -->
-        <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
+        <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'unsafe-eval' 'nonce-${nonce}';">
 		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${cssUri}" rel="stylesheet">
         <link href="${stylesResetUri}" rel="stylesheet">

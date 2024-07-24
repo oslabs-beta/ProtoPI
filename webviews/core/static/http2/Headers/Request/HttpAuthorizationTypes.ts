@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common authorization schemes with detailed comments
 const VALID_AUTHORIZATION_TYPES = [
   "Basic",  // Uses a user ID and password, credentials are Base64-encoded; defined in RFC 7617

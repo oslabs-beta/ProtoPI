@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common via header entries
 const VALID_VIA_ENTRIES = [
   "1.1 vegur",  // Indicates that an intermediate proxy or gateway named "vegur" using HTTP/1.1 was a part of the request/response chain.

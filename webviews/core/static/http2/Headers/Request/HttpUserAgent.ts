@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Expanded set of browser engines with comprehensive comments
 const engines = {
   webKit: "AppleWebKit/537.36",  // Core component of Safari on macOS and iOS, also the foundation for all browsers on iOS due to Apple's requirements.

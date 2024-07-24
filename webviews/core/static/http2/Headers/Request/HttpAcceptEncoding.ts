@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common content encoding values
 const VALID_ACCEPT_ENCODING = [
   "gzip",

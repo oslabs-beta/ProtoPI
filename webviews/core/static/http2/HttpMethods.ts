@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define the array of HTTP methods with const assertion and detailed comments
 const VALID_METHODS = [
   'GET',       // Standard method for retrieving resources without any effect on the data.

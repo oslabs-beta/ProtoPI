@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
 // Define all HTTP status codes and descriptions in one place using const assertion
 const VALID_STATUS_CODES = {

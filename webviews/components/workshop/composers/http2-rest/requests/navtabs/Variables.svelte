@@ -49,27 +49,6 @@
     justify-content: center;
     margin-top: 20px;
   }
-  .action-button, .icon-button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: color 0.3s, background-color 0.3s;
-  }
-  .action-button:hover, .icon-button {
-    color: #ccc;
-    background-color: transparent;
-  }
-  .icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-  }
 </style>
 
 <div class="max-w-4xl mx-auto">

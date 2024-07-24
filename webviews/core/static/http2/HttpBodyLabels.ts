@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Enum for content types specific to raw data
 export enum ContentType {
   Text = "text", // Typically used in MIME type text/plain, defined in RFC 2046

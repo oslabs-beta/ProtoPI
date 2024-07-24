@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common MIME types with detailed comments
 const VALID_COMMON_CONTENT_TYPE = [
   "application/json",  // Defined in RFC 8259

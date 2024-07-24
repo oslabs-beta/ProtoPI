@@ -73,16 +73,21 @@ import { openFilesData, addFile  } from '../../../stores/fileMgmt/openStore';
     }
   }
 
-  export function handleFileChange(event) {
-    const files = event.target.files;
-    if (files.length > 0) {
+  export function handleFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+    
+    if (files && files.length > 0) {
       Array.from(files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = (e) => {
-          addFile({ name: file.name, content: e.target.result as string});
-          initDerivedStore();
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          if (e.target) {
+            addFile({ name: file.name, content: e.target.result as string });
+            initDerivedStore();
+          }
         };
-        reader.readAsText(file);
+        reader.readAsText(file as Blob);
       });
     }
   }
+  

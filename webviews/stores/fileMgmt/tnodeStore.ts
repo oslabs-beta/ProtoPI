@@ -71,26 +71,27 @@ parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
   if (parsedFiles && typeof parsedFiles === 'object') {
     console.groupCollapsed('📚4️⃣📚 [tnodeStore.ts] data in (from parsedStore)');
 
-    const treeData: {[fileHash: string]: Writable<TreeNode[]>} = Object.entries(parsedFiles).reduce((acc, [fileHash, file]: [string, ParsedFileData]) => {
+    const treeData: {[fileHash: string]: TreeNode[]} = Object.entries(parsedFiles).reduce((acc, [fileHash, file]: [string, ParsedFileData]) => {
       console.groupCollapsed(`File Name: ${file.name}`);
       console.log('Hash:', fileHash);
 
       const treeStore: Writable<TreeNode[]> = createTreeStore(file.content, fileHash, file.name);
 
-      treeStore.subscribe((storeValue: TreeNode[]) => {
-        acc[fileHash] = storeValue;
-      });
+      let storeValue: TreeNode[] = [];
+      treeStore.subscribe((value: TreeNode[]) => {
+        storeValue = value;
+      })();
+
+      acc[fileHash] = storeValue;
 
       console.groupCollapsed('Tree Store Content (navigable structure):');
-      treeStore.subscribe((storeValue: TreeNode[]) => {
-        console.dir(storeValue, { depth: null });
-      });
+      console.dir(storeValue, { depth: null });
       console.groupEnd();
 
       console.groupEnd();
 
       return acc;
-    }, {} as {[fileHash: string]: Writable<TreeNode[]>});
+    }, {} as {[fileHash: string]: TreeNode[]});
 
     treeFilesData.set(treeData);
     console.groupEnd();

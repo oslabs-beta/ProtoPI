@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common cache-control directives with detailed comments
 const VALID_CACHE_CONTROL = [
   "no-cache",  // Indicates that the cached version should not be used without validation

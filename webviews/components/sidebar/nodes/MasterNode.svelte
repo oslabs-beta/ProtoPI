@@ -139,7 +139,7 @@
     line-height: 1.5em; /* Ensure proper vertical alignment */
     flex-shrink: 0; /* Prevent resizing */
   }
-  .icon .icon-img.fixed-size-icon {
+  .icon-img.fixed-size-icon {
     width: 12px !important; /* Adjust width as needed */
     height: 12px !important; /* Adjust height as needed */
     flex-shrink: 0; /* Prevent resizing */

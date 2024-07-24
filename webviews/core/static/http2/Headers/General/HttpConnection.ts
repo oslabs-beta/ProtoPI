@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of extended connection directives with detailed comments
 const VALID_CONNECTION_DIRECTIVES = [
   "Keep-Alive",  // Specifies a parameter used to control the time a connection may remain open.

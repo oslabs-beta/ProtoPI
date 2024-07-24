@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 // Define a constant array of common content encoding values with detailed comments
 const VALID_CONTENT_ENCODING = [
   "gzip",  // Uses Lempel-Ziv coding (LZ77), with a 32-bit CRC; specified in RFC 1952

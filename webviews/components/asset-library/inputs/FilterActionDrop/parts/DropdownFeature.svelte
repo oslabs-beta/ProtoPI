@@ -3,7 +3,6 @@
   export let selectedOption = '';
   export let showDropdown = false;
   export let onOptionSelect;
-  export let editButton = false;
 
   function selectOption(option) {
     selectedOption = option.label;
