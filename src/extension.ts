@@ -8,14 +8,15 @@ import * as vscode from "vscode";
 import { Workshop } from "./Workshop";
 
 import { SidebarProvider } from "./SidebarProvider";
-import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
+import {
+  findSpecFiles,
+  groupFilesByDirectory,
+  updateOpenAPIFiles,
+} from "./parseWorkspace";
 
 // Prism binary from local extension
 const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
 const prismPort = 3141;
-// const specPath = path.join(__dirname, "..", "examples", "spec.yaml");
-// const specURL =
-//   "https://raw.githack.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore-expanded.yaml";
 
 let mockServer: ChildProcess | null = null;
 
@@ -25,14 +26,19 @@ let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
 );
 
 export function activate(context: vscode.ExtensionContext) {
-  //
-  const statusBarCommandStart = "ProtoPI.runPrismMock";
-  const statusBarCommandStop = "ProtoPI.stopPrismMock";
+  // Update openAPIFiles workspace state
+  updateOpenAPIFiles(context).then((files) => {
+    console.log("OpenAPI Files loaded into extension state");
+    sidebarProvider._view?.webview.postMessage({
+      type: "openAPIFiles",
+      content: files,
+    });
+  });
 
   // Create and show the status bar item
   statusBarItem.text = `$(gear~spin) Start Mock Server`;
   statusBarItem.tooltip = "Click to start Mock Server";
-  statusBarItem.command = statusBarCommandStart;
+  statusBarItem.command = "ProtoPI.runPrismMock";
   statusBarItem.show();
 
   // Add to context subscriptions for proper disposal
@@ -47,7 +53,9 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       // Store all possible API Spec Files
-      const files = await findSpecFiles();
+      const files = (await context.workspaceState.get(
+        "openAPIFiles"
+      )) as vscode.Uri[];
 
       // Map files for quick selection
       const fileItems = files.map((file) => ({
@@ -82,7 +90,7 @@ export function activate(context: vscode.ExtensionContext) {
         // update the status bar item:
 
         statusBarItem.text = `$(stop) Stop Mock Server`;
-        statusBarItem.command = statusBarCommandStop;
+        statusBarItem.command = "ProtoPI.stopPrismMock";
         statusBarItem.tooltip = `Click to stop mock server`;
         statusBarItem.show();
       } else {
@@ -110,7 +118,7 @@ export function activate(context: vscode.ExtensionContext) {
         // update status bar item:
         statusBarItem.text = `$(gear~spin) Start Mock Server`;
         statusBarItem.tooltip = "Click to start mock server";
-        statusBarItem.command = statusBarCommandStart;
+        statusBarItem.command = "ProtoPI.startPrismMock";
         statusBarItem.show();
       });
     })
@@ -138,25 +146,25 @@ export function activate(context: vscode.ExtensionContext) {
     )
   );
 
-    // Open Workshop Webview
-    context.subscriptions.push(
-      vscode.commands.registerCommand("ProtoPI.workShop.start", () => {
-        Workshop.createOrShow(context.extensionUri);
-      })
-    );
-  
-    // Refresh Workshop Webview
-    context.subscriptions.push(
-      vscode.commands.registerCommand("ProtoPI.workShop.refresh", () => {
-        Workshop.kill();
-        Workshop.createOrShow(context.extensionUri);
-        // setTimeout(() => {
-        //   vscode.commands.executeCommand(
-        //     "workbench.action.webview.openDeveloperTools"
-        //   );
-        // }, 500);
-      })
-    );
+  // Open Workshop Webview
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.workShop.start", () => {
+      Workshop.createOrShow(context.extensionUri);
+    })
+  );
+
+  // Refresh Workshop Webview
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.workShop.refresh", () => {
+      Workshop.kill();
+      Workshop.createOrShow(context.extensionUri);
+      // setTimeout(() => {
+      //   vscode.commands.executeCommand(
+      //     "workbench.action.webview.openDeveloperTools"
+      //   );
+      // }, 500);
+    })
+  );
 
   // Reload Side Panel Webview
   context.subscriptions.push(

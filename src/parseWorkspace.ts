@@ -40,3 +40,10 @@ export function groupFilesByDirectory(
     files: dirMap[dir],
   }));
 }
+
+export async function updateOpenAPIFiles(context: vscode.ExtensionContext) {
+  const files = await findSpecFiles();
+  // const dirTree = groupFilesByDirectory(files);
+  context.workspaceState.update("openAPIFiles", files);
+  return files;
+}
