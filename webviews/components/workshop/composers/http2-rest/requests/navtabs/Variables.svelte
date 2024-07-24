@@ -104,9 +104,11 @@
                    on:change={(e) => handleParamChange(param, 'enabled', e)} />
           </td>
           <td class="p-2 text-center">
-            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
-                    on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
-                    style="outline: none; box-shadow: none;">
+            <button 
+            class="justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"                    
+              on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
+              style="outline: none; box-shadow: none;"
+            >
               <IconTrash strokeWidth={1.5} size={24} />
             </button>
           </td>
@@ -114,8 +116,8 @@
         {/each}
       </tbody>
     </table>
-    <div class="button-container">
-      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+    <div class="flex justify-center items-center button-container pb-10 mt-2 pt-1">
+      <button class="max-w-xs justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"
         on:click={() => handleAddParam(queryParams, (updated) => queryParams = updated)}
         style="outline: none; box-shadow: none;">
         + Add Pre Request Var
@@ -154,9 +156,10 @@
                    on:change={(e) => handleParamChange(param, 'enabled', e)} />
           </td>
           <td class="p-2 text-center ">
-            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
-                    on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
-                    style="outline: none; box-shadow: none;">
+            <button 
+              class="justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"
+              on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
+              style="outline: none; box-shadow: none;">
               <IconTrash strokeWidth={1.5} size={24} />
             </button>
           </td>
@@ -164,8 +167,8 @@
         {/each}
       </tbody>
     </table>
-    <div class="button-container">
-      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+    <div class="flex justify-center items-center button-container pb-10 mt-2 pt-1">
+      <button class="max-w-xs justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"
       on:click={() => handleAddParam(pathParams, (updated) => pathParams = updated)}
       style="outline: none; box-shadow: none;">
       + Add Pre Request Var

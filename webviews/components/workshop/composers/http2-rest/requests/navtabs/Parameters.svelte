@@ -49,27 +49,6 @@
     justify-content: center;
     margin-top: 20px;
   }
-  .action-button, .icon-button {
-    background-color: transparent;
-    border: none;
-    color: white;
-    text-decoration: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    font-weight: bold;
-    transition: color 0.3s, background-color 0.3s;
-  }
-  .action-button:hover, .icon-button {
-    color: #ccc;
-    background-color: transparent;
-  }
-  .icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-  }
 </style>
 
 <div class="max-w-4xl mx-auto">
@@ -104,9 +83,11 @@
                    on:change={(e) => handleParamChange(param, 'enabled', e)} />
           </td>
           <td class="p-2 text-center">
-            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
-                    on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
-                    style="outline: none; box-shadow: none;">
+            <button 
+            class="justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"                    
+              on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
+              style="outline: none; box-shadow: none;"
+            >
               <IconTrash strokeWidth={1.5} size={24} />
             </button>
           </td>
@@ -114,8 +95,9 @@
         {/each}
       </tbody>
     </table>
-    <div class="button-container">
-      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hhover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
+    <div class="flex justify-center items-center button-container pb-10 mt-2 pt-1">
+      <button 
+        class="max-w-xs justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"        
         on:click={() => handleAddParam(queryParams, (updated) => queryParams = updated)}
         style="outline: none; box-shadow: none;">
         + Add Query Param
@@ -151,23 +133,30 @@
           </td>
           <td class="p-2 text-center">
             <input type="checkbox" class="align-middle" bind:checked={param.enabled}
-                   on:change={(e) => handleParamChange(param, 'enabled', e)} />
+
+              on:change={(e) => handleParamChange(param, 'enabled', e)} />
           </td>
           <td class="p-2 text-center ">
-            <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent focus:outline-none"
-                    on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
-                    style="outline: none; box-shadow: none;">
-              <IconTrash strokeWidth={1.5} size={24} />
+
+            <button 
+              class="justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"                    
+              on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
+              style="outline: none; box-shadow: none;"
+              >
+              <IconTrash 
+                strokeWidth={1.5} size={24} 
+              />
             </button>
           </td>
         </tr>
         {/each}
       </tbody>
     </table>
-    <div class="button-container">
-      <button class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none transition duration-300 ease-in-out"
-              on:click={() => handleAddParam(pathParams, (updated) => pathParams = updated)}
-              style="outline: none; box-shadow: none;">
+    <div class="flex justify-center items-center button-container pb-10 mt-2 pt-1">
+      <button 
+        class="max-w-xs justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"              
+        on:click={() => handleAddParam(pathParams, (updated) => pathParams = updated)}
+        style="outline: none; box-shadow: none;">
         + Add Path Param
       </button>
     </div>

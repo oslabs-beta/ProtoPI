@@ -1,15 +1,15 @@
 <!-- <script>
   import { writable } from 'svelte/store';
   import 'github-markdown-css/github-markdown.css';
-  import { marked } from 'marked'; // Use named import
+  import { marked } from 'marked'; 
   import { onMount } from 'svelte';
 
   export let active = false;
 
   let isEditing = writable(false);
   let docs = writable('## Sample Documentation\n\nThis is a markdown preview.');
-  let displayedTheme = writable('default'); // Sample theme
-  let preferences = writable({ font: { codeFont: 'default' } }); // Sample preferences
+  let displayedTheme = writable('default'); 
+  let preferences = writable({ font: { codeFont: 'default' } }); 
 
   const toggleViewMode = () => {
     isEditing.update(value => !value);
