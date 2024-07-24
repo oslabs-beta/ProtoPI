@@ -31,9 +31,9 @@
   }
 </style>
 
-<div class="flex justify-around bg-gray-900 text-white mb-5" role="tablist">
+<div class="flex justify-around mb-5" role="tablist">
   <button
-    class="px-5 py-2 cursor-pointer bg-gray-900 text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none tab-button"
+    class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none tab-button"
     class:border-b-blue-500={$SidebarTabs === 'Responses'}
     role="tab"
     aria-selected={$SidebarTabs === 'Responses'}
@@ -43,7 +43,7 @@
     Responses
   </button>
   <button
-    class="px-5 py-2 cursor-pointer bg-gray-900 text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none tab-button"
+    class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent focus:outline-none tab-button"
     class:border-b-blue-500={$SidebarTabs === 'Requests'}
     role="tab"
     aria-selected={$SidebarTabs === 'Requests'}
@@ -53,7 +53,7 @@
     Requests
   </button>
   <button
-  class="px-5 py-2 cursor-pointer bg-gray-900 text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none tab-button"
+  class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent focus:outline-none tab-button"
   class:border-b-blue-500={$SidebarTabs === 'Master'}
   role="tab"
   aria-selected={$SidebarTabs === 'Master'}

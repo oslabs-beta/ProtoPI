@@ -2,7 +2,7 @@
   
 </script>
 
-<div class="w-full bg-gray-700 p-4 rounded">
+<div class="w-full p-4 rounded">
   <h1>http2-response.svelte</h1>
 
     <div class="max-h-96 overflow-y-auto">

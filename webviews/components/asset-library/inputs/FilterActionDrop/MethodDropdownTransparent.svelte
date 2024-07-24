@@ -77,6 +77,7 @@
         class="bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out"
         on:click={() => showDropdown = !showDropdown}
         on:mouseover={() => hoverDrop && (showDropdown = true)}
+        on:focus={() => hoverDrop && (showDropdown = true)}
         style="outline: none; box-shadow: none; width: {inputWidth};">
         {selectedMethod || 'Select method'}
       </button>

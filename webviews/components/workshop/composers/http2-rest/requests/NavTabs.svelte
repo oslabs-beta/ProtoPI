@@ -22,7 +22,10 @@
     <div
       class="client-form-tab"
       class:tab-active={$currentTab === tab}
-      on:click={() => changeTab(tab)}
+      role="tab"
+      on:click={() => $currentTab = tab}
+      tabindex="0"  
+      on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') { $currentTab = tab; e.preventDefault(); } }}  
     >
       {tab}
     </div>

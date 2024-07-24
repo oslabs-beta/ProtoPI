@@ -35,6 +35,13 @@
     tooltipX = event.clientX + 10;
     tooltipY = event.clientY + 10;
   }
+
+  function handleKeyDown(event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+      toggleSplitView();
+      event.preventDefault(); // Prevent default scroll behavior for space key
+    }
+  }
 </script>
 
 <style>
@@ -69,7 +76,9 @@
   on:mouseenter={handleMouseEnter} 
   on:mouseleave={handleMouseLeave} 
   on:mousemove={handleMouseMove} 
+  on:keydown={handleKeyDown}
   tabindex="0"
+  role="button"
 >
   {#if isSplit}
     <svg class="icon" viewBox="0 0 24 24">
