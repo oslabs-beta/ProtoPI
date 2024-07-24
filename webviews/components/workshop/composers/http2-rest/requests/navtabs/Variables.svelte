@@ -1,5 +1,4 @@
 <script>
-  import { IconTrash } from '@tabler/icons-svelte';
 
   let queryParams = [
     { uid: 1, name: 'var1', value: 'value1', enabled: true },
@@ -88,7 +87,7 @@
               on:click={() => handleRemoveParam(queryParams, (updated) => queryParams = updated, param.uid)}
               style="outline: none; box-shadow: none;"
             >
-              <IconTrash strokeWidth={1.5} size={24} />
+              <!-- <IconTrash strokeWidth={1.5} size={24} /> -->
             </button>
           </td>
         </tr>
@@ -139,7 +138,7 @@
               class="justify-center bg-transparent p-0 border-none hover:bg-transparent focus:bg-transparent active:bg-transparent  text-white hover:text-gray-500 font-semibold py-2 px-4 focus:outline-none ease-in-out flex items-center group"
               on:click={() => handleRemoveParam(pathParams, (updated) => pathParams = updated, param.uid)}
               style="outline: none; box-shadow: none;">
-              <IconTrash strokeWidth={1.5} size={24} />
+              <!-- <IconTrash strokeWidth={1.5} size={24} /> -->
             </button>
           </td>
         </tr>

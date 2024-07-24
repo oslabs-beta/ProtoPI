@@ -1,6 +1,6 @@
 <script>
-  import Http2Method from './method.svelte';
-  import Http2NavTabs from './navtabs.svelte';
+  import Http2Method from './Method.svelte';
+  import Http2NavTabs from './NavTabs.svelte';
 </script>
 
 <div class="request w-full bg-gray-700 p-4 rounded">

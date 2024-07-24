@@ -91,6 +91,7 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
+    "cleanup": "yarn run cleanup:files && yarn run cleanup:yarn",
     "cleanup:yarn": "yarn cache clean",
     "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*'  -o -name 'package-lock.json' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
     "empty:trash": "sudo rm -rf ~/.Trash/*"
@@ -127,7 +128,7 @@
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^4.5.2",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-svelte": "^6.0.0",
+    "rollup-plugin-svelte": "^6",
     "rollup-plugin-svg": "^2.0.0",
     "svelte": "^4.2.17",
     "svelte-check": "^3.8.0",
