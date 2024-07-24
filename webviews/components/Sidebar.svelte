@@ -6,7 +6,7 @@
   */
  import { 
    vscodeEventRouter 
-  } from '../core/vsCodeMethods/from-vscodeMessagesRouter';
+  } from '../core/vscodeMethods/from-vscodeMessagesRouter';
 
   /**  TO
    * to-vscodeMessages - are message that are sent to vscode extension
@@ -16,7 +16,7 @@
     openFileDialog,
     handleFileChange,
     setFileInput,
-  } from '../core/vsCodeMethods/to-vscodeMessages';
+  } from '../core/vscodeMethods/to-vscodeMessages';
 
   import "../tailwind.css";
   import { onMount } from "svelte";

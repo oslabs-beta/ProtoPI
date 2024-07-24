@@ -1,6 +1,7 @@
 import type { Writable } from 'svelte/store';
 import { 
   handleFileContentMessage, 
+  handleFilesContentMessages,
   handleCloseFileMessage 
 } from './inboundMessages';
 
@@ -14,6 +15,7 @@ export function vscodeEventRouter(
 
   const commandHandlers: { [key: string]: Function } = {
     fileContent: () => handleFileContentMessage(message, parsedData, selectedData),
+    filesContent: () => handleFilesContentMessages(message, parsedData, selectedData),
     closeFile: () => handleCloseFileMessage(fileInput),
   };
 

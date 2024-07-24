@@ -92,7 +92,7 @@
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
     "cleanup:yarn": "yarn cache clean",
-    "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
+    "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*'  -o -name 'package-lock.json' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
     "empty:trash": "sudo rm -rf ~/.Trash/*"
   },
   "devDependencies": {
