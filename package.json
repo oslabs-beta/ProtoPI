@@ -1,6 +1,5 @@
 {
-  "name": "protopi",
-  "displayName": "ProtoPI",
+  "name": "ProtoPI",
   "description": "OpenAPI spec file parser/creator and mock server for VS Code",
   "version": "0.0.2",
   "publisher": "oslabs-beta",
@@ -46,14 +45,14 @@
     },
     "commands": [
       {
-        "command": "ProtoPI.helloWorld",
+        "command": "ProtoPI.workShop.start",
         "category": "ProtoPI",
-        "title": "Display Hello World Panel"
+        "title": "Display the Workshop"
       },
       {
-        "command": "ProtoPI.reload",
+        "command": "ProtoPI.workShop.refresh",
         "category": "ProtoPI",
-        "title": "Reload Webview Panel"
+        "title": "Reload the Workshop"
       },
       {
         "command": "ProtoPI.refresh",
@@ -137,18 +136,31 @@
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "cleanup": "yarn run cleanup:files && yarn run cleanup:yarn",
+    "cleanup:yarn": "yarn cache clean",
+    "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*'  -o -name 'package-lock.json' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
+    "empty:trash": "sudo rm -rf ~/.Trash/*"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.8",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@tsconfig/svelte": "^5.0.4",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@jridgewell/sourcemap-codec": "^1.4.15",
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@tsconfig/svelte": "^5.0.4",
+    "@types/conventional-commits-parser": "^5.0.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/lodash": "^4.17.7",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/sortablejs": "^1.15.8",
+    "@types/type-is": "^1.6.6",
+    "@types/uuid": "^10.0.0",
     "@types/vscode": "^1.89.0",
+    "@types/yaml": "^1.9.7",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "@vscode/test-cli": "^0.0.9",
@@ -160,17 +172,33 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.38",
     "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^4.5.2",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-svelte": "^6.0.0",
-    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-svelte": "^6",
+    "rollup-plugin-svg": "^2.0.0",
     "svelte": "^4.2.17",
     "svelte-check": "^3.8.0",
+    "svelte-language-server": "^0.16.13",
     "svelte-preprocess": "^5.1.4",
     "tailwindcss": "^3.4.3",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "yaml": "^2.4.5"
   },
   "dependencies": {
+    "@babel/code-frame": "^7.24.7",
     "@stoplight/prism-cli": "^5.8.1",
-    "terminate": "^2.6.1"
+    "@tabler/icons-svelte": "^3.11.0",
+    "axios": "^1.7.2",
+    "crypto-js": "^4.2.0",
+    "github-markdown-css": "^5.6.1",
+    "lodash.memoize": "^4.1.2",
+    "marked": "^13.0.2",
+    "sortablejs": "^1.15.2",
+    "terminate": "^2.6.1",
+    "uuid": "^10.0.0"
+  },
+  "resolutions": {
+    "sourcemap-codec": "@jridgewell/sourcemap-codec@1.4.15",
+    "**/sourcemap-codec": "@jridgewell/sourcemap-codec@1.4.15"
   }
 }
