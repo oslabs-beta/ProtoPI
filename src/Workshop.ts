@@ -1,8 +1,10 @@
-//renamed HelloWorldPanel file
-
 import axios from "axios";
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
+
+import { handleMessage } from "./core/router/inboundRouter";
+import { newRouter } from './extension';
+
 
 export class Workshop {
   /**
@@ -68,47 +70,58 @@ export class Workshop {
     // This happens when the user closes the panel or when the panel is closed programatically
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
-    // // Handle messages from the webview
-    this._panel.webview.onDidReceiveMessage(
-      async (message) => {
-        console.log(JSON.stringify(message) + "panel view");
-        switch (message.type) {
-          case "makeFetchRequest":
-            if (!message.value) {
-              vscode.window.showInformationMessage(`No data`);
-              return;
-            }
-            vscode.window.showInformationMessage(
-              JSON.stringify(message.value.method) +
-                JSON.stringify(message.value.requestUrl)
-            );
-            try {
-              const method = message.value.method;
 
-              // Make request
-              const res = await axios.get(message.value.requestUrl);
+    if(!newRouter){
+      // // Handle messages from the webview
+      this._panel.webview.onDidReceiveMessage(
+        async (message) => {
+          console.log(JSON.stringify(message) + "panel view");
+          switch (message.type) {
+            case "makeFetchRequest":
+              if (!message.value) {
+                vscode.window.showInformationMessage(`No data`);
+                return;
+              }
+              vscode.window.showInformationMessage(
+                JSON.stringify(message.value.method) +
+                  JSON.stringify(message.value.requestUrl)
+              );
+              try {
+                const method = message.value.method;
 
-              vscode.window.showInformationMessage(JSON.stringify(res.data));
+                // Make request
+                const res = await axios.get(message.value.requestUrl);
 
-              // Send response to webview
-              this._panel.webview.postMessage({
-                command: "sendFetchResponse",
-                data: res.data,
-              });
-            } catch (err) {
-              vscode.window.showErrorMessage(JSON.stringify(err));
-              this._panel.webview.postMessage({
-                command: "error",
-                //@ts-ignore
-                error: err.message,
-              });
-            }
-            break;
-        }
-      },
-      null,
-      this._disposables
-    );
+                vscode.window.showInformationMessage(JSON.stringify(res.data));
+
+                // Send response to webview
+                this._panel.webview.postMessage({
+                  command: "sendFetchResponse",
+                  data: res.data,
+                });
+              } catch (err) {
+                vscode.window.showErrorMessage(JSON.stringify(err));
+                this._panel.webview.postMessage({
+                  command: "error",
+                  //@ts-ignore
+                  error: err.message,
+                });
+              }
+              break;
+          }
+        },
+        null,
+        this._disposables
+      );
+    } else {
+      this._panel.webview.onDidReceiveMessage(
+        async (message) => {
+          handleMessage(message, this._panel.webview);
+        },
+        null,
+        this._disposables
+      );
+    }
   }
 
   public dispose() {
@@ -130,26 +143,31 @@ export class Workshop {
 
     this._panel.webview.html = this._getHtmlForWebview(webview);
     webview.onDidReceiveMessage(async (data) => {
-      switch (data.type) {
-        case "onInfo": {
-          if (!data.value) {
-            return;
+
+      if(!newRouter){
+        switch (data.type) {
+          case "onInfo": {
+            if (!data.value) {
+              return;
+            }
+            vscode.window.showInformationMessage(data.value);
+            break;
           }
-          vscode.window.showInformationMessage(data.value);
-          break;
-        }
-        case "onError": {
-          if (!data.value) {
-            return;
+          case "onError": {
+            if (!data.value) {
+              return;
+            }
+            vscode.window.showErrorMessage(data.value);
+            break;
           }
-          vscode.window.showErrorMessage(data.value);
-          break;
+          // case "tokens": {
+          //   await Util.globalState.update(accessTokenKey, data.accessToken);
+          //   await Util.globalState.update(refreshTokenKey, data.refreshToken);
+          //   break;
+          // }
         }
-        // case "tokens": {
-        //   await Util.globalState.update(accessTokenKey, data.accessToken);
-        //   await Util.globalState.update(refreshTokenKey, data.refreshToken);
-        //   break;
-        // }
+      } else {
+        handleMessage(data, webview);
       }
     });
   }

@@ -24,7 +24,7 @@
   "include": [
     "./**/*",
     "../node_modules/svelte/@types/**/*",
-    "types/**/*.d.ts"
+    "../types/**/*.d.ts"
   ],
   "exclude": [
     "../node_modules/*"

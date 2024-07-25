@@ -139,8 +139,7 @@
     "test": "vscode-test",
     "cleanup": "yarn run cleanup:files && yarn run cleanup:yarn",
     "cleanup:yarn": "yarn cache clean",
-    "cleanup:files": "find . -type d \\( -name 'node_modules*' -o -name '.vscode-test*'  -o -name 'package-lock.json' -o -name 'dist*' -o -name 'out*' -o -name 'dist_dev*' -o -name 'dist_prod*' \\) -exec rm -rf {} + && find . -type f \\( -name 'yarn [0-9]*.lock' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'",
-    "empty:trash": "sudo rm -rf ~/.Trash/*"
+    "cleanup:files": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f \\( -name 'package-lock.json' -o -regex './.* [0-9]+\\..*' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
@@ -187,7 +186,6 @@
   "dependencies": {
     "@babel/code-frame": "^7.24.7",
     "@stoplight/prism-cli": "^5.8.1",
-    "@tabler/icons-svelte": "^3.11.0",
     "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
     "github-markdown-css": "^5.6.1",

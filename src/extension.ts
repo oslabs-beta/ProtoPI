@@ -5,6 +5,15 @@ import * as path from "path";
 import terminate from "terminate";
 import * as vscode from "vscode";
 
+/**
+ * ROUTER IMPORTS
+ */
+import { postMessageToWebview } from "./core/router/outboundMailer";
+export const newRouter: boolean = true;
+/**
+ * ROUTER IMPORTS
+ */
+
 import { Workshop } from "./Workshop";
 
 import { SidebarProvider } from "./SidebarProvider";
@@ -30,10 +39,24 @@ export function activate(context: vscode.ExtensionContext) {
   // Update openAPIFiles workspace state
   updateOpenAPIFiles(context).then((files) => {
     console.log("OpenAPI Files loaded into extension state");
-    sidebarProvider._view?.webview.postMessage({
-      type: "openAPIFiles",
-      content: files,
-    });
+
+    //  Check if sidebarProvider._view?.webview is not undefined. 
+    //  If it is, the function is called, ensuring type safety.
+    if (sidebarProvider._view?.webview) {
+      if (!newRouter) {
+        // OLD ROUTER HERE
+        sidebarProvider._view.webview.postMessage({
+          type: "openAPIFiles",
+          content: files,
+        });
+      } else {
+        // NEW ROUTER HERE
+        postMessageToWebview(sidebarProvider._view.webview, {
+          type: "openAPIFiles",
+          content: files,
+        });
+      }
+    }
   });
 
   // Create and show the status bar item
@@ -236,10 +259,19 @@ export function activate(context: vscode.ExtensionContext) {
         const content = await vscode.workspace.fs.readFile(selectedFile.file);
         const textContent = content.toString();
 
-        sidebarProvider._view?.webview.postMessage({
-          type: "fileContent",
-          content: textContent,
-        });
+        if (sidebarProvider._view?.webview) {
+          if (!newRouter) {
+            sidebarProvider._view.webview.postMessage({
+              type: "fileContent",
+              content: textContent,
+            });
+          } else {
+            postMessageToWebview(sidebarProvider._view.webview, {
+              type: "fileContent",
+              content: textContent,
+            });
+          }
+        }
 
         console.log(`Opened file: ${selectedFile.label}`);
         vscode.window.showInformationMessage(
@@ -254,9 +286,19 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.closeAPIFile", () => {
       console.log("Closing API File");
-      sidebarProvider._view?.webview.postMessage({
-        type: "closeFile",
-      });
+
+      if (sidebarProvider._view?.webview) {
+        if (!newRouter) {
+          sidebarProvider._view.webview.postMessage({
+            type: "closeFile",
+          });
+        } else {
+          postMessageToWebview(sidebarProvider._view.webview, {
+            type: "closeFile",
+          });
+        }
+      }
+
       vscode.window.showInformationMessage("API file closed");
     })
   );
