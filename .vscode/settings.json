@@ -1,0 +1,35 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "files.exclude": {
+        "out": false, // set this to true to hide the "out" folder with the compiled JS files
+        "dist": false // set this to true to hide the "dist" folder with the compiled JS files
+    },
+    "search.exclude": {
+        "out": true, // set this to false to include "out" folder in search results
+        "dist": true // set this to false to include "dist" folder in search results
+    },
+    // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
+    "typescript.tsc.autoDetect": "off",
+    "cSpell.words": [
+      "protopi"
+    ],
+    // Settings specific to Svelte and TypeScript integration to ensure VSCode properly 
+    //  handles Svelte and TypeScript
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "svelte.plugin.typescript.enable": true,
+    
+    "svelte.language-server.runtime": "node",
+    "svelte.language-server.ls-path": "./node_modules/.bin/svelte-language-server",
+
+    "svelte.enable-ts-plugin": true,
+    "editor.quickSuggestions": {
+        "strings": true
+    },
+    "editor.suggestSelection": "first",
+    "editor.suggest.showSnippets": true,
+    "editor.suggest.showClasses": true,
+    "editor.suggest.showFunctions": true,
+    "editor.suggest.showKeywords": true,
+    "editor.suggest.showVariables": true,
+    "editor.suggest.showProperties": true
+}

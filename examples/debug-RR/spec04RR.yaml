@@ -1,0 +1,169 @@
+openapi: 3.0.0
+info:
+  title: User Authentication API
+  description: API for user authentication.
+  version: 1.0.0
+  termsOfService: http://example.com/terms/
+  contact:
+    name: API Support
+    url: http://www.example.com/support
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://api.auth-example.com/v1
+    description: Main (production) server
+  - url: https://staging-api.auth-example.com/v1
+    description: Staging server
+tags:
+  - name: Authentication
+    description: Operations related to user authentication
+
+paths:
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: This endpoint allows users to log in.
+      operationId: userLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Username of the user
+                  example: "johndoe"
+                password:
+                  type: string
+                  format: password
+                  description: Password of the user
+                  example: "Password123"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Authentication token
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  user_id:
+                    type: string
+                    description: Unique identifier of the user
+                    example: "user123"
+                  username:
+                    type: string
+                    description: Username of the user
+                    example: "johndoe"
+                  roles:
+                    type: array
+                    items:
+                      type: string
+                    description: Roles assigned to the user
+                    example: ["admin", "user"]
+              examples:
+                successResponse1:
+                  summary: Standard User Login
+                  value:
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user_id: "user123"
+                    username: "johndoe"
+                    roles: ["user"]
+                successResponse2:
+                  summary: Admin User Login
+                  value:
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user_id: "admin456"
+                    username: "adminuser"
+                    roles: ["admin", "user"]
+                successResponse3:
+                  summary: User with Multiple Roles
+                  value:
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user_id: "multi789"
+                    username: "multiuser"
+                    roles: ["admin", "editor", "user"]
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Invalid username or password"
+              examples:
+                invalidCredentials:
+                  summary: Incorrect Username or Password
+                  value:
+                    error: "Invalid username or password"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Unauthorized access"
+              examples:
+                unauthorized:
+                  summary: Unauthorized Access
+                  value:
+                    error: "Unauthorized access"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: "Internal server error"
+              examples:
+                serverError:
+                  summary: Generic Server Error
+                  value:
+                    error: "Internal server error"
+
+components:
+  schemas:
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Authentication token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        user_id:
+          type: string
+          description: Unique identifier of the user
+          example: "user123"
+        username:
+          type: string
+          description: Username of the user
+          example: "johndoe"
+        roles:
+          type: array
+          items:
+            type: string
+          description: Roles assigned to the user
+          example: ["admin", "user"]

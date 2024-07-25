@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "../media/reset.css";
+@import "../media/vscode.css";
+
+:root {
+    --vscode-foreground: var(--vscode-foreground);
+    --vscode-background: var(--vscode-editor-background);
+    --vscode-textLink-foreground: var(--vscode-textLink-foreground);
+    --vscode-textLink-activeForeground: var(--vscode-textLink-activeForeground);
+    --vscode-button-foreground: var(--vscode-button-foreground);
+    --vscode-button-background: var(--vscode-button-background);
+    --vscode-button-hoverBackground: var(--vscode-button-hoverBackground);
+    --vscode-button-secondaryForeground: var(--vscode-button-secondaryForeground);
+    --vscode-button-secondaryBackground: var(--vscode-button-secondaryBackground);
+    --vscode-button-secondaryHoverBackground: var(--vscode-button-secondaryHoverBackground);
+    --vscode-input-foreground: var(--vscode-input-foreground);
+    --vscode-input-background: var(--vscode-input-background);
+    --vscode-input-placeholderForeground: var(--vscode-input-placeholderForeground);
+    --vscode-focusBorder: var(--vscode-focusBorder);
+}

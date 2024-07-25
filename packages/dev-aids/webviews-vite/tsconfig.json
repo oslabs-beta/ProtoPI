@@ -1,5 +1,0 @@
-
-{
-  "extends": "./svelte/tsconfig.json",
-  "include": ["src/**/*", "../../extensions/vscode/webviews/**/*"]
-}
