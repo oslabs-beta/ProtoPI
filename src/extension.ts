@@ -14,9 +14,10 @@ import {
   updateOpenAPIFiles,
 } from "./parseWorkspace";
 
-// Prism binary from local extension
+// Fetch user's extension settings
+const config = vscode.workspace.getConfiguration("protopi");
 const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
-const prismPort = 3141;
+const prismPort = config.get<number>("mockServer.port", 3141);
 
 let mockServer: ChildProcess | null = null;
 
@@ -44,7 +45,8 @@ export function activate(context: vscode.ExtensionContext) {
   // Add to context subscriptions for proper disposal
   context.subscriptions.push(statusBarItem);
 
-  // Creates mock server for first .yaml file found in workspace
+
+  // Creates mock server for first yaml file found in workspace
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.runPrismMock", async () => {
       if (mockServer) {
@@ -119,6 +121,7 @@ export function activate(context: vscode.ExtensionContext) {
         statusBarItem.text = `$(gear~spin) Start Mock Server`;
         statusBarItem.tooltip = "Click to start mock server";
         statusBarItem.command = "ProtoPI.startPrismMock";
+
         statusBarItem.show();
       });
     })
@@ -255,6 +258,16 @@ export function activate(context: vscode.ExtensionContext) {
         type: "closeFile",
       });
       vscode.window.showInformationMessage("API file closed");
+    })
+  );
+  
+  // Open Extension Settings
+  context.subscriptions.push(
+    vscode.commands.registerCommand("ProtoPI.openSettings", () => {
+      vscode.commands.executeCommand(
+        "workbench.action.openSettings",
+        "protopi"
+      );
     })
   );
 

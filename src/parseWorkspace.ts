@@ -47,3 +47,4 @@ export async function updateOpenAPIFiles(context: vscode.ExtensionContext) {
   context.workspaceState.update("openAPIFiles", files);
   return files;
 }
+

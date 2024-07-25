@@ -15,7 +15,11 @@
     "Testing"
   ],
   "activationEvents": [
-    "*"
+    "onWebviewPanel:protopi-sidebar",
+    "ProtoPI.helloWorld",
+    "ProtoPI.findSpecFiles",
+    "ProtoPI.runPrismMock",
+    "ProtoPI.openSettings"
   ],
   "main": "./dist/extension.js",
   "contributes": {
@@ -53,12 +57,14 @@
       {
         "command": "ProtoPI.refresh",
         "category": "ProtoPI",
-        "title": "Reload Sidebar Webview"
+        "title": "Reload Sidebar Webview",
+        "icon": "$(refresh)"
       },
       {
         "command": "ProtoPI.runPrismMock",
         "category": "ProtoPI",
-        "title": "Start Prism Mock Server"
+        "title": "Start Prism Mock Server",
+        "icon": "$(run)"
       },
       {
         "command": "ProtoPI.stopPrismMock",
@@ -71,11 +77,51 @@
         "title": "Display available API Specifications"
       },
       {
-        "command": "ProtoPI.findSpecFiles",
+        "command": "ProtoPI.openSettings",
         "category": "ProtoPI",
-        "title": "Display available API Specifications"
+        "title": "Open Extension Settings",
+        "icon": "$(gear)"
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "ProtoPI.refresh",
+          "when": "view == protopi-sidebar",
+          "group": "navigation"
+        },
+        {
+          "command": "ProtoPI.runPrismMock",
+          "when": "view == protopi-sidebar",
+          "group": "1_prism"
+        },
+        {
+          "command": "ProtoPI.stopPrismMock",
+          "when": "view == protopi-sidebar",
+          "group": "1_prism"
+        },
+        {
+          "command": "ProtoPI.openSettings",
+          "when": "view == protopi-sidebar",
+          "group": "z_settings"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "ProtoPI",
+      "properties": {
+        "protopi.basePath": {
+          "type": "string",
+          "default": "",
+          "description": "Base path for storing API definitions and Postman Collections"
+        },
+        "protopi.mockServer.port": {
+          "type": "number",
+          "default": 3141,
+          "description": "Default port for Prism Mock Server"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run package",
