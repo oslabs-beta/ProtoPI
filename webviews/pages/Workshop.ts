@@ -1,4 +1,4 @@
-//@ts-ignore
+
 import App from "../components/Workshop.svelte";
 
 const app = new App({
