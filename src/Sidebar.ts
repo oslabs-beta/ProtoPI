@@ -50,10 +50,10 @@ export class Sidebar implements vscode.WebviewViewProvider {
     );
 
     // Uri to load styles into webview
-    const styleResetUri = webview.asWebviewUri(
+    const stylesResetUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
     );
-    const styleVSCodeUri = webview.asWebviewUri(
+    const stylesVSCodeUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
     );
 
@@ -63,7 +63,7 @@ export class Sidebar implements vscode.WebviewViewProvider {
     );
 
     // Uri to load svelte component style element
-    const styleMainUri = webview.asWebviewUri(
+    const stylesMainUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "Sidebar.css")
     );
 
@@ -80,9 +80,9 @@ export class Sidebar implements vscode.WebviewViewProvider {
         <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${cssUri}" rel="stylesheet">
-        <link href="${styleMainUri}" rel="stylesheet">
-        <link href="${styleResetUri}" rel="stylesheet">
-				<link href="${styleVSCodeUri}" rel="stylesheet">
+        <link href="${stylesMainUri}" rel="stylesheet">
+        <link href="${stylesResetUri}" rel="stylesheet">
+				<link href="${stylesVSCodeUri}" rel="stylesheet">
         <script nonce="${nonce}">
           const vscode = acquireVsCodeApi();
           window.vscode = vscode;

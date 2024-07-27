@@ -120,7 +120,7 @@ export class Workshop {
       vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "Workshop.js")
     );
 
-    const styleVSCodeUri = webview.asWebviewUri(
+    const stylesVSCodeUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
     );
 
@@ -149,7 +149,7 @@ export class Workshop {
         <link href="${cssUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
         <link href="${stylesResetUri}" rel="stylesheet">
-        <link href="${styleVSCodeUri}" rel="stylesheet">
+        <link href="${stylesVSCodeUri}" rel="stylesheet">
         <script nonce="${nonce}">
           const vscode = acquireVsCodeApi();
           window.vscode = vscode;
