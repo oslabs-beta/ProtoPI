@@ -27,7 +27,7 @@ import {
 // Fetch user's extension settings
 const config = vscode.workspace.getConfiguration("protopi");
 const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
-const prismPort = config.get<number>("mockServer.port", 3141);
+const prismPort: number = config.get<number>("mockServer.port") ?? 3141;
 
 let mockServer: ChildProcess | null = null;
 
@@ -82,11 +82,15 @@ export function activate(context: vscode.ExtensionContext) {
   loadSubscriptions(context, sidebarProvider);
 }
 
+
 // This method is called when your extension is deactivated
 export function deactivate() {
-  if (mockServer) {
-    // @ts-ignore
-    terminate(mockServer.pid, (err) => console.error(err));
+  if (mockServer && mockServer.pid) {
+    terminate(mockServer.pid, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
     mockServer = null;
   }
 }

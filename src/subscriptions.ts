@@ -12,7 +12,9 @@ import { newRouter } from "./extension";
 let mockServer: ChildProcess | null = null;
 const config = vscode.workspace.getConfiguration("protopi");
 const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
-const prismPort = config.get<number>("mockServer.port", 3141);
+const prismPort: number = config.get<number>("mockServer.port") ?? 3141;
+
+
 let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
   vscode.StatusBarAlignment.Right,
   100
@@ -82,21 +84,25 @@ export function loadSubscriptions(context: vscode.ExtensionContext, sidebarProvi
         return;
       }
 
-      // @ts-ignore
-      terminate(mockServer.pid, (err: any) => {
-        if (err) {
-          console.error(err);
-          vscode.window.showErrorMessage("Error killing mock server process");
-        }
-        mockServer = null;
-        vscode.window.showInformationMessage("Mock server is stopped");
-        // update status bar item:
-        statusBarItem.text = `$(gear~spin) Start Mock Server`;
-        statusBarItem.tooltip = "Click to start mock server";
-        statusBarItem.command = "ProtoPI.startPrismMock";
-
-        statusBarItem.show();
-      });
+      if (mockServer.pid) {
+        terminate(mockServer.pid, (err: any) => {
+          if (err) {
+            console.error(err);
+            vscode.window.showErrorMessage("Error killing mock server process");
+          } else {
+            mockServer = null;
+            vscode.window.showInformationMessage("Mock server is stopped");
+            // update status bar item:
+            statusBarItem.text = `$(gear~spin) Start Mock Server`;
+            statusBarItem.tooltip = "Click to start mock server";
+            statusBarItem.command = "ProtoPI.startPrismMock";
+  
+            statusBarItem.show();
+          }
+        });
+      } else {
+        vscode.window.showErrorMessage("Mock server PID is not defined");
+      }
     })
   );
 

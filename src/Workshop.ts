@@ -100,12 +100,15 @@ export class Workshop {
                   data: res.data,
                 });
               } catch (err) {
-                vscode.window.showErrorMessage(JSON.stringify(err));
-                this._panel.webview.postMessage({
-                  command: "error",
-                  //@ts-ignore
-                  error: err.message,
-                });
+                if (err instanceof Error) {
+                  vscode.window.showErrorMessage(JSON.stringify(err));
+                  this._panel.webview.postMessage({
+                    command: "error",
+                    error: err.message,
+                  });
+                } else {
+                  vscode.window.showErrorMessage("An unknown error occurred");
+                }
               }
               break;
           }

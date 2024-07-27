@@ -29,6 +29,8 @@ Temporary Items
 .apdisk
 dist_dev/
 dist_prod/
+dist_tsc/
+out_tsc/
 
 # Project Directories and Files
 .env
