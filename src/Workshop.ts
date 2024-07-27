@@ -178,12 +178,16 @@ export class Workshop {
       vscode.Uri.joinPath(this._extensionUri, "out/compiled", "Workshop.js")
     );
 
+    const styleVSCodeUri = webview.asWebviewUri(
+      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+    );
+
     // Uri to load styles into webview
     const stylesResetUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
     );
     const stylesMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "media", "vscode.css")
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Workshop.css")
     );
 
     // Uri to load tailwind bundle - hoist to top of style declarations
@@ -205,8 +209,9 @@ export class Workshop {
         <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'unsafe-eval' 'nonce-${nonce}';">
 		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${cssUri}" rel="stylesheet">
-        <link href="${stylesResetUri}" rel="stylesheet">
         <link href="${stylesMainUri}" rel="stylesheet">
+        <link href="${stylesResetUri}" rel="stylesheet">
+        <link href="${styleVSCodeUri}" rel="stylesheet">
         <script nonce="${nonce}">
 
           const vscode = acquireVsCodeApi();

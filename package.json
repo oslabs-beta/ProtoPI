@@ -139,7 +139,8 @@
     "test": "vscode-test",
     "cleanup": "yarn run cleanup:files && yarn run cleanup:yarn",
     "cleanup:yarn": "yarn cache clean",
-    "cleanup:files": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f \\( -name 'package-lock.json' -o -regex './.* [0-9]+\\..*' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Cleanup completed!'"
+    "cleanup:full": "find . -type d \\( -name 'node_modules' -o -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f \\( -name 'package-lock.json' -o -regex './.* [0-9]+\\..*' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Full cleanup completed!'",
+    "cleanup:build": "find . -type d \\( -name '.vscode-test' -o -name 'dist' -o -name 'out' -o -name 'dist_dev' -o -name 'dist_prod' \\) -exec rm -rf {} + && find . -type f \\( -name 'package-lock.json' -o -regex './.* [0-9]+\\..*' -o -name '*.timestamp-*.mjs' -o -name 'yarn.lock' \\) -exec rm -f {} + && echo 'Build cleanup completed!'"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
