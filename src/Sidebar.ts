@@ -4,7 +4,7 @@ import { getNonce } from "./getNonce";
 import { handleMessage } from "./core/router/inboundRouter";
 import { newRouter } from './extension';
 
-export class SidebarProvider implements vscode.WebviewViewProvider {
+export class Sidebar implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
 

@@ -17,7 +17,7 @@ export const newRouter: boolean = true;
 
 import { Workshop } from "./Workshop";
 
-import { SidebarProvider } from "./SidebarProvider";
+import { Sidebar } from "./Sidebar";
 import {
   findSpecFiles,
   groupFilesByDirectory,
@@ -41,18 +41,18 @@ export function activate(context: vscode.ExtensionContext) {
   updateOpenAPIFiles(context).then((files) => {
     console.log("OpenAPI Files loaded into extension state");
 
-    //  Check if sidebarProvider._view?.webview is not undefined. 
+    //  Check if sidebar._view?.webview is not undefined. 
     //  If it is, the function is called, ensuring type safety.
-    if (sidebarProvider._view?.webview) {
+    if (sidebar._view?.webview) {
       if (!newRouter) {
         // OLD ROUTER HERE
-        sidebarProvider._view.webview.postMessage({
+        sidebar._view.webview.postMessage({
           type: "openAPIFiles",
           content: files,
         });
       } else {
         // NEW ROUTER HERE
-        postMessageToWebview(sidebarProvider._view.webview, {
+        postMessageToWebview(sidebar._view.webview, {
           type: "openAPIFiles",
           content: files,
         });
@@ -70,16 +70,19 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(statusBarItem);
 
   // Initialize the sidebar provider
-  const sidebarProvider = new SidebarProvider(context.extensionUri);
+  const sidebar = new Sidebar(context.extensionUri);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(
       "protopi-sidebar",
-      sidebarProvider
+      sidebar
     )
   );
 
   // Load subscriptions from external file
-  loadSubscriptions(context, sidebarProvider);
+  loadSubscriptions(context, sidebar);
+
+  // Uncomment the following line to make the Workshop panel appear on load
+  Workshop.createOrShow(context.extensionUri);
 }
 
 

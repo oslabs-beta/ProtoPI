@@ -6,7 +6,7 @@ import terminate from "terminate";
 import { postMessageToWebview } from "./core/router/outboundMailer";
 import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
 import { Workshop } from "./Workshop";
-import { SidebarProvider } from "./SidebarProvider";
+import { Sidebar } from "./Sidebar";
 import { newRouter } from "./extension";
 
 let mockServer: ChildProcess | null = null;
@@ -20,7 +20,7 @@ let statusBarItem: vscode.StatusBarItem = vscode.window.createStatusBarItem(
   100
 );
 
-export function loadSubscriptions(context: vscode.ExtensionContext, sidebarProvider: SidebarProvider) {
+export function loadSubscriptions(context: vscode.ExtensionContext, sidebar: Sidebar) {
   // Creates mock server for first yaml file found in workspace
   context.subscriptions.push(
     vscode.commands.registerCommand("ProtoPI.runPrismMock", async () => {
@@ -204,14 +204,14 @@ export function loadSubscriptions(context: vscode.ExtensionContext, sidebarProvi
         const content = await vscode.workspace.fs.readFile(selectedFile.file);
         const textContent = content.toString();
 
-        if (sidebarProvider._view?.webview) {
+        if (sidebar._view?.webview) {
           if (!newRouter) {
-            sidebarProvider._view.webview.postMessage({
+            sidebar._view.webview.postMessage({
               type: "fileContent",
               content: textContent,
             });
           } else {
-            postMessageToWebview(sidebarProvider._view.webview, {
+            postMessageToWebview(sidebar._view.webview, {
               type: "fileContent",
               content: textContent,
             });
@@ -232,13 +232,13 @@ export function loadSubscriptions(context: vscode.ExtensionContext, sidebarProvi
     vscode.commands.registerCommand("ProtoPI.closeAPIFile", () => {
       console.log("Closing API File");
 
-      if (sidebarProvider._view?.webview) {
+      if (sidebar._view?.webview) {
         if (!newRouter) {
-          sidebarProvider._view.webview.postMessage({
+          sidebar._view.webview.postMessage({
             type: "closeFile",
           });
         } else {
-          postMessageToWebview(sidebarProvider._view.webview, {
+          postMessageToWebview(sidebar._view.webview, {
             type: "closeFile",
           });
         }
