@@ -1,7 +1,7 @@
 {
   "extends": "../node_modules/@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "strict": true,1
+    "strict": true,
     "moduleResolution": "node",
     "baseUrl": ".",
     "rootDir": "./",
