@@ -1,28 +1,42 @@
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
-
 import { handleMessage } from "./core/router/inboundRouter";
+import { Workshop } from "./Workshop";
 
 export class Sidebar implements vscode.WebviewViewProvider {
-  _view?: vscode.WebviewView;
+  public _view?: vscode.WebviewView;
   _doc?: vscode.TextDocument;
 
   constructor(private readonly _extensionUri: vscode.Uri) {}
 
-  public resolveWebviewView(webviewView: vscode.WebviewView) {
+  public resolveWebviewView(
+    webviewView: vscode.WebviewView,
+    context: vscode.WebviewViewResolveContext,
+    _token: vscode.CancellationToken
+  ) {
     this._view = webviewView;
 
     webviewView.webview.options = {
       // Allow scripts in the webview
       enableScripts: true,
-
-      localResourceRoots: [this._extensionUri],
+      localResourceRoots: [
+        vscode.Uri.joinPath(this._extensionUri, "media"),
+        vscode.Uri.joinPath(this._extensionUri, "out", "compiled"),
+      ],
     };
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-      // ROUTER IS HERE
-      webviewView.webview.onDidReceiveMessage(async (data) =>  handleMessage(data, webviewView.webview));
+    webviewView.onDidChangeVisibility(() => {
+      if (webviewView.visible) {
+        Workshop.show(this._extensionUri);
+      } else {
+        Workshop.hide();
+      }
+    });
+
+    // ROUTER IS HERE
+    webviewView.webview.onDidReceiveMessage(async (data) =>  handleMessage(data, webviewView.webview));
   }
 
   public revive(panel: vscode.WebviewView) {
@@ -32,7 +46,7 @@ export class Sidebar implements vscode.WebviewViewProvider {
   private _getHtmlForWebview(webview: vscode.Webview): string  {
     // uri to load script into webview
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Sidebar.js")
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "Sidebar.js")
     );
 
     // Uri to load styles into webview
@@ -50,7 +64,7 @@ export class Sidebar implements vscode.WebviewViewProvider {
 
     // Uri to load svelte component style element
     const styleMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Sidebar.css")
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "Sidebar.css")
     );
 
     // Use a nonce to only allow a specific script to be run.
@@ -63,10 +77,6 @@ export class Sidebar implements vscode.WebviewViewProvider {
 		<html lang="en">
 			<head>
 				<meta charset="UTF-8">
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-        -->
         <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'nonce-${nonce}';">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${cssUri}" rel="stylesheet">

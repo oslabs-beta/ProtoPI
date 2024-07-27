@@ -1,7 +1,5 @@
-import axios from "axios";
 import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
-
 import { handleMessage } from "./core/router/inboundRouter";
 
 export class Workshop {
@@ -46,6 +44,24 @@ export class Workshop {
     );
 
     Workshop.currentPanel = new Workshop(panel, extensionUri);
+  }
+
+  public static hide() {
+    if (Workshop.currentPanel) {
+      Workshop.currentPanel._panel.dispose();
+      Workshop.currentPanel = undefined;
+    }
+  }
+
+  public static show(extensionUri: vscode.Uri) {
+    if (!Workshop.currentPanel) {
+      Workshop.createOrShow(extensionUri);
+    } else {
+      const column = vscode.window.activeTextEditor
+        ? vscode.window.activeTextEditor.viewColumn
+        : undefined;
+      Workshop.currentPanel._panel.reveal(column);
+    }
   }
 
   public static kill() {
@@ -95,17 +111,13 @@ export class Workshop {
     const webview = this._panel.webview;
 
     this._panel.webview.html = this._getHtmlForWebview(webview);
-    webview.onDidReceiveMessage(async (data) => {
-
-
-        handleMessage(data, webview);
-    });
+    webview.onDidReceiveMessage(async (data) => handleMessage(data, webview));
   }
 
   private _getHtmlForWebview(webview: vscode.Webview): string {
-    // // And the uri we use to load this script in the webview
+    // And the uri we use to load this script in the webview
     const scriptUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out/compiled", "Workshop.js")
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "Workshop.js")
     );
 
     const styleVSCodeUri = webview.asWebviewUri(
@@ -117,7 +129,7 @@ export class Workshop {
       vscode.Uri.joinPath(this._extensionUri, "media", "reset.css")
     );
     const stylesMainUri = webview.asWebviewUri(
-      vscode.Uri.joinPath(this._extensionUri, "out", "compiled/Workshop.css")
+      vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "Workshop.css")
     );
 
     // Uri to load tailwind bundle - hoist to top of style declarations
@@ -132,10 +144,6 @@ export class Workshop {
 	  <html lang="en">
 	    <head>
 		    <meta charset="UTF-8">
-		    <!--
-			    Use a content security policy to only allow loading images from https or from our extension directory,
-			    and only allow scripts that have a specific nonce.
-        -->
         <meta http-equiv="Content-Security-Policy" content="img-src https: data:; style-src 'unsafe-inline' ${webview.cspSource}; script-src 'unsafe-eval' 'nonce-${nonce}';">
 		    <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="${cssUri}" rel="stylesheet">
@@ -143,7 +151,6 @@ export class Workshop {
         <link href="${stylesResetUri}" rel="stylesheet">
         <link href="${styleVSCodeUri}" rel="stylesheet">
         <script nonce="${nonce}">
-
           const vscode = acquireVsCodeApi();
           window.vscode = vscode;
         </script>
