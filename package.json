@@ -129,7 +129,7 @@
     "watch-old": "npm-run-all -p watch:*",
     "watch": "concurrently \"rollup -c -w\" \"node esbuild.js --watch\"",
     "watch:esbuild": "node esbuild.js --watch",
-    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "watch:tsc": "tsc --noEmit --watch --project src/tsconfig.json",
     "package": "yarn run check-types && yarn run lint && node esbuild.js --production",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",

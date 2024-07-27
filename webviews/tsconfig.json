@@ -1,32 +1,14 @@
 {
   "extends": "../node_modules/@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
-    "types": [
-      "node",
-      "conventional-commits-parser",
-      "crypto-js",
-      "sortablejs",
-      "type-is", 
-      "yaml"
-    ],
-    "strict": true,
+    "strict": true,1
     "moduleResolution": "node",
     "baseUrl": ".",
-    "paths": {
-      "svelte": [
-        "../node_modules/svelte"
-      ],   
-      "svelte/*": [
-        "../node_modules/svelte/*"
-      ]
-    }
+    "rootDir": "./",
+    "outDir": "../out_tsc/compiled",
   },
   "include": [
     "./**/*",
-    "../node_modules/svelte/@types/**/*",
-    "../types/**/*.d.ts"
   ],
-  "exclude": [
-    "../node_modules/*"
-  ]
+  "exclude": [ ]
 }
