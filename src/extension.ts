@@ -10,7 +10,6 @@ import * as vscode from "vscode";
  * ROUTER IMPORTS
  */
 import { postMessageToWebview } from "./core/router/outboundMailer";
-export const newRouter: boolean = true;
 /**
  * ROUTER IMPORTS
  */
@@ -44,19 +43,12 @@ export function activate(context: vscode.ExtensionContext) {
     //  Check if sidebar._view?.webview is not undefined. 
     //  If it is, the function is called, ensuring type safety.
     if (sidebar._view?.webview) {
-      if (!newRouter) {
-        // OLD ROUTER HERE
-        sidebar._view.webview.postMessage({
-          type: "openAPIFiles",
-          content: files,
-        });
-      } else {
-        // NEW ROUTER HERE
-        postMessageToWebview(sidebar._view.webview, {
-          type: "openAPIFiles",
-          content: files,
-        });
-      }
+
+      // NEW ROUTER HERE
+      postMessageToWebview(sidebar._view.webview, {
+        type: "openAPIFiles",
+        content: files,
+      });
     }
   });
 
@@ -84,7 +76,6 @@ export function activate(context: vscode.ExtensionContext) {
   // Uncomment the following line to make the Workshop panel appear on load
   Workshop.createOrShow(context.extensionUri);
 }
-
 
 // This method is called when your extension is deactivated
 export function deactivate() {

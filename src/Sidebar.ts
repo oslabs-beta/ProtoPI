@@ -2,7 +2,6 @@ import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
 import { handleMessage } from "./core/router/inboundRouter";
-import { newRouter } from './extension';
 
 export class Sidebar implements vscode.WebviewViewProvider {
   _view?: vscode.WebviewView;
@@ -22,39 +21,8 @@ export class Sidebar implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    if(!newRouter){
-      // USED TO RECEIVE DISPATCHED ACTIONS
-      webviewView.webview.onDidReceiveMessage(async (data) => {
-        switch (data.type) {
-          case "getFiles": {
-            if (!data.value) {
-              return;
-            }
-            vscode.window.showInformationMessage(data.value);
-            break;
-          }
-          case "startMock": {
-            if (!data.value) {
-              return;
-            }
-            vscode.window.showErrorMessage(data.value);
-            break;
-          }
-          case "onError": {
-            if (!data.value) {
-              return;
-            }
-            vscode.window.showErrorMessage(data.value);
-            break;
-          }
-        }
-      });
-    } else {
       // ROUTER IS HERE
-      webviewView.webview.onDidReceiveMessage(async (data) => {
-        handleMessage(data, webviewView.webview);
-      });
-    }
+      webviewView.webview.onDidReceiveMessage(async (data) =>  handleMessage(data, webviewView.webview));
   }
 
   public revive(panel: vscode.WebviewView) {

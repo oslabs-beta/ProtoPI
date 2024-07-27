@@ -3,8 +3,6 @@ import * as vscode from "vscode";
 import { getNonce } from "./getNonce";
 
 import { handleMessage } from "./core/router/inboundRouter";
-import { newRouter } from './extension';
-
 
 export class Workshop {
   /**
@@ -70,61 +68,13 @@ export class Workshop {
     // This happens when the user closes the panel or when the panel is closed programatically
     this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
-
-    if(!newRouter){
-      // // Handle messages from the webview
-      this._panel.webview.onDidReceiveMessage(
-        async (message) => {
-          console.log(JSON.stringify(message) + "panel view");
-          switch (message.type) {
-            case "makeFetchRequest":
-              if (!message.value) {
-                vscode.window.showInformationMessage(`No data`);
-                return;
-              }
-              vscode.window.showInformationMessage(
-                JSON.stringify(message.value.method) +
-                  JSON.stringify(message.value.requestUrl)
-              );
-              try {
-                const method = message.value.method;
-
-                // Make request
-                const res = await axios.get(message.value.requestUrl);
-
-                vscode.window.showInformationMessage(JSON.stringify(res.data));
-
-                // Send response to webview
-                this._panel.webview.postMessage({
-                  command: "sendFetchResponse",
-                  data: res.data,
-                });
-              } catch (err) {
-                if (err instanceof Error) {
-                  vscode.window.showErrorMessage(JSON.stringify(err));
-                  this._panel.webview.postMessage({
-                    command: "error",
-                    error: err.message,
-                  });
-                } else {
-                  vscode.window.showErrorMessage("An unknown error occurred");
-                }
-              }
-              break;
-          }
-        },
-        null,
-        this._disposables
-      );
-    } else {
-      this._panel.webview.onDidReceiveMessage(
-        async (message) => {
-          handleMessage(message, this._panel.webview);
-        },
-        null,
-        this._disposables
-      );
-    }
+    this._panel.webview.onDidReceiveMessage(
+      async (message) => {
+        handleMessage(message, this._panel.webview);
+      },
+      null,
+      this._disposables
+    );
   }
 
   public dispose() {
@@ -147,31 +97,8 @@ export class Workshop {
     this._panel.webview.html = this._getHtmlForWebview(webview);
     webview.onDidReceiveMessage(async (data) => {
 
-      if(!newRouter){
-        switch (data.type) {
-          case "onInfo": {
-            if (!data.value) {
-              return;
-            }
-            vscode.window.showInformationMessage(data.value);
-            break;
-          }
-          case "onError": {
-            if (!data.value) {
-              return;
-            }
-            vscode.window.showErrorMessage(data.value);
-            break;
-          }
-          // case "tokens": {
-          //   await Util.globalState.update(accessTokenKey, data.accessToken);
-          //   await Util.globalState.update(refreshTokenKey, data.refreshToken);
-          //   break;
-          // }
-        }
-      } else {
+
         handleMessage(data, webview);
-      }
     });
   }
 
@@ -198,7 +125,7 @@ export class Workshop {
       vscode.Uri.joinPath(this._extensionUri, "out", "compiled", "tailwind.css")
     );
 
-    // // Use a nonce to only allow specific scripts to be run
+    // Use a nonce to only allow specific scripts to be run
     const nonce = getNonce();
 
     return `<!DOCTYPE html>

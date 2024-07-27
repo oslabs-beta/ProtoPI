@@ -7,7 +7,6 @@ import { postMessageToWebview } from "./core/router/outboundMailer";
 import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
 import { Workshop } from "./Workshop";
 import { Sidebar } from "./Sidebar";
-import { newRouter } from "./extension";
 
 let mockServer: ChildProcess | null = null;
 const config = vscode.workspace.getConfiguration("protopi");
@@ -205,17 +204,12 @@ export function loadSubscriptions(context: vscode.ExtensionContext, sidebar: Sid
         const textContent = content.toString();
 
         if (sidebar._view?.webview) {
-          if (!newRouter) {
-            sidebar._view.webview.postMessage({
-              type: "fileContent",
-              content: textContent,
-            });
-          } else {
-            postMessageToWebview(sidebar._view.webview, {
-              type: "fileContent",
-              content: textContent,
-            });
-          }
+
+          postMessageToWebview(sidebar._view.webview, {
+            type: "fileContent",
+            content: textContent,
+          });
+          
         }
 
         console.log(`Opened file: ${selectedFile.label}`);
@@ -233,15 +227,11 @@ export function loadSubscriptions(context: vscode.ExtensionContext, sidebar: Sid
       console.log("Closing API File");
 
       if (sidebar._view?.webview) {
-        if (!newRouter) {
-          sidebar._view.webview.postMessage({
-            type: "closeFile",
-          });
-        } else {
-          postMessageToWebview(sidebar._view.webview, {
-            type: "closeFile",
-          });
-        }
+
+        postMessageToWebview(sidebar._view.webview, {
+          type: "closeFile",
+        });
+  
       }
 
       vscode.window.showInformationMessage("API file closed");
