@@ -5,13 +5,13 @@ import * as path from 'path';
 import terminate from 'terminate';
 
 import { ChildProcess, exec } from 'child_process';
-import { loadSubscriptions } from './subscriptions';
+import { loadSubscriptions } from './core/subscriptions/subscriptions';
 import { postMessageToWebview } from './core/router/outboundMailer';
 
 import { Workshop } from './Workshop';
 import { Sidebar } from './Sidebar';
 import { updateOpenAPIFiles } from './parseWorkspace';
-import { StatusBarManager } from './StatusBarManager';
+import { StatusBarManager } from './core/statusbar/StatusBarManager';
 
 // Fetch user's extension settings
 const config = vscode.workspace.getConfiguration("protopi");

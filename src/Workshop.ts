@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getNonce } from "./getNonce";
+import { getNonce } from "./core/nonce/getNonce";
 import { handleMessage } from "./core/router/inboundRouter";
 
 export class Workshop {

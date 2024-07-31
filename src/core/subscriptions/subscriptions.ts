@@ -3,11 +3,11 @@ import { exec, spawn, ChildProcess } from "child_process";
 import * as path from "path";
 import terminate from "terminate";
 
-import { postMessageToWebview } from "./core/router/outboundMailer";
-import { findSpecFiles, groupFilesByDirectory } from "./parseWorkspace";
-import { Workshop } from "./Workshop";
-import { Sidebar } from "./Sidebar";
-import { StatusBarManager } from './StatusBarManager';
+import { postMessageToWebview } from "../router/outboundMailer";
+import { findSpecFiles, groupFilesByDirectory } from "../../parseWorkspace";
+import { Workshop } from "../../Workshop";
+import { Sidebar } from "../../Sidebar";
+import { StatusBarManager } from '../statusbar/StatusBarManager';
 
 const config = vscode.workspace.getConfiguration("protopi");
 const prismPath = path.join(__dirname, "..", "node_modules", ".bin", "prism");
