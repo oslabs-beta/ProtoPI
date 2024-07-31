@@ -1,11 +1,15 @@
 {
+  "extends": "./src/tsconfig.base.json",
   "compilerOptions": {
-    "module": "Node16",
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "sourceMap": true,
-    "rootDir": "src",
-    "strict": true 
+    "rootDir": "./src",
+    "outDir": "./dist_tsc"
   },
-  "exclude": ["node_modules", ".vscode-test", "webviews"]
+  "include": [
+    "./src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "webviews",
+    ".vscode-test"
+  ]
 }

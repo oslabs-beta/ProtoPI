@@ -1,0 +1,3 @@
+export { 
+  handleFetchRequest 
+} from './methods';

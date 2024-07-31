@@ -1,11 +1,11 @@
 <script lang='ts'>
-  import { SidebarTabs } from '../../stores/tabStore.ts';
+  import { currentSidebarTab } from '../../stores/tabStore.ts';
   import MasterView from './views/MasterView.svelte';
   import ResponsesView from './views/ResponsesView.svelte';
   import RequestsView from './views/RequestsView.svelte';
 
   function setTab(tab) {
-    SidebarTabs.set(tab);
+    currentSidebarTab.set(tab);
   }
 
   import SplitViewButton from './../asset-library/buttons/ToOrganizeGeneralize/SplitViewButton.svelte'; // Import the SplitViewButton
@@ -34,9 +34,9 @@
 <div class="flex justify-around mb-5" role="tablist">
   <button
     class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent hover:bg-gray-800 focus:outline-none tab-button"
-    class:border-b-blue-500={$SidebarTabs === 'Responses'}
+    class:border-b-blue-500={$currentSidebarTab === 'Responses'}
     role="tab"
-    aria-selected={$SidebarTabs === 'Responses'}
+    aria-selected={$currentSidebarTab === 'Responses'}
     on:click={() => setTab('Responses')}
     on:keydown={(e) => e.key === 'Enter' && setTab('Responses')}
   >
@@ -44,9 +44,9 @@
   </button>
   <button
     class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent focus:outline-none tab-button"
-    class:border-b-blue-500={$SidebarTabs === 'Requests'}
+    class:border-b-blue-500={$currentSidebarTab === 'Requests'}
     role="tab"
-    aria-selected={$SidebarTabs === 'Requests'}
+    aria-selected={$currentSidebarTab === 'Requests'}
     on:click={() => setTab('Requests')}
     on:keydown={(e) => e.key === 'Enter' && setTab('Requests')}
   >
@@ -54,9 +54,9 @@
   </button>
   <button
   class="px-5 py-2 cursor-pointer text-center flex-grow transition duration-300 text-base outline-none font-normal border-b-2 border-transparent focus:outline-none tab-button"
-  class:border-b-blue-500={$SidebarTabs === 'Master'}
+  class:border-b-blue-500={$currentSidebarTab === 'Master'}
   role="tab"
-  aria-selected={$SidebarTabs === 'Master'}
+  aria-selected={$currentSidebarTab === 'Master'}
   on:click={() => setTab('Master')}
   on:keydown={(e) => e.key === 'Enter' && setTab('Master')}
 >
@@ -66,11 +66,11 @@
 </div>
 
 <div>
-  {#if $SidebarTabs === 'Master'}
+  {#if $currentSidebarTab === 'Master'}
     <MasterView {treeData} />
-  {:else if $SidebarTabs === 'Requests'}
+  {:else if $currentSidebarTab === 'Requests'}
     <RequestsView {treeData} />
-  {:else if $SidebarTabs === 'Responses'}
+  {:else if $currentSidebarTab === 'Responses'}
     <ResponsesView {treeData} />
   {/if}
 </div>

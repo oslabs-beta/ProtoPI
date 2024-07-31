@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "module": "Node16",
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "rootDir": "./",
+    "outDir": "../dist_tsc",
+    "sourceMap": true,
+    "strict": true 
+  },
+  "include": [
+    "./**/*",
+  ],
+  "exclude": [ ]
+}
