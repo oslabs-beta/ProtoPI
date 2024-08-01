@@ -186,9 +186,10 @@
   },
   "dependencies": {
     "@babel/code-frame": "^7.24.7",
-    "@stoplight/prism-cli": "^5.8.1",
+    "@stoplight/prism-cli": "^5.8.3",
     "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
+    "get-port": "^7.1.0",
     "github-markdown-css": "^5.6.1",
     "lodash.memoize": "^4.1.2",
     "marked": "^13.0.2",
