@@ -9,6 +9,7 @@ export function registerMockServerCommands(context: vscode.ExtensionContext, sta
   const serverManager = new MockServerManager(statusBarManager);
 
   context.subscriptions.push(
+      // Run a specific Prism mock server
       vscode.commands.registerCommand("ProtoPI.runPrismMock", async () => {
         const files = await updateOpenAPIFiles(context);
         if (files.length === 0) {
@@ -35,6 +36,19 @@ export function registerMockServerCommands(context: vscode.ExtensionContext, sta
         }
       }),
 
+      // Stop a specific running server
+      vscode.commands.registerCommand("ProtoPI.runPrismMockAll", async () => {
+        const files = await updateOpenAPIFiles(context);
+        if (files.length === 0) {
+          vscode.window.showErrorMessage("No API specification files found.");
+          return;
+        }
+        files.forEach(async file => {
+          const port = await getServerPort();
+          serverManager.startServer(port, file);
+        });
+      }),
+
       vscode.commands.registerCommand("ProtoPI.stopPrismMock", async () => {
         const runningServers = serverManager.getRunningServers();
         if (runningServers.length === 0) {
@@ -57,6 +71,43 @@ export function registerMockServerCommands(context: vscode.ExtensionContext, sta
         } else {
           vscode.window.showErrorMessage("No server selected");
         }
-      })
+      }),
+
+    // Run all servers linearly
+    vscode.commands.registerCommand("ProtoPI.runAllPrismMockServersLinearly", async () => {
+      const files = await updateOpenAPIFiles(context);
+      if (files.length === 0) {
+        vscode.window.showErrorMessage("No API specification files found.");
+        return;
+      }
+      await serverManager.startServersLinearly(files);
+    }),
+
+    // Run all servers concurrently
+    vscode.commands.registerCommand("ProtoPI.runAllPrismMockServersConcurrently", async () => {
+      const files = await updateOpenAPIFiles(context);
+      if (files.length === 0) {
+        vscode.window.showErrorMessage("No API specification files found.");
+        return;
+      }
+      await serverManager.startServersConcurrently(files);
+    }),
+
+    // Stop all servers linearly
+    vscode.commands.registerCommand("ProtoPI.stopAllPrismMockServersLinearly", async () => {
+      await serverManager.stopAllServersLinearly();
+    }),
+
+    // Stop all servers concurrently
+    vscode.commands.registerCommand("ProtoPI.stopAllPrismMockServersConcurrently", async () => {
+      await serverManager.stopAllServersConcurrently();
+    }),
+
+    // Print to console the status of servers
+    vscode.commands.registerCommand("ProtoPI.listAllPrismMockServers", async () => {
+      console.log("Listing all Prism Mock Servers:");
+      serverManager.logServerStatus();
+    }),
+
   );
 }
