@@ -1,0 +1,290 @@
+openapi: 3.0.0
+info:
+  title: UserProfile API
+  version: 1.2.0
+paths:
+  /user:
+    post:
+      summary: Creates a new user profile
+      description: This endpoint allows for the creation of various types of user profiles in the system, supporting different roles and permissions.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              admin:
+                summary: Admin user example
+                value:
+                  name: "Alice Admin"
+                  email: "aliceadmin@example.com"
+                  age: 34
+                  role: "admin"
+              guest:
+                summary: Guest user example
+                value:
+                  name: "Gary Guest"
+                  email: "garyguest@example.com"
+                  age: 28
+                  role: "guest"
+              member:
+                summary: Member user example
+                value:
+                  name: "Molly Member"
+                  email: "mollymember@example.com"
+                  age: 30
+                  role: "member"
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              admin:
+                summary: XML example for admin user
+                value: |
+                  <User>
+                    <name>Alice Admin</name>
+                    <email>aliceadmin@example.com</email>
+                    <age>34</age>
+                    <role>admin</role>
+                  </User>
+              guest:
+                summary: XML example for guest user
+                value: |
+                  <User>
+                    <name>Gary Guest</name>
+                    <email>garyguest@example.com</email>
+                    <age>28</age>
+                    <role>guest</role>
+                  </User>
+              member:
+                summary: XML example for member user
+                value: |
+                  <User>
+                    <name>Molly Member</name>
+                    <email>mollymember@example.com</email>
+                    <age>30</age>
+                    <role>member</role>
+                  </User>
+          text/plain:
+            schema:
+              type: string
+            examples:
+              admin:
+                summary: Plain text example for admin user
+                value: "User: Alice Admin, Email: aliceadmin@example.com, Age: 34, Role: admin"
+              guest:
+                summary: Plain text example for guest user
+                value: "User: Gary Guest, Email: garyguest@example.com, Age: 28, Role: guest"
+              member:
+                summary: Plain text example for member user
+                value: "User: Molly Member, Email: mollymember@example.com, Age: 30, Role: member"
+      responses:
+        '201':
+          description: Successfully created a new user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                adminResponse:
+                  summary: Successful JSON response for an admin user
+                  value:
+                    id: "a12345"
+                    role: "admin"
+                    message: "Admin profile created successfully"
+                guestResponse:
+                  summary: Successful JSON response for a guest user
+                  value:
+                    id: "g67890"
+                    role: "guest"
+                    message: "Guest profile created successfully"
+                memberResponse:
+                  summary: Successful JSON response for a regular member
+                  value:
+                    id: "b23456"
+                    role: "member"
+                    message: "Member profile created successfully"
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+              examples:
+                adminResponse:
+                  summary: Successful XML response for an admin user
+                  value: |
+                    <UserResponse>
+                      <id>a12345</id>
+                      <role>admin</role>
+                      <message>Admin profile created successfully</message>
+                    </UserResponse>
+                guestResponse:
+                  summary: Successful XML response for a guest user
+                  value: |
+                    <UserResponse>
+                      <id>g67890</id>
+                      <role>guest</role>
+                      <message>Guest profile created successfully</message>
+                    </UserResponse>
+                memberResponse:
+                  summary: Successful XML response for a regular member
+                  value: |
+                    <UserResponse>
+                      <id>b23456</id>
+                      <role>member</role>
+                      <message>Member profile created successfully</message>
+                    </UserResponse>
+            text/plain:
+              schema:
+                type: string
+              examples:
+                adminResponse:
+                  summary: Simple plain text response for an admin user
+                  value: "Admin profile created successfully with ID: a12345"
+                guestResponse:
+                  summary: Simple plain text response for a guest user
+                  value: "Guest profile created successfully with ID: g67890"
+                memberResponse:
+                  summary: Simple plain text response for a regular member
+                  value: "Member profile created successfully with ID: b23456"
+        '202':
+          description: Request accepted but processing is not complete. The user profile is being created and may involve additional verification or provisioning tasks.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                processing:
+                  summary: JSON example for a processing response
+                  value:
+                    id: "temp12345"
+                    status: "processing"
+                    message: "User profile creation in progress; completion status will be notified separately."
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  status:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                processing:
+                  summary: XML example for a processing response
+                  value: |
+                    <Response>
+                      <id>temp12345</id>
+                      <status>processing</status>
+                      <message>User profile creation in progress; completion status will be notified separately.</message>
+                    </Response>
+            text/plain:
+              schema:
+                type: string
+              examples:
+                processing:
+                  summary: Plain text example for a processing response
+                  value: "Processing: User profile creation is underway with temporary ID temp12345; status will be updated upon completion."
+        '204':
+          description: The request was successfully processed, but there is no content to return. This is typically used after a successful action where the response body is not needed, such as updating or deleting a user profile.
+        '205':
+          description: The request was successfully processed, and the client should reset the document view which caused the request to be sent. This is useful for actions that require the client to clear form inputs or refresh the state of the UI.
+        '404':
+          description: The specified user profile could not be found or does not exist. This may occur if the user ID does not match any records or the profile has been deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                genericNotFound:
+                  summary: Generic not found JSON response
+                  value:
+                    error: "404"
+                    message: "The requested profile is not available or does not exist"
+                userDeleted:
+                  summary: Response when user has been deleted
+                  value:
+                    error: "404"
+                    message: "The user profile has been deleted and is no longer accessible"
+                userNotCreated:
+                  summary: Response when user never existed
+                  value:
+                    error: "404"
+                    message: "No user profile exists for the provided ID"
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+              examples:
+                genericNotFound:
+                  summary: Generic not found XML response
+                  value: |
+                    <Error>
+                      <error>404</error>
+                      <message>The requested profile is not available or does not exist</message>
+                    </Error>
+                userDeleted:
+                  summary: XML response for a deleted user
+                  value: |
+                    <Error>
+                      <error>404</error>
+                      <message>The user profile has been deleted and is no longer accessible</message>
+                    </Error>
+                userNotCreated:
+                  summary: XML response when user never existed
+                  value: |
+                    <Error>
+                      <error>404</error>
+                      <message>No user profile exists for the provided ID</message>
+                    </Error>
+            text/plain:
+              schema:
+                type: string
+              examples:
+                genericNotFound:
+                  summary: Simple plain text not found response
+                  value: "Error 404: The requested profile is not available or does not exist"
+                userDeleted:
+                  summary: Plain text response for deleted user
+                  value: "Error 404: The user profile has been deleted and is no longer accessible"
+                userNotCreated:
+                  summary: Plain text response when user never existed
+                  value: "Error 404: No user profile exists for the provided ID"
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        age:
+          type: integer
+        role:
+          type: string
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        role:
+          type: string
+        message:
+          type: string

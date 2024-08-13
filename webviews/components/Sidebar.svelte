@@ -12,18 +12,20 @@
    * to-vscodeMessages - are message that are sent to vscode extension
   */
  import { 
-   handleCloseAPIFile,
+    handleCloseAPIFile,
     openFileDialog,
     handleFileChange,
     setFileInput,
   } from '../core/vscodeMethods/to-vscodeMessages';
 
+  import { logAllData } from '../stores/fileMgmt/fopStore/utils/logStores';
   import "../tailwind.css";
   import { onMount } from "svelte";
   import { writable } from 'svelte/store';
 
   import MultiActionDropButton from './asset-library/buttons/MultiActionDropButton/MultiActionDropButton.svelte';
   import DisplayArea from './sidebar/DisplayArea.svelte';
+  import TestArea from './test/TestArea'; // Importing TestArea
 
   let fileInput;
   let tsvscode;
@@ -59,7 +61,8 @@
 
   let actions = [
     { label: "Open API File", action: openFileDialog },
-    { label: "Close API File", action: handleCloseAPIFile }
+    { label: "Close API File", action: handleCloseAPIFile },
+    { label: "Log All Data", action: logAllData }
   ];
 
 </script>
@@ -80,6 +83,7 @@
 
   <div class="w-full p-5 text-white box-border">
     <DisplayArea />
+    <TestArea message={"Hello from Main Component!"} />
   </div>
 
   <hr class="border-2 my-4" />

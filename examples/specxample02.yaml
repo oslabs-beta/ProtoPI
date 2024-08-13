@@ -1,0 +1,2137 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  version: 1.0.0
+servers:
+  - url: 'https://api.example.com/v1'
+paths:
+  /user:
+    get:
+      summary: Retrieve user information
+      operationId: getUser
+      description: Fetches detailed information about a user by their unique identifier.
+      tags:
+        - User Operations
+      parameters:
+        - name: userId
+          in: query
+          description: Unique identifier of the user to retrieve.
+          required: true
+          schema:
+            type: string
+        - name: includeDetails
+          in: query
+          description: Flag to indicate if extended details should be included in the response.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: Authorization
+          in: header
+          description: Bearer token necessary to access user data.
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful retrieval of user data.
+          headers:
+            X-Rate-Limit:
+              description: Calls per hour allowed by the client
+              schema:
+                type: integer
+            X-Expires-After:
+              description: Date when the token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  additionalDetails:
+                    type: object
+                    properties:
+                      lastLogin:
+                        type: string
+                        format: date-time
+                      status:
+                        type: string
+              examples:
+                basicInfo:
+                  value:
+                    userId: "12345"
+                    username: "exampleuser"
+                    email: "user@example.com"
+                fullInfo:
+                  value:
+                    userId: "12345"
+                    username: "exampleuser"
+                    email: "user@example.com"
+                    additionalDetails:
+                      lastLogin: "2024-08-10T14:48:00Z"
+                      status: "active"
+        '400':
+          description: Bad request if the userId is not supplied or malformed.
+        '401':
+          description: Unauthorized if the token is invalid or expired.
+        '404':
+          description: Not found if no user matches the given userId.
+      deprecated: false
+      externalDocs:
+        description: More details on the user retrieval API.
+        url: 'https://docs.exampleapi.com/user-endpoint'
+    post:
+      summary: Create a new user
+      operationId: createUser
+      description: Registers a new user with the system. Optionally, a welcome email can be sent.
+      tags:
+        - User Registration
+      parameters:
+        - name: sendWelcomeEmail
+          in: query
+          description: Specify whether to send a welcome email to the new user.
+          required: false
+          schema:
+            type: boolean
+            default: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+              properties:
+                username:
+                  type: string
+                  example: newUser
+                email:
+                  type: string
+                  format: email
+                  example: newuser@example.com
+                password:
+                  type: string
+                  format: password
+                  example: securepassword123
+                role:
+                  type: string
+                  description: Role to assign to the user.
+                  enum:
+                    - user
+                    - admin
+                  default: user
+                preferences:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                      enum:
+                        - English
+                        - Spanish
+                        - French
+                      default: English
+                    notifications:
+                      type: boolean
+                      default: true
+          application/xml:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                preferences:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                    notifications:
+                      type: boolean
+            examples:
+              exampleXml:
+                value: |
+                  <user>
+                    <username>newUser</username>
+                    <email>newuser@example.com</email>
+                    <password>securepassword123</password>
+                    <role>user</role>
+                    <preferences>
+                      <language>English</language>
+                      <notifications>true</notifications>
+                    </preferences>
+                  </user>
+          text/plain:
+            schema:
+              type: string
+            examples:
+              exampleText:
+                value: "username=newUser, email=newuser@example.com, password=securepassword123, role=user, preferences={language=English, notifications=true}"
+      responses:
+        '201':
+          description: User created successfully
+          headers:
+            Location:
+              description: URI of the created user resource
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    description: Unique identifier for the newly created user
+                  username:
+                    type: string
+                  email:
+                    type: string
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+              examples:
+                responseExampleXml:
+                  value: |
+                    <user>
+                      <userId>12345</userId>
+                      <username>newUser</username>
+                      <email>newuser@example.com</email>
+                    </user>
+            text/plain:
+              schema:
+                type: string
+              examples:
+                responseExampleText:
+                  value: "userId=12345, username=newUser, email=newuser@example.com"
+        '400':
+          description: Invalid input data
+        '409':
+          description: User already exists
+      security:
+        - ApiKeyAuth: []
+    put:
+      summary: Update user details
+      operationId: updateUser
+      description: Allows for updating specific details of a user. Partial updates are supported; only provide fields that need to be updated.
+      tags:
+        - User Management
+      parameters:
+        - name: action
+          in: query
+          description: Specifies the type of update action, e.g., 'softUpdate' or 'fullUpdate'.
+          required: false
+          schema:
+            type: string
+            enum:
+              - softUpdate
+              - fullUpdate
+            default: softUpdate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userId
+              properties:
+                userId:
+                  type: string
+                  description: The unique identifier of the user.
+                username:
+                  type: string
+                  nullable: true
+                  description: New username if updating the username.
+                email:
+                  type: string
+                  format: email
+                  nullable: true
+                  description: New email address if updating the email.
+                status:
+                  type: string
+                  nullable: true
+                  description: Update the status of the user, e.g., active, inactive, or pending.
+                preferences:
+                  type: object
+                  nullable: true
+                  properties:
+                    language:
+                      type: string
+                      enum:
+                        - English
+                        - Spanish
+                        - French
+                    notifications:
+                      type: boolean
+            examples:
+              exampleJson:
+                value:
+                  userId: "12345"
+                  username: "updatedUser"
+                  email: "updated@example.com"
+                  status: "active"
+                  preferences:
+                    language: "Spanish"
+                    notifications: true
+          application/xml:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                username:
+                  type: string
+                email:
+                  type: string
+                status:
+                  type: string
+                preferences:
+                  type: object
+                  properties:
+                    language:
+                      type: string
+                    notifications:
+                      type: boolean
+            examples:
+              exampleXml:
+                value: |
+                  <user>
+                    <userId>12345</userId>
+                    <username>updatedUser</username>
+                    <email>updated@example.com</email>
+                    <status>active</status>
+                    <preferences>
+                      <language>Spanish</language>
+                      <notifications>true</notifications>
+                    </preferences>
+                  </user>
+          text/plain:
+            schema:
+              type: string
+            examples:
+              exampleText:
+                value: "userId=12345, username=updatedUser, email=updated@example.com, status=active, preferences={language=Spanish, notifications=true}"
+      responses:
+        '200':
+          description: User details updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  status:
+                    type: string
+                  preferences:
+                    type: object
+                    properties:
+                      language:
+                        type: string
+                      notifications:
+                        type: boolean
+              examples:
+                responseExampleJson:
+                  value:
+                    userId: "12345"
+                    username: "updatedUser"
+                    email: "updated@example.com"
+                    status: "active"
+                    preferences:
+                      language: "Spanish"
+                      notifications: true
+            application/xml:
+              schema:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  status:
+                    type: string
+                  preferences:
+                    type: object
+                    properties:
+                      language:
+                        type: string
+                      notifications:
+                        type: boolean
+              examples:
+                responseExampleXml:
+                  value: |
+                    <user>
+                      <userId>12345</userId>
+                      <username>updatedUser</username>
+                      <email>updated@example.com</email>
+                      <status>active</status>
+                      <preferences>
+                        <language>Spanish</language>
+                        <notifications>true</notifications>
+                      </preferences>
+                    </user>
+            text/plain:
+              schema:
+                type: string
+              examples:
+                responseExampleText:
+                  value: "userId=12345, username=updatedUser, email=updated@example.com, status=active, preferences={language=Spanish, notifications=true}"
+        '400':
+          description: Bad request if the requestBody is malformed or missing necessary fields.
+        '404':
+          description: Not found if no user matches the given userId.
+        '409':
+          description: Conflict if there are any issues with updating the user details (e.g., email already in use).
+      deprecated: false
+      security:
+        - ApiKeyAuth: []
+  /users/{userId}:
+    get:
+      summary: Get a single user
+      description: Retrieves detailed information about a user by their unique identifier. This operation supports content negotiation to deliver data in either JSON or XML format.
+      tags:
+        - User Operations
+      operationId: getUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Unique identifier of the user
+          schema:
+            type: string
+        - name: Accept-Language
+          in: header
+          description: Language preference for the response, defaults to English.
+          schema:
+            type: string
+            default: en
+      responses:
+        '200':
+          description: Detailed information about a user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                jsonExample:
+                  summary: Example response in JSON
+                  value:
+                    userId: "1"
+                    username: "exampleuser"
+                    email: "user@example.com"
+                    role: "admin"
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                xmlExample:
+                  summary: Example response in XML
+                  value: |
+                    <user>
+                      <userId>1</userId>
+                      <username>exampleuser</username>
+                      <email>user@example.com</email>
+                      <role>admin</role>
+                    </user>
+        '400':
+          description: Bad Request - The request was invalid, often due to missing userId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found - No user matches the given userId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '406':
+          description: Not Acceptable - The requested format is not available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal Server Error - Something went wrong on our end
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      summary: Update a user
+      description: Updates detailed information for a specific user identified by their unique identifier. Supports partial updates.
+      tags:
+        - User Operations
+      operationId: updateUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Unique identifier of the user to update.
+          schema:
+            type: string
+        - name: If-Match
+          in: header
+          required: false
+          description: ETag value to ensure that the update occurs only if the client’s last known state matches the server's current state.
+          schema:
+            type: string
+
+
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              updateUserExample:
+                summary: Example JSON input for updating a user's basic information
+                value:
+                  username: "updatedUsername"
+                  email: "updatedEmail@example.com"
+                  role: "user"
+              updateRoleExample:
+                summary: Example JSON input for updating a user's role
+                value:
+                  role: "admin"
+              updatePreferencesExample:
+                summary: Example JSON input for updating user preferences
+                value:
+                  preferences:
+                    language: "French"
+                    notifications: false
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              updateUserExampleXml:
+                summary: Example XML input for updating a user
+                value: |
+                  <user>
+                    <username>updatedUsername</username>
+                    <email>updatedEmail@example.com</email>
+                    <role>user</role>
+                  </user>
+              updateRoleExampleXml:
+                summary: Example XML input for updating a user's role
+                value: |
+                  <user>
+                    <role>admin</role>
+                  </user>
+              updatePreferencesExampleXml:
+                summary: Example XML input for updating user preferences
+                value: |
+                  <user>
+                    <preferences>
+                      <language>French</language>
+                      <notifications>false</notifications>
+                    </preferences>
+                  </user>
+      responses:
+        '200':
+          description: User updated successfully
+          headers:
+            ETag:
+              description: An ETag header that provides the new version of the user resource, used for managing cache consistency and to avoid concurrency issues.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                basicUpdateResponse:
+                  summary: Example JSON response after a basic user update
+                  value:
+                    userId: "1"
+                    username: "updatedUsername"
+                    email: "updatedEmail@example.com"
+                    role: "user"
+                roleUpdateResponse:
+                  summary: Example JSON response after updating a user's role
+                  value:
+                    userId: "1"
+                    username: "updatedUsername"
+                    email: "updatedEmail@example.com"
+                    role: "admin"
+                preferencesUpdateResponse:
+                  summary: Example JSON response after updating user preferences
+                  value:
+                    userId: "1"
+                    username: "updatedUsername"
+                    email: "updatedEmail@example.com"
+                    role: "user"
+                    preferences:
+                      language: "Spanish"
+                      notifications: true
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/User'
+              examples:
+                basicUpdateResponseXml:
+                  summary: Example XML response after a basic user update
+                  value: |
+                    <user>
+                      <userId>1</userId>
+                      <username>updatedUsername</username>
+                      <email>updatedEmail@example.com</email>
+                      <role>user</role>
+                    </user>
+                roleUpdateResponseXml:
+                  summary: Example XML response after updating a user's role
+                  value: |
+                    <user>
+                      <userId>1</userId>
+                      <username>updatedUsername</username>
+                      <email>updatedEmail@example.com</email>
+                      <role>admin</role>
+                    </user>
+                preferencesUpdateResponseXml:
+                  summary: Example XML response after updating user preferences
+                  value: |
+                    <user>
+                      <userId>1</userId>
+                      <username>updatedUsername</username>
+                      <email>updatedEmail@example.com</email>
+                      <role>user</role>
+                      <preferences>
+                        <language>Spanish</language>
+                        <notifications>true</notifications>
+                      </preferences>
+                    </user>
+        '400':
+          description: Bad request due to invalid input format or data. This usually occurs if the request body does not match the schema expectations, such as missing required fields or incorrect data types.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingField:
+                  summary: Example error for missing required field
+                  value:
+                    code: 400
+                    message: "Missing required field: email"
+                invalidFormat:
+                  summary: Example error for invalid data format
+                  value:
+                    code: 400
+                    message: "Invalid format for email address provided."
+        '404':
+          description: Not found - No user matches the given userId. This response occurs when the specified userId does not exist in the database.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                userNotFound:
+                  summary: Example error when user ID is not found
+                  value:
+                    code: 404
+                    message: "User with the specified userId was not found."
+        '412':
+          description: Precondition Failed - This error occurs if the provided ETag does not match the current resource state, indicating that the resource has been modified since the last time it was fetched by the client.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                etagMismatch:
+                  summary: Example error for ETag mismatch
+                  value:
+                    code: 412
+                    message: "ETag mismatch: Resource has been modified."
+        '500':
+          description: Internal Server Error - Something went wrong on our end. This generic error indicates an unexpected condition that prevented the server from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                internalError:
+                  summary: Example error for an internal server issue
+                  value:
+                    code: 500
+                    message: "An unexpected error occurred. Please try again later."
+    delete:
+      summary: Delete a user
+      description: Permanently removes a user from the system. This operation cannot be undone. Ensure the userId corresponds to the user intended for deletion to avoid accidental data loss.
+      tags:
+        - User Operations
+      operationId: deleteUser
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Unique identifier of the user to be deleted. The user must exist, and the requester must have appropriate permissions to perform this operation.
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted successfully. No content is returned, and the user is permanently removed from the database.
+        '400':
+          description: Bad request. The request could not be understood by the server due to malformed syntax.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                malformedRequest:
+                  summary: Example error when the request syntax is incorrect
+                  value:
+                    code: 400
+                    message: "Malformed request syntax. Please check the userId format."
+        '403':
+          description: Forbidden. The user making the request does not have the necessary permissions to delete the user.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                permissionDenied:
+                  summary: Example error for lack of permissions
+                  value:
+                    code: 403
+                    message: "You do not have permission to delete this user."
+        '404':
+          description: Not found. No user matches the given userId.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFound:
+                  summary: Example error when the user ID does not exist
+                  value:
+                    code: 404
+                    message: "No user found with the specified userId."
+        '500':
+          description: Internal Server Error. A problem was encountered on the server side that prevented the operation from being completed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                internalServerError:
+                  summary: Example error for an internal server issue
+                  value:
+                    code: 500
+                    message: "An unexpected error occurred. Please try again later."
+  /products:
+    get:
+      summary: Retrieve a list of products
+      description: >
+        Fetches a list of products, optionally filtered by category, price range, and stock status.
+        Supports sorting and pagination for large datasets.
+      tags:
+        - Product
+      parameters:
+        - name: category
+          in: query
+          description: Filter products by category.
+          required: false
+          schema:
+            type: string
+        - name: price_min
+          in: query
+          description: Minimum price filter.
+          required: false
+          schema:
+            type: number
+        - name: price_max
+          in: query
+          description: Maximum price filter.
+          required: false
+          schema:
+            type: number
+        - name: in_stock
+          in: query
+          description: Filter only products that are in stock.
+          required: false
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          description: Sort the result by a specified field, e.g., price or name.
+          required: false
+          schema:
+            type: string
+            enum:
+              - price_asc
+              - price_desc
+              - name_asc
+              - name_desc
+        - name: page
+          in: query
+          description: Specify the page of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          description: Limit the number of products per page (pagination).
+          required: false
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+      responses:
+        '200':
+          description: A list of products that match the filter criteria.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+              examples:
+                byCategory:
+                  summary: Example response for products filtered by category 'Electronics'
+                  value:
+                    - id: "1"
+                      name: "Laptop Pro 17"
+                      category: "Electronics"
+                      price: 1299.99
+                      inStock: true
+                    - id: "3"
+                      name: "Smartphone X2"
+                      category: "Electronics"
+                      price: 899.99
+                      inStock: true
+                byPriceRange:
+                  summary: Example response for products filtered by price range 100 to 300
+                  value:
+                    - id: "4"
+                      name: "Bluetooth Headphones"
+                      category: "Electronics"
+                      price: 150.00
+                      inStock: true
+                    - id: "5"
+                      name: "Electric Toothbrush Advanced"
+                      category: "Personal Care"
+                      price: 199.99
+                      inStock: true
+                sortedByPriceDesc:
+                  summary: Example response for products sorted by descending price
+                  value:
+                    - id: "1"
+                      name: "Laptop Pro 17"
+                      category: "Electronics"
+                      price: 1299.99
+                      inStock: true
+                    - id: "3"
+                      name: "Smartphone X2"
+                      category: "Electronics"
+                      price: 899.99
+                      inStock: true
+                    - id: "5"
+                      name: "Electric Toothbrush Advanced"
+                      category: "Personal Care"
+                      price: 199.99
+                      inStock: true
+                withPagination:
+                  summary: Example response for products on page 2, limit 2
+                  value:
+                    - id: "3"
+                      name: "Smartphone X2"
+                      category: "Electronics"
+                      price: 899.99
+                      inStock: true
+                    - id: "4"
+                      name: "Bluetooth Headphones"
+                      category: "Electronics"
+                      price: 150.00
+                      inStock: true
+                byStock:
+                  summary: Example response for products filtered by stock availability
+                  value:
+                    - id: "6"
+                      name: "Desk Lamp"
+                      category: "Home Appliances"
+                      price: 45.99
+                      inStock: true
+                    - id: "7"
+                      name: "Garden Chair"
+                      category: "Outdoor"
+                      price: 75.00
+                      inStock: true
+                combinedFilters:
+                  summary: Example response for products filtered by category 'Home Appliances' and price under 100
+                  value:
+                    - id: "6"
+                      name: "Desk Lamp"
+                      category: "Home Appliances"
+                      price: 45.99
+                      inStock: true
+                    - id: "8"
+                      name: "Toaster"
+                      category: "Home Appliances"
+                      price: 25.99
+                      inStock: false
+                sortedByCategory:
+                  summary: Example response for products sorted by category in ascending order
+                  value:
+                    - id: "5"
+                      name: "Electric Toothbrush Advanced"
+                      category: "Personal Care"
+                      price: 199.99
+                      inStock: true
+                    - id: "2"
+                      name: "Water Bottle"
+                      category: "Sporting Goods"
+                      price: 25.00
+                      inStock: false
+                    - id: "3"
+                      name: "Smartphone X2"
+                      category: "Electronics"
+                      price: 899.99
+                      inStock: true
+                byPriceAndStock:
+                  summary: Example response for products filtered by price over 800 and in stock
+                  value:
+                    - id: "1"
+                      name: "Laptop Pro 17"
+                      category: "Electronics"
+                      price: 1299.99
+                      inStock: true
+                    - id: "3"
+                      name: "Smartphone X2"
+                      category: "Electronics"
+                      price: 899.99
+                      inStock: true
+        '400':
+          description: Bad request. This error occurs if the query parameters are missing, invalid, or malformed.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingParameter:
+                  summary: Example error when a required query parameter is missing
+                  value:
+                    code: 400
+                    message: "Required parameter 'category' is missing."
+                invalidParameter:
+                  summary: Example error when a parameter is invalid
+                  value:
+                    code: 400
+                    message: "Invalid price range. 'price_min' cannot be greater than 'price_max'."
+                invalidParameterType:
+                  summary: Example error when the parameter type is incorrect
+                  value:
+                    code: 400
+                    message: "Invalid parameter type for 'price_max'. Expected number, received string."
+                invalidDateFormat:
+                  summary: Example error when a date parameter is in the wrong format
+                  value:
+                    code: 400
+                    message: "Invalid date format for 'release_date'. Expected 'YYYY-MM-DD', received '02/30/2020'."
+                parameterValueOutOfRange:
+                  summary: Example error when a parameter value is out of an acceptable range
+                  value:
+                    code: 400
+                    message: "Parameter 'discount' out of range. Must be between 0 and 50."
+                parameterNotAllowed:
+                  summary: Example error when an unsupported or unknown parameter is provided
+                  value:
+                    code: 400
+                    message: "Parameter 'color' is not supported for filtering in this endpoint."
+                excessPaginationLimits:
+                  summary: Example error when pagination limits are exceeded
+                  value:
+                    code: 400
+                    message: "Pagination limit exceeded. 'limit' must not exceed 100 items per page."
+        '401':
+          description: Unauthorized. You must be authenticated and have the appropriate permissions to access this endpoint. This error occurs if the authentication credentials are missing, invalid, or expired.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingCredentials:
+                  summary: Example error when authentication credentials are not provided
+                  value:
+                    code: 401
+                    message: "Authentication credentials were not provided. You must provide an authentication token."
+                invalidToken:
+                  summary: Example error when the provided token is invalid
+                  value:
+                    code: 401
+                    message: "Invalid token. The token provided is malformed or expired. Please request a new token."
+                expiredToken:
+                  summary: Example error when the token has expired
+                  value:
+                    code: 401
+                    message: "Expired token. Your session has expired. Please log in again."
+                insufficientPermissions:
+                  summary: Example error when the user does not have the required permissions
+                  value:
+                    code: 401
+                    message: "Insufficient permissions. Your account does not have the necessary permissions to access this resource."
+                authenticationTypeNotSupported:
+                  summary: Example error when the authentication type used is not supported
+                  value:
+                    code: 401
+                    message: "Unsupported authentication type. Please use the correct authentication method for this endpoint."
+        '403':
+          description: Forbidden. Although you are authenticated, you do not have the necessary permissions to perform this action or access this resource. This could be due to restrictions based on user roles, resource ownership, or specific organizational policies.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                forbiddenAction:
+                  summary: Example error when a user tries to perform a restricted action
+                  value:
+                    code: 403
+                    message: "You do not have permission to perform this action."
+                accessDeniedResource:
+                  summary: Example error when a user tries to access a resource they do not own
+                  value:
+                    code: 403
+                    message: "Access denied. You do not own this resource and cannot access it."
+                roleRestrictedAction:
+                  summary: Example error when an action is restricted to certain user roles
+                  value:
+                    code: 403
+                    message: "Action restricted. Your current role does not allow you to update these settings."
+                regionBlocked:
+                  summary: Example error when access is restricted based on geographic region
+                  value:
+                    code: 403
+                    message: "Access from your current location is restricted due to regional policies."
+                featureNotIncluded:
+                  summary: Example error when trying to access a feature not included in the current subscription plan
+                  value:
+                    code: 403
+                    message: "This feature is not included in your current subscription plan. Please upgrade to access this feature."
+        '404':
+          description: Not Found. The requested resource was not found on the server. This error can occur for various reasons, such as invalid URLs, the absence of an entity with a specified identifier, or unavailable content at the requested endpoint.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                notFoundResource:
+                  summary: Example error when a product resource does not exist
+                  value:
+                    code: 404
+                    message: "The requested product with the given ID does not exist."
+                notFoundUser:
+                  summary: Example error when a user is not found
+                  value:
+                    code: 404
+                    message: "The user with the specified ID was not found."
+                notFoundEndpoint:
+                  summary: Example error when an API endpoint is invalid
+                  value:
+                    code: 404
+                    message: "The requested API endpoint does not exist. Please check the URL and try again."
+                notFoundFile:
+                  summary: Example error when a file is requested but not found
+                  value:
+                    code: 404
+                    message: "The requested file could not be found. Please verify the file path and try again."
+                notFoundPage:
+                  summary: Example error when a specific page or section is requested but does not exist
+                  value:
+                    code: 404
+                    message: "The page you are looking for does not exist. It may have been moved or deleted."
+        '408':
+          description: Request Timeout. This error indicates that the server timed out waiting for the request. This could be due to a client taking too long to send the request, a server overload delaying processing, or a network issue.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                initialRequestTimeout:
+                  summary: Example error when the initial request data is not received in time
+                  value:
+                    code: 408
+                    message: "The server did not receive a complete request message within the time that it was prepared to wait."
+                processingTimeout:
+                  summary: Example error when a request takes too long to process due to server load
+                  value:
+                    code: 408
+                    message: "Request processing exceeded the time limit due to high server load. Please try again later."
+                networkDelayTimeout:
+                  summary: Example error due to significant network delays or disruptions
+                  value:
+                    code: 408
+                    message: "Network delay prevented the request from completing in a timely manner. Please check your network connection and try again."
+                largeUploadTimeout:
+                  summary: Example error when uploading a large file takes longer than the server timeout
+                  value:
+                    code: 408
+                    message: "The upload took too long to complete and the server timed out. Consider reducing the file size or increasing your connection speed."
+                databaseQueryTimeout:
+                  summary: Example error when a database query does not complete within the timeout period
+                  value:
+                    code: 408
+                    message: "The database query timed out due to complexity or load issues. Please optimize your query and try again."
+        '429':
+          description: Too Many Requests. You have sent too many requests in a given amount of time ("rate limited"). This error is used to enforce rate limiting policies to prevent abuse and ensure service stability for all users.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                generalRateLimitExceeded:
+                  summary: Example error for a general rate limit being exceeded
+                  value:
+                    code: 429
+                    message: "Rate limit exceeded. You have made too many requests within a short period. Please wait before sending more requests."
+                apiSpecificRateLimit:
+                  summary: Example error specific to a particular API endpoint rate limit
+                  value:
+                    code: 429
+                    message: "Rate limit exceeded for this API endpoint. Reduce the frequency of requests to this endpoint."
+                userSpecificRateLimit:
+                  summary: Example error for exceeding rate limits specific to a user account
+                  value:
+                    code: 429
+                    message: "Your account's rate limit has been exceeded. Please upgrade your subscription for higher limits."
+                ipSpecificRateLimit:
+                  summary: Example error for too many requests from a single IP address
+                  value:
+                    code: 429
+                    message: "Too many requests detected from your IP address. Consider spreading out your API calls."
+                burstLimitExceeded:
+                  summary: Example error when burst request limits are exceeded
+                  value:
+                    code: 429
+                    message: "Burst rate limit exceeded. Please moderate your request rate."
+                serviceSpecificRateLimit:
+                  summary: Example error for service-specific rate limiting under high demand
+                  value:
+                    code: 429
+                    message: "Due to high demand, rate limits for this service have temporarily been reduced. Please be patient and try your requests at a later time."
+        '500':
+          description: Internal Server Error. An unexpected error occurred that prevented the server from fulfilling the request. This error typically indicates an issue with the server's internal processes or configurations that requires attention from the server's operations team.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                genericInternalServerError:
+                  summary: General example error for an unspecified internal server issue
+                  value:
+                    code: 500
+                    message: "An unexpected internal error occurred. Please try again later, and if the problem persists, contact support."
+                databaseConnectionError:
+                  summary: Example error when the server cannot connect to the database
+                  value:
+                    code: 500
+                    message: "Database connection error. Unable to connect to the database, which is impacting our services."
+                configurationError:
+                  summary: Example error due to misconfiguration on the server
+                  value:
+                    code: 500
+                    message: "Server configuration issue detected. Please report this to the technical team for resolution."
+                resourceOverloadError:
+                  summary: Example error when server resources are overloaded
+                  value:
+                    code: 500
+                    message: "Server resource overload. High traffic or resource demand has temporarily degraded our service."
+                middlewareFailure:
+                  summary: Example error caused by a failure in server middleware
+                  value:
+                    code: 500
+                    message: "Middleware failure. A critical middleware component has failed, disrupting request processing."
+                thirdPartyServiceFailure:
+                  summary: Example error due to a third-party service failure that the server relies on
+                  value:
+                    code: 500
+                    message: "Failure in a third-party service. One of our key service providers is down, which is affecting our operations."
+        '503':
+          description: Service Unavailable. The server is currently unable to handle the request due to temporary overload, scheduled maintenance, or other dependencies failing to respond correctly. This typically indicates that the server is temporarily out of service or undergoing maintenance but will be available shortly.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                maintenanceMode:
+                  summary: Example error when the service is down for scheduled maintenance
+                  value:
+                    code: 503
+                    message: "The service is temporarily offline for scheduled maintenance. We expect to be back online shortly."
+                overloadedServer:
+                  summary: Example error when the server is temporarily overloaded
+                  value:
+                    code: 503
+                    message: "The server is currently experiencing high traffic and is unable to handle your request. Please try again in a few minutes."
+                dependencyFailure:
+                  summary: Example error when an essential service or dependency fails
+                  value:
+                    code: 503
+                    message: "A critical dependency of our service is currently unavailable, and we are unable to process requests at this time."
+                networkIssues:
+                  summary: Example error due to network issues affecting the server's ability to handle requests
+                  value:
+                    code: 503
+                    message: "Network connectivity issues are currently affecting our service availability. Please check back later."
+                emergencyMaintenance:
+                  summary: Example error during unplanned emergency maintenance
+                  value:
+                    code: 503
+                    message: "The service is currently down for emergency maintenance. We are working to bring it back as soon as possible."
+
+
+
+    post:
+      summary: Create a new product
+      description: Adds a new product to the catalog. This operation allows you to define all necessary attributes of the product, including name, price, category, and stock status. Ensure all required fields are provided to avoid validation errors.
+      operationId: createProduct
+      tags:
+        - Product Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+            examples:
+              validExample:
+                summary: Example of a valid product creation request
+                value:
+                  name: "Ultra HD Television"
+                  category: "Electronics"
+                  price: 799.99
+                  description: "A 55-inch Ultra HD television with HDR."
+                  inStock: true
+              validExampleWithOptionalFields:
+                summary: Example with optional fields included
+                value:
+                  name: "Bluetooth Speaker"
+                  category: "Audio"
+                  price: 149.99
+                  description: "Portable Bluetooth speaker with 360-degree sound."
+                  inStock: true
+                  tags: ["audio", "portable", "bluetooth"]
+                  weight: 1.5
+              missingField:
+                summary: Example with missing required field 'price'
+                value:
+                  name: "Laptop"
+                  category: "Electronics"
+                  description: "High-performance laptop suitable for gaming and professional use."
+                  inStock: true
+              invalidDataType:
+                summary: Example where data type is incorrect (price as string)
+                value:
+                  name: "Smartwatch"
+                  category: "Wearables"
+                  price: "199.99"  # Invalid data type, should be a number
+                  description: "Latest smartwatch with health tracking features."
+                  inStock: true
+              negativePrice:
+                summary: Example with a negative price value
+                value:
+                  name: "Fitness Tracker"
+                  category: "Wearables"
+                  price: -49.99  # Negative price, which is logically incorrect
+                  description: "Fitness tracker with GPS and heart rate monitoring."
+                  inStock: true
+              excessiveDescription:
+                summary: Example with an excessively long description
+                value:
+                  name: "E-book Reader"
+                  category: "Electronics"
+                  price: 129.99
+                  description: "E-book reader with e-ink display, supports multiple formats. Over 10000 books can be stored. Waterproof and comes with a 3-year warranty. Available in black, white, and blue. Buy now and get a free carrying case. The best device for reading on the go, with a battery that lasts weeks. Perfect for any age group, with adjustable text size and screen warmth for night reading."
+                  inStock: true
+              specialCharacters:
+                summary: Example with special characters in product names
+                value:
+                  name: "Kids' Toy & Game Set - Limited Edition!"
+                  category: "Toys & Games"
+                  price: 45.99
+                  description: "An exciting mix of fun, creativity, and learning for children aged 5+."
+                  inStock: true
+              internationalMarket:
+                summary: Example for a product tailored for international markets
+                value:
+                  name: "Cafetera Eléctrica"
+                  category: "Electrodomésticos"
+                  price: 85.00
+                  description: "Perfecta para hacer hasta 12 tazas de café con sistema antigoteo."
+                  inStock: true
+                  language: "Spanish"
+              multiCategoryProduct:
+                summary: Example of a product belonging to multiple categories
+                value:
+                  name: "Smartphone with VR Capabilities"
+                  category: ["Electronics", "Virtual Reality Gear"]
+                  price: 499.99
+                  description: "Experience cutting-edge technology with our new smartphone that doubles as a VR device."
+                  inStock: true
+              outOfStockProduct:
+                summary: Example of creating an out-of-stock product
+                value:
+                  name: "High-End Gaming PC"
+                  category: "Computers"
+                  price: 1200.00
+                  description: "Top-tier gaming PC with the latest specs, currently awaiting restock."
+                  inStock: false
+              promotionalProduct:
+                summary: Example with a promotional message included
+                value:
+                  name: "Green Tea - Buy 1 Get 1 Free"
+                  category: "Beverages"
+                  price: 10.99
+                  description: "Refreshing and healthy green tea, now on a special buy 1 get 1 free offer!"
+                  inStock: true
+              bulkItems:
+                summary: Example of a bulk item listing
+                value:
+                  name: "Pack of 50 Light Bulbs"
+                  category: "Home Improvement"
+                  price: 50.00
+                  description: "Economical pack of 50 energy-efficient LED light bulbs."
+                  inStock: true
+              seasonalProduct:
+                summary: Example of a seasonal product
+                value:
+                  name: "Christmas Tree"
+                  category: "Seasonal Decorations"
+                  price: 75.00
+                  description: "7-feet tall artificial Christmas tree, perfect for the holiday season."
+                  inStock: true
+              limitedEditionProduct:
+                summary: Example of a limited edition product listing
+                value:
+                  name: "Limited Edition Designer Sneakers"
+                  category: "Footwear"
+                  price: 250.00
+                  description: "Exclusive designer sneakers. Only 100 pairs available worldwide."
+                  inStock: true
+                  tags: ["exclusive", "designer", "limited edition"]
+              environmentallyFriendlyProduct:
+                summary: Example of an eco-friendly product
+                value:
+                  name: "Eco-Friendly Laundry Detergent"
+                  category: "Household Supplies"
+                  price: 13.99
+                  description: "Biodegradable and plant-based detergent that cleans effectively without harming the environment."
+                  inStock: true
+              techProductWithSpecifications:
+                summary: Example of a tech product with detailed specifications
+                value:
+                  name: "4K Action Camera"
+                  category: "Electronics"
+                  price: 299.99
+                  description: "Capture your adventures in stunning 4K. Waterproof, dustproof, and shockproof with a 12MP camera."
+                  specifications: {
+                    resolution: "4K",
+                    features: ["Waterproof", "Dustproof", "Shockproof"],
+                    camera: "12MP"
+                  }
+                  inStock: true
+              handcraftedProduct:
+                summary: Example of a handcrafted product
+                value:
+                  name: "Handcrafted Wooden Watch"
+                  category: "Accessories"
+                  price: 120.00
+                  description: "Sustainably sourced and meticulously crafted wooden watch. Each piece is unique."
+                  inStock: true
+              subscriptionBasedProduct:
+                summary: Example of a subscription-based product
+                value:
+                  name: "Premium Coffee Subscription"
+                  category: "Food & Beverages"
+                  price: 20.00
+                  description: "Monthly delivery of premium, freshly roasted coffee beans. Subscription auto-renews monthly."
+                  inStock: true
+                  subscriptionDetails: {
+                    duration: "Monthly",
+                    renewal: "Auto-renew",
+                    cancelAnytime: true
+                  }
+              customOrderProduct:
+                summary: Example of a customizable order product
+                value:
+                  name: "Custom Portrait Painting"
+                  category: "Art & Collectibles"
+                  price: 150.00
+                  description: "Commission a custom portrait painting from your photo. Choose from various sizes and styles."
+                  customizationOptions: ["Size", "Style", "Frame"]
+                  inStock: false  # Indicates made to order
+              rentalProduct:
+                summary: Example of a rental product listing
+                value:
+                  name: "Professional Camera Rental"
+                  category: "Camera Rentals"
+                  price: 75.00
+                  description: "Rent professional-grade cameras for your photography needs. Daily and weekly rates available."
+                  inStock: true
+                  rentalTerms: {
+                    duration: "Daily or Weekly",
+                    depositRequired: true,
+                    insuranceIncluded: false
+                  }
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Product'
+            examples:
+              validExample:
+                summary: "Valid XML example for creating a new product"
+                value: |
+                  <product>
+                    <name>Ultra HD Television</name>
+                    <category>Electronics</category>
+                    <price>799.99</price>
+                    <description>A 55-inch Ultra HD television with HDR.</description>
+                    <inStock>true</inStock>
+                  </product>
+              withOptionalFields:
+                summary: "XML example with optional and additional fields"
+                value: |
+                  <product>
+                    <name>Wireless Earbuds</name>
+                    <category>Audio</category>
+                    <price>199.99</price>
+                    <description>Compact and lightweight wireless earbuds with noise-cancellation.</description>
+                    <inStock>true</inStock>
+                    <tags>
+                      <tag>audio</tag>
+                      <tag>wireless</tag>
+                    </tags>
+                    <dimensions>
+                      <weight>0.5</weight>
+                      <height>1.2</height>
+                      <width>0.8</width>
+                      <depth>0.8</depth>
+                    </dimensions>
+                  </product>
+              withSpecialCharacters:
+                summary: "XML example with special characters needing escape sequences"
+                value: |
+                  <product>
+                    <name>Children's Interactive Book</name>
+                    <category>Books &gt; Children</category>
+                    <price>25.00</price>
+                    <description>Explore &amp; Learn: Children's book with interactive puzzles &amp; games.</description>
+                    <inStock>true</inStock>
+                  </product>
+              withNestedCategories:
+                summary: "XML example with nested categories"
+                value: |
+                  <product>
+                    <name>Smart Home Camera</name>
+                    <category>
+                      <primary>Electronics</primary>
+                      <secondary>Smart Home</secondary>
+                    </category>
+                    <price>149.99</price>
+                    <description>High-definition camera with AI-powered surveillance capabilities.</description>
+                    <inStock>true</inStock>
+                  </product>
+              outOfStockProduct:
+                summary: "XML example for an out-of-stock product"
+                value: |
+                  <product>
+                    <name>4K Drone with HDR Camera</name>
+                    <category>Photography</category>
+                    <price>999.99</price>
+                    <description>High-end drone with 4K HDR camera for professional aerial photography.</description>
+                    <inStock>false</inStock>
+                  </product>
+              promotionalOfferProduct:
+                summary: "XML example for a product with a promotional offer"
+                value: |
+                  <product>
+                    <name>Seasonal Pumpkin Spice Coffee Blend</name>
+                    <category>Beverages</category>
+                    <price>15.99</price>
+                    <description>Limited time seasonal coffee blend available through October to December.</description>
+                    <inStock>true</inStock>
+                    <promotion>
+                      <description>20% off on first purchase!</description>
+                      <expires>2024-12-31</expires>
+                    </promotion>
+                  </product>
+              vintageProduct:
+                summary: "XML example for a vintage collectible product"
+                value: |
+                  <product>
+                    <name>Vintage Typewriter</name>
+                    <category>Antiques</category>
+                    <price>450.00</price>
+                    <description>Fully restored vintage typewriter from the 1940s, perfect working condition.</description>
+                    <inStock>true</inStock>
+                  </product>
+              customizableProduct:
+                summary: "XML example for a customizable product"
+                value: |
+                  <product>
+                    <name>Custom Engraved Necklace</name>
+                    <category>Jewelry</category>
+                    <price>120.00</price>
+                    <description>Personalized necklace with your choice of engraving. Available in gold, silver, and bronze.</description>
+                    <inStock>true</inStock>
+                    <options>
+                      <option name="Material" choices="Gold, Silver, Bronze"/>
+                      <option name="Engraving" type="Text"/>
+                    </options>
+                  </product>
+              productWithWarranty:
+                summary: "XML example for a product with warranty information"
+                value: |
+                  <product>
+                    <name>Professional Espresso Machine</name>
+                    <category>Kitchen Appliances</category>
+                    <price>899.99</price>
+                    <description>Commercial-grade espresso machine with a comprehensive 5-year warranty.</description>
+                    <inStock>true</inStock>
+                    <warranty>
+                      <period>5 years</period>
+                      <terms>Includes parts and labor.</terms>
+                    </warranty>
+                  </product>
+              ecoFriendlyProduct:
+                summary: "XML example for an eco-friendly product"
+                value: |
+                  <product>
+                    <name>Biodegradable Yoga Mat</name>
+                    <category>Fitness</category>
+                    <price>59.99</price>
+                    <description>Eco-friendly, biodegradable yoga mat made from natural rubber. Free from latex and recyclable.</description>
+                    <inStock>true</inStock>
+                  </product>
+              techBundleProduct:
+                summary: "XML example for a tech bundle product"
+                value: |
+                  <product>
+                    <name>Smart Home Starter Kit</name>
+                    <category>Smart Home</category>
+                    <price>299.99</price>
+                    <description>Starter kit includes smart speaker, smart bulbs, and a smart thermostat to enhance your home automation.</description>
+                    <inStock>true</inStock>
+                    <bundle>
+                      <item>Smart Speaker</item>
+                      <item>Smart Bulb x2</item>
+                      <item>Smart Thermostat</item>
+                    </bundle>
+                  </product>
+              limitedTimeProduct:
+                summary: "XML example for a product available for a limited time only"
+                value: |
+                  <product>
+                    <name>Autumn Scented Candle Collection</name>
+                    <category>Home Decor</category>
+                    <price>35.00</price>
+                    <description>Seasonal candles with scents of cinnamon, apple, and pumpkin. Available only in Autumn.</description>
+                    <inStock>true</inStock>
+                    <availability>
+                      <from>2024-09-01</from>
+                      <to>2024-11-30</to>
+                    </availability>
+                  </product>
+              productWithMultipleSizes:
+                summary: "XML example for a product available in multiple sizes"
+                value: |
+                  <product>
+                    <name>Thermal Winter Jacket</name>
+                    <category>Outdoor Clothing</category>
+                    <price>120.00</price>
+                    <description>Keep warm this winter with our insulated jackets. Available in several sizes.</description>
+                    <inStock>true</inStock>
+                    <sizes>
+                      <size>S</size>
+                      <size>M</size>
+                      <size>L</size>
+                      <size>XL</size>
+                    </sizes>
+                  </product>
+              productWithImages:
+                summary: "XML example for a product with multiple images"
+                value: |
+                  <product>
+                    <name>Deluxe Camping Tent</name>
+                    <category>Outdoor Equipment</category>
+                    <price>249.99</price>
+                    <description>Spacious four-person tent with waterproof coating and UV protection.</description>
+                    <inStock>true</inStock>
+                    <images>
+                      <image>http://example.com/images/product1.jpg</image>
+                      <image>http://example.com/images/product2.jpg</image>
+                    </images>
+                  </product>
+              productWithReviews:
+                summary: "XML example for a product with customer reviews"
+                value: |
+                  <product>
+                    <name>Gourmet Espresso Beans</name>
+                    <category>Coffee & Tea</category>
+                    <price>18.99</price>
+                    <description>Premium dark roast espresso beans, sourced from ethical farms in Colombia.</description>
+                    <inStock>true</inStock>
+                    <reviews>
+                      <review>
+                        <rating>5</rating>
+                        <comment>Best espresso beans I've ever had!</comment>
+                        <date>2024-07-16</date>
+                      </review>
+                      <review>
+                        <rating>4</rating>
+                        <comment>Very good, but a bit too strong for my taste.</comment>
+                        <date>2024-07-18</date>
+                      </review>
+                    </reviews>
+                  </product>
+              productWithAccessories:
+                summary: "XML example for a product bundled with accessories"
+                value: |
+                  <product>
+                    <name>Professional Photography Kit</name>
+                    <category>Cameras & Photography</category>
+                    <price>599.99</price>
+                    <description>Complete photography kit including DSLR camera, three lenses, tripod, and carrying case.</description>
+                    <inStock>true</inStock>
+                    <accessories>
+                      <accessory>Lens 50mm f/1.8</accessory>
+                      <accessory>Lens 24-70mm f/2.8</accessory>
+                      <accessory>Carbon Fiber Tripod</accessory>
+                    </accessories>
+                  </product>
+              internationalProduct:
+                summary: "XML example for a product with international specifications"
+                value: |
+                  <product>
+                    <name>Multi-Voltage Travel Adapter</name>
+                    <category>Travel Accessories</category>
+                    <price>19.99</price>
+                    <description>Adapter suitable for use in over 150 countries, with voltage ranging from 110V to 240V.</description>
+                    <inStock>true</inStock>
+                    <specifications>
+                      <voltage>110-240V</voltage>
+                      <plugType>A, B, C, G</plugType>
+                    </specifications>
+                  </product>
+              seasonalAvailabilityProduct:
+                summary: "XML example for a product with seasonal availability details"
+                value: |
+                  <product>
+                    <name>Beach Volleyball Set</name>
+                    <category>Sports Equipment</category>
+                    <price>58.00</price>
+                    <description>Complete beach volleyball set, including net, ball, and carry bag. Perfect for summer beach fun.</description>
+                    <inStock>true</inStock>
+                    <seasonalAvailability>
+                      <startMonth>May</startMonth>
+                      <endMonth>September</endMonth>
+                    </seasonalAvailability>
+                  </product>
+              productWithNutritionalInfo:
+                summary: "XML example for a food product with nutritional information"
+                value: |
+                  <product>
+                    <name>Organic Almond Butter</name>
+                    <category>Food</category>
+                    <price>10.99</price>
+                    <description>Smooth and creamy organic almond butter made without any added sugars or preservatives.</description>
+                    <inStock>true</inStock>
+                    <nutritionalInformation>
+                      <calories>98</calories>
+                      <protein>3.5g</protein>
+                      <fat>8.5g</fat>
+                      <sugar>1g</sugar>
+                    </nutritionalInformation>
+                  </product>
+              luxuryProduct:
+                summary: "XML example for a luxury product with detailed description and features"
+                value: |
+                  <product>
+                    <name>Luxury Silk Evening Gown</name>
+                    <category>Fashion</category>
+                    <price>899.99</price>
+                    <description>Elegant evening gown crafted from the finest silk, featuring hand-sewn beadwork and a tailored fit.</description>
+                    <inStock>true</inStock>
+                    <features>
+                      <feature>Hand-sewn beadwork</feature>
+                      <feature>Tailored fit</feature>
+                      <feature>100% silk</feature>
+                    </features>
+                  </product>
+              productWithMultipleLanguages:
+                summary: "XML example for a product description in multiple languages"
+                value: |
+                  <product>
+                    <name>Smart Rice Cooker</name>
+                    <category>Kitchen Appliances</category>
+                    <price>120.00</price>
+                    <description lang="en">Smart rice cooker with 10 pre-set cooking modes and WiFi connectivity.</description>
+                    <description lang="es">Arrocera inteligente con 10 modos de cocción preestablecidos y conectividad WiFi.</description>
+                    <description lang="fr">Cuiseur à riz intelligent avec 10 modes de cuisson préréglés et connectivité WiFi.</description>
+                    <inStock>true</inStock>
+                  </product>
+              techProductWithWarranty:
+                summary: "XML example for a tech product with extended warranty options"
+                value: |
+                  <product>
+                    <name>High-End Gaming Laptop</name>
+                    <category>Electronics</category>
+                    <price>2500.00</price>
+                    <description>Top-tier gaming laptop with advanced graphics and high-speed processing. Includes an option to extend the warranty up to 5 years.</description>
+                    <inStock>true</inStock>
+                    <warranty>
+                      <base>2 years</base>
+                      <extended>5 years</extended>
+                    </warranty>
+                  </product>
+              productWithComplexOptions:
+                summary: "XML example for a product with multiple complex options"
+                value: |
+                  <product>
+                    <name>Customizable Modular Sofa</name>
+                    <category>Furniture</category>
+                    <price>1999.99</price>
+                    <description>Modular sofa that can be customized in size, color, and fabric to fit any space and style.</description>
+                    <inStock>true</inStock>
+                    <options>
+                      <option name="Size" choices="2-seater, 3-seater, 4-seater, L-shape"/>
+                      <option name="Color" choices="Grey, Blue, Black, White"/>
+                      <option name="Fabric" choices="Leather, Cotton, Linen"/>
+                    </options>
+                  </product>
+              productWithEcoCertification:
+                summary: "XML example for an eco-certified product"
+                value: |
+                  <product>
+                    <name>Eco-Friendly Office Chair</name>
+                    <category>Office Furniture</category>
+                    <price>450.00</price>
+                    <description>Ergonomically designed chair made from recycled materials and certified by EcoCert.</description>
+                    <inStock>true</inStock>
+                    <certifications>
+                      <certification name="EcoCert"/>
+                    </certifications>
+                  </product>
+              productForSpecialNeeds:
+                summary: "XML example for a product designed for special needs"
+                value: |
+                  <product>
+                    <name>Adaptive Clothing for Elderly</name>
+                    <category>Healthcare Apparel</category>
+                    <price>75.00</price>
+                    <description>Easy-to-wear clothing designed for elderly individuals or those with special needs, featuring magnetic closures and elastic materials for comfort and ease of use.</description>
+                    <inStock>true</inStock>
+                  </product>
+              rareCollectibleProduct:
+                summary: "XML example for a rare collectible item"
+                value: |
+                  <product>
+                    <name>Vintage 1950s Baseball Card</name>
+                    <category>Collectibles</category>
+                    <price>1500.00</price>
+                    <description>Rare baseball card from the 1950s in mint condition, featuring legendary player Mickey Mantle.</description>
+                    <inStock>false</inStock>
+                    <availability>
+                      <message>Item is rare and only available through auctions or special requests.</message>
+                    </availability>
+                  </product>
+          text/plain:
+            schema:
+              type: string
+            examples:
+              validExample:
+                summary: "Valid plain text example for creating a new product"
+                value: "name: Ultra HD Television, category: Electronics, price: 799.99, description: A 55-inch Ultra HD television with HDR., inStock: true"
+              multiFeatureProduct:
+                summary: "Plain text example with multiple features listed"
+                value: "name: Multi-Function Printer, category: Office Electronics, price: 349.99, description: All-in-one printer with printing, scanning, and faxing capabilities., inStock: true, features: wireless, color printing, 20 ppm, duplex"
+              highEndProduct:
+                summary: "Plain text example for a high-end product with detailed specs"
+                value: "name: Professional DSLR Camera, category: Photography, price: 2499.99, description: High-resolution 45 MP sensor with 4K video recording., inStock: true, accessories: 50mm lens, carrying bag, tripod"
+              bulkProduct:
+                summary: "Plain text example for bulk items"
+                value: "name: Pack of 100 LED Light Bulbs, category: Home Improvement, price: 199.99, description: Energy-saving LED bulbs with a lifespan of 10,000 hours., inStock: true, quantity: 100 bulbs, warranty: 2 years"
+              seasonalProduct:
+                summary: "Plain text example for a seasonal product"
+                value: "name: Garden Gnome Christmas Edition, category: Seasonal Decorations, price: 29.99, description: Festive garden gnome with a Santa outfit., inStock: true, limitedEdition: true"
+              customizableProduct:
+                summary: "Plain text example for a customizable product"
+                value: "name: Custom Engraved Watch, category: Accessories, price: 85.00, description: Stainless steel watch with optional engraving., inStock: true, options: engraving up to 20 characters, choice of strap leather or metal"
+      responses:
+        '201':
+          description: Product created successfully. Returns the details of the newly created product.
+          headers:
+            Location:
+              description: URL to the newly created product resource.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+              examples:
+                productResponse:
+                  summary: Example of a successful product creation response
+                  value:
+                    id: "12345"
+                    name: "Ultra HD Television"
+                    category: "Electronics"
+                    price: 799.99
+                    description: "A 55-inch Ultra HD television with HDR."
+                    inStock: true
+        '400':
+          description: Bad request due to invalid input data. This could be due to missing required fields, data type mismatches, or field validation failures.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                missingRequiredField:
+                  summary: Response when a required field is missing
+                  value:
+                    code: 400
+                    message: "Missing required field: price. All product details must be specified."
+                dataTypeMismatch:
+                  summary: Response when a data type does not match expected type
+                  value:
+                    code: 400
+                    message: "Invalid data type for 'price', expected number, got string."
+        '500':
+          description: Internal server error. Indicates an unexpected condition that prevented the server from fulfilling the request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                unexpectedError:
+                  summary: Generic server error
+                  value:
+                    code: 500
+                    message: "An unexpected error occurred. Please try again later."
+    put:
+      summary: Update an existing product
+      description: Updates details for an existing product. The entire product object needs to be supplied.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+      responses:
+        '200':
+          description: Product updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found.
+        '400':
+          description: Invalid input data.
+        '500':
+          description: Internal server error.
+    delete:
+      summary: Delete a product
+      description: Removes a product from the catalog.
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            description: The ID of the product to delete.
+      responses:
+        '204':
+          description: Product deleted successfully.
+        '404':
+          description: Product not found.
+        '500':
+          description: Internal server error.
+
+
+
+
+    patch:
+      summary: Partially update a product
+      description: Updates specific fields of an existing product. This endpoint allows for modifications to price, stock status, and other attributes without needing to resubmit the entire product data.
+      operationId: updateProduct
+      tags:
+        - Product Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                price:
+                  type: number
+                  description: "New price of the product. Must be a non-negative number."
+                inStock:
+                  type: boolean
+                  description: "Updated stock status of the product."
+                description:
+                  type: string
+                  description: "Updated description of the product, reflecting any new features or information."
+                category:
+                  type: string
+                  description: "Updated category if the product has been reclassified."
+                tags:
+                  type: array
+                  items:
+                    type: string
+                  description: "Updated tags for the product to improve searchability and categorization."
+                promotion:
+                  type: object
+                  properties:
+                    promotionPrice:
+                      type: number
+                      description: "Promotional price for the product, used during sales or special offers."
+                    start:
+                      type: string
+                      format: date
+                      description: "Start date of the promotion period."
+                    end:
+                      type: string
+                      format: date
+                      description: "End date of the promotion period."
+            examples:
+              priceUpdate:
+                summary: "Example updating the price of a product"
+                value:
+                  price: 749.99
+              stockUpdate:
+                summary: "Example updating stock status"
+                value:
+                  inStock: false
+              descriptionUpdate:
+                summary: "Example updating product description"
+                value:
+                  description: "Newly updated features include advanced HDR and smart home integration."
+              categoryUpdate:
+                summary: "Example updating product category"
+                value:
+                  category: "Smart Home Electronics"
+              tagsUpdate:
+                summary: "Example updating product tags"
+                value:
+                  tags: ["smart", "4K", "LED", "Energy Efficient"]
+              promotionUpdate:
+                summary: "Example updating promotional details"
+                value:
+                  promotion:
+                    promotionPrice: 699.99
+                    start: "2024-11-01"
+                    end: "2024-11-30"
+              comprehensiveUpdate:
+                summary: "Example performing a comprehensive update on multiple fields"
+                value:
+                  price: 699.99
+                  description: "Includes the latest in 4K technology and energy efficiency standards."
+                  category: "Home Entertainment"
+                  tags: ["4K", "HDR", "Smart TV"]
+                  promotion:
+                    promotionPrice: 649.99
+                    start: "2024-12-01"
+                    end: "2024-12-25"
+              seasonalPriceUpdate:
+                summary: "Example updating the price for seasonal sales"
+                value:
+                  price: 659.99
+                  promotion:
+                    promotionPrice: 629.99
+                    start: "2024-12-01"
+                    end: "2025-01-05"
+              backInStockUpdate:
+                summary: "Example marking a previously out-of-stock product as available"
+                value:
+                  inStock: true
+                  description: "Back in stock with limited quantities available."
+              updateWithNewFeature:
+                summary: "Example updating description to highlight a new feature"
+                value:
+                  description: "Now with improved battery life and faster charging capabilities."
+              updateCategoryAndTags:
+                summary: "Example updating category and tags simultaneously"
+                value:
+                  category: "Mobile Accessories"
+                  tags: ["fast charging", "long battery", "durable"]
+              holidayPromotionUpdate:
+                summary: "Example setting up a holiday promotion"
+                value:
+                  promotion:
+                    promotionPrice: 199.99
+                    start: "2024-12-15"
+                    end: "2024-12-26"
+              updateForRegulatoryCompliance:
+                summary: "Example updating product for compliance with new regulations"
+                value:
+                  description: "Updated to comply with the latest FCC emissions standards."
+              updateLimitedEditionStatus:
+                summary: "Example updating a product to reflect limited edition status"
+                value:
+                  description: "Special limited edition release with exclusive features."
+                  tags: ["limited edition", "exclusive", "collector's item"]
+              updateProductWarranty:
+                summary: "Example updating warranty information"
+                value:
+                  description: "Now comes with a 5-year warranty for all parts and labor."
+          text/plain:
+            schema:
+              type: string
+            examples:
+              priceUpdate:
+                summary: "Plain text example for updating the price of a product"
+                value: "price: 759.99"
+              stockStatusUpdate:
+                summary: "Plain text example for updating stock status"
+                value: "inStock: false"
+              descriptionUpdate:
+                summary: "Plain text example for updating the product description"
+                value: "description: Newly updated features include enhanced 4K display and HDR support."
+              promotionUpdate:
+                summary: "Plain text example for updating promotional details"
+                value: "promotionPrice: 699.99, promotionStart: 2024-11-20, promotionEnd: 2024-11-30"
+              comprehensiveUpdate:
+                summary: "Comprehensive plain text update including multiple fields"
+                value: "price: 499.99, inStock: true, description: Updated model with improved energy efficiency, tags: eco-friendly, energy-saving"
+              categoryUpdate:
+                summary: "Plain text example for updating the product category"
+                value: "category: Smart Home Devices"
+              tagAddition:
+                summary: "Plain text example for adding tags to a product"
+                value: "tags: smart, IoT, voice-controlled"
+              updateManufacturingDetails:
+                summary: "Plain text example for updating manufacturing details"
+                value: "manufacturer: Acme Corp, manufactureDate: 2024-01-01"
+              updateWarrantyPeriod:
+                summary: "Plain text example for extending the warranty period"
+                value: "warranty: 5 years"
+              seasonalAvailabilityUpdate:
+                summary: "Plain text example for updating seasonal availability"
+                value: "availableSeasons: Spring, Summer"
+              updateDimensions:
+                summary: "Plain text example for updating product dimensions"
+                value: "dimensions: 12x8x6 inches"
+              updateSafetyFeatures:
+                summary: "Plain text example for updating safety features"
+                value: "safety: Fire-resistant material, child-safe design"
+              updateDeliveryOptions:
+                summary: "Plain text example for updating delivery options"
+                value: "deliveryOptions: Standard, Expedited, Overnight"
+              updateColorOptions:
+                summary: "Plain text example for updating color options"
+                value: "colors: Red, Blue, Green"
+              updateProductMaterial:
+                summary: "Plain text example for updating product material"
+                value: "material: 100% organic cotton"
+              updateProductWeight:
+                summary: "Plain text example for updating product weight"
+                value: "weight: 15kg"
+              updateStorageRequirements:
+                summary: "Plain text example for updating storage requirements"
+                value: "storage: Keep in a dry and cool place"
+              updateEnergyEfficiency:
+                summary: "Plain text example for updating energy efficiency rating"
+                value: "energyEfficiency: A++"
+              updateUsageInstructions:
+                summary: "Plain text example for updating usage instructions"
+                value: "usage: Use twice daily for best results"
+              updateShippingRestrictions:
+                summary: "Plain text example for updating shipping restrictions"
+                value: "shippingRestrictions: Cannot ship to PO Boxes"
+              updateProductOrigin:
+                summary: "Plain text example for updating product origin"
+                value: "origin: Made in Germany"
+              updateLifespan:
+                summary: "Plain text example for updating product lifespan"
+                value: "lifespan: Guaranteed for 10 years"
+              updateAssemblyRequired:
+                summary: "Plain text example for indicating assembly requirements"
+                value: "assemblyRequired: Some assembly required, tools included"
+      responses:
+        '200':
+          description: Product updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid input data.
+        '404':
+          description: Product not found.
+        '500':
+          description: Internal server error.
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for the product.
+        name:
+          type: string
+          description: The name of the product.
+        category:
+          type: string
+          description: Category of the product.
+        price:
+          type: number
+          format: float
+          description: The price of the product.
+        inStock:
+          type: boolean
+          description: Stock availability of the product.
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+security:
+  - ApiKeyAuth: []

@@ -1,4 +1,3 @@
-// tnodeStore.ts
 import { writable, type Writable } from 'svelte/store';
 import { v4 as uuidv4 } from 'uuid';
 import { type ParsedFileData, type ParsedFileMap } from './parseStore'; // Correct path to types
@@ -22,7 +21,6 @@ export interface TreeFileMap {
   [fileHash: string]: TreeNode[];
 }
 
-// Directly exporting treeFilesData
 export const treeFilesData: Writable<{[fileHash: string]: TreeNode[]}> = writable({});
 
 function createTreeStore(fileContent: Record<string, any>, hash: string, fileName: string): Writable<TreeNode[]> {
@@ -69,12 +67,7 @@ function generateHash(input: string): string {
 
 parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
   if (parsedFiles && typeof parsedFiles === 'object') {
-    console.groupCollapsed('📚4️⃣📚 [tnodeStore.ts] data in (from parsedStore)');
-
     const treeData: {[fileHash: string]: TreeNode[]} = Object.entries(parsedFiles).reduce((acc, [fileHash, file]: [string, ParsedFileData]) => {
-      console.groupCollapsed(`File Name: ${file.name}`);
-      console.log('Hash:', fileHash);
-
       const treeStore: Writable<TreeNode[]> = createTreeStore(file.content, fileHash, file.name);
 
       let storeValue: TreeNode[] = [];
@@ -84,39 +77,13 @@ parsedFilesData.subscribe((parsedFiles: ParsedFileMap) => {
 
       acc[fileHash] = storeValue;
 
-      console.groupCollapsed('Tree Store Content (navigable structure):');
-      console.dir(storeValue, { depth: null });
-      console.groupEnd();
-
-      console.groupEnd();
-
       return acc;
     }, {} as {[fileHash: string]: TreeNode[]});
 
     treeFilesData.set(treeData);
-    console.groupEnd();
   } else {
     console.error('parsedFilesData subscription received invalid data:', parsedFiles);
   }
 });
 
-treeFilesData.subscribe((value: {[fileHash: string]: TreeNode[]}) => {
-  console.groupCollapsed('📚5️⃣📚 [tnodeStore.ts] data out (to tsaveStore)');
-
-  console.groupCollapsed('Keys of Tree File Map');
-  Object.keys(value).forEach(key => console.log(key));
-  console.groupEnd();
-
-  Object.entries(value).forEach(([fileHash, treeNodes]: [string, TreeNode[]]) => {
-    const rootNode = treeNodes[0];
-    console.groupCollapsed(`Tree File Name: ${rootNode.key}`);
-    console.log('Hash:', rootNode.id);
-
-    console.groupCollapsed('Tree Store Content (navigable structure):');
-    console.dir(treeNodes, { depth: null });
-    console.groupEnd();
-
-    console.groupEnd();
-  });
-  console.groupEnd();
-});
+treeFilesData.subscribe((value: {[fileHash: string]: TreeNode[]}) => {});

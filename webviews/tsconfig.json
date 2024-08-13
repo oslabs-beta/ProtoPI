@@ -1,11 +1,14 @@
+/**
+ * path:  webviews/tsconfig.json
+ */
 {
   "extends": "../node_modules/@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "strict": true,
     "moduleResolution": "node",
-    "baseUrl": ".",
-    "rootDir": "./",
+    "baseUrl": "..",
     "outDir": "../out_tsc/compiled",
+    "typeRoots": ["../node_modules/@types"]
   },
   "include": [
     "./**/*",

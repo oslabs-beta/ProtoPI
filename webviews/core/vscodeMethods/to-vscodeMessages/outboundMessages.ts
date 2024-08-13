@@ -1,8 +1,13 @@
+/**
+ * path:  webviews/core/vscodeMethods/to-vscodeMessages/outboundMessages.ts
+ */
+
+
 import {
   initDerivedStore 
 } from '../../../stores/fileMgmt/viewStoreInterface';
-import { openFilesData, addFile  } from '../../../stores/fileMgmt/openStore';
-
+import { openFilesData, addFile  as addOpenFile } from '../../../stores/fileMgmt/openStore';
+import { addFile as addRawFile } from '../../../stores/fileMgmt/fopStore/utils/fileService';
   let fileInput: HTMLInputElement | null = null;
   let tsvscode: any;
 
@@ -30,7 +35,7 @@ import { openFilesData, addFile  } from '../../../stores/fileMgmt/openStore';
   //     alert("This feature is only available in the VS Code extension.");
   //   }
   // }
-
+  
   export function setFileInput(element: HTMLInputElement) {
     fileInput = element;
   }
@@ -82,12 +87,25 @@ import { openFilesData, addFile  } from '../../../stores/fileMgmt/openStore';
         const reader = new FileReader();
         reader.onload = (e: ProgressEvent<FileReader>) => {
           if (e.target) {
-            addFile({ name: file.name, content: e.target.result as string });
-            initDerivedStore();
+          const fileContent = e.target.result as string;
+          const fileData = { name: file.name, content: fileContent };
+
+          // Add file to openFilesData store
+          addOpenFile(fileData);
+          initDerivedStore();
+
+          // Add file to rawFilesData store using fileService
+          addRawFile({
+            filename: file.name,
+            rawContent: fileContent
+          });
           }
         };
         reader.readAsText(file as Blob);
       });
+
+    // Reset the file input element so that the same file can be selected again
+    input.value = '';
     }
   }
   

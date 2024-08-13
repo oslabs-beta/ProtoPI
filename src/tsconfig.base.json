@@ -1,3 +1,7 @@
+/**
+ *  path:  src/tsconfig.base.json
+ */
+
 {
   "compilerOptions": {
     "module": "Node16",
