@@ -1,16 +1,27 @@
+<!--
+  path:  webviews/components/test/TestArea.svelte
+-->
+
 <script>
-/**
- * path:  webviews/components/test/TestArea.svelte
- */
-  import { coreStateStore } from '../../stores/fileMgmt/fopStore/coreStateStore';
+import { coreStateStore } from '../../stores/fileMgmt/fopStore/coreStateStore';
+import { viewsStore } from '../../stores/fileMgmt/fopViews/viewsStore';
+import { activeViewStore } from '../../stores/fileMgmt/fopViews/activeViewStore';
+import { applyFilterAndSaveView } from '../../stores/fileMgmt/fopViews/viewFunctions';
+import { exampleFilterFunction } from '../../stores/fileMgmt/fopViews/filters/filterFunctions';
 
-  // Auto-subscribe to the coreStateStore and log its content
-  $: if ($coreStateStore && $coreStateStore instanceof Map) {
-    console.log("Current Core State Data:", Array.from($coreStateStore.values()));
-  } else {
-    console.error("Expected $coreStateStore to be a Map, received:", $coreStateStore);
-  }
+// Apply the example filter and save the view with a specific ID
+applyFilterAndSaveView('exampleView', exampleFilterFunction);
 
-  // Additional debugging information
-  $: console.log('Type of $coreStateStore:', typeof $coreStateStore, '; is Map?', $coreStateStore instanceof Map);
+// Log the views store after the filter is applied
+$: if ($viewsStore && $viewsStore instanceof Map) {
+  console.log("Current Views Store Data:", Array.from($viewsStore.entries()));
+}
+
+// Log the active view
+$: console.log("Current Active View:", $activeViewStore);
 </script>
+
+<div>
+  <!-- Your UI components go here -->
+  <p>Check the console for logs from Views Store and Active View Store.</p>
+</div>

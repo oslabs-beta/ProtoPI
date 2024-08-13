@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { setFilterCriteria } from '../../../stores/fileMgmt/viewStoreInterface';
   import { filterManager } from '../../../stores/fileMgmt/viewStore/filters';
-  
+ //../../../stores/fileMgmt/viewStore/filters
   export let fileHash;
   let selectedFilter = filterManager.availableFilters[0];
   let maxWidth = '30px'; // Default max width

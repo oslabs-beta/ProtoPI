@@ -9,22 +9,22 @@ import { generateUUID } from '../utils/fileUtils';
 // Converts parsed content into a tree structure
 function convertToTreeNodes(parsedFile: ParsedFileInfo<ParsedContent>): TreeNode[] {
     function createNode(key: string, value: any, pathUUID: string[]): TreeNode {
-        const nodeName = key;
-        const newPathUUID = [...pathUUID, generateUUID()];
+      const nodeUUID = generateUUID();
+      const newPathUUID = [...pathUUID, nodeUUID];
 
-        const children: TreeNode[] = [];
-        if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
-            Object.keys(value).forEach(childKey => {
-                children.push(createNode(childKey, value[childKey], newPathUUID));
-            });
-        }
+      const children: TreeNode[] = [];
+      if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
+          Object.keys(value).forEach(childKey => {
+              children.push(createNode(childKey, value[childKey], newPathUUID));
+          });
+      }
 
-        return {
-            isOpen: false,
-            value: nodeName,
-            pathUUID: newPathUUID,
-            children,
-        };
+      return {
+          isOpen: false,
+          value: value, // Store the actual value here
+          pathUUID: newPathUUID,
+          children,
+      };
     }
 
     const rootNodes: TreeNode[] = [];

@@ -3,6 +3,10 @@
   The intent is to manage data passing logic here.
 -->
 
+<!--
+path:  webviews/components/sidebar/views/MasterView.svelte
+-->
+
 <script lang="ts">
 
   import MasterTreeView from './MasterTreeView.svelte';

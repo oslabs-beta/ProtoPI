@@ -1,30 +1,22 @@
-// filteredTreeFilesData.ts
-
 /**
- *   LOCAL IMPORT STATEMENTS
+ *   path:  webviews/stores/fileMgmt/viewStore/filteredTreeFilesData.ts
  */
 
-import { derived, get } from 'svelte/store';
-import { treeFilesData as tsaveStore } from './../tsaveStore';
-
+import { derived } from 'svelte/store';
+import { coreStateStore } from '../fopStore/coreStateStore';
 import { filterCriteriaMap, filterStatusMap } from './filterMaps';
 import { filterNodes } from './filterFunctions';
 
-let initializationCompleted = false;  
-
-/**
- *   DERIVED STORE TWO - FILTERED DATA
- */
+let initializationCompleted = false;
 
 export const filteredTreeFilesData = derived(
-  [tsaveStore, filterCriteriaMap, filterStatusMap],
-  ([$treeFilesData, $filterCriteriaMap, $filterStatusMap], set) => {
-    // if (initializationCompleted && process.env.NODE_ENV === 'development') {
+  [coreStateStore, filterCriteriaMap, filterStatusMap],
+  ([$coreState, $filterCriteriaMap, $filterStatusMap], set) => {
+    if (initializationCompleted) {
       console.log("[FilteredTreeFilesData.ts] filteredTreeFilesData derivation triggered");
-      console.log("[FilteredTreeFilesData.ts] filteredTreeFilesData data:", $treeFilesData, $filterCriteriaMap, $filterStatusMap);
-      const { filteredData } = filterNodes($treeFilesData, $filterCriteriaMap, $filterStatusMap);
+      const { filteredData } = filterNodes($coreState, $filterCriteriaMap, $filterStatusMap);
       set(filteredData);
-    // }
+    }
   }
 );
 

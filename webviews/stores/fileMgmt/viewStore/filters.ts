@@ -1,25 +1,30 @@
-// src/filters.ts
+/**
+ * path:  webviews/stores/fileMgmt/viewStore/filters/index.ts
+ */
 
 import memoize from 'lodash/memoize';
-import type { TreeNode } from './../../tnodeStore';
+import type { coreTreeData, TreeNode } from '../fopStore/types';
 import type { FilterType, FilterStatus } from './types';
 
-type FilterFunction = (nodes: TreeNode[], criteria?: string) => TreeNode[];
+type FilterFunction = (treeData: coreTreeData, criteria?: string) => TreeNode[];
 
 const createFilters = () => {
   const filters: Record<string, FilterFunction> = {
 
-    default: (nodes: TreeNode[]) => nodes,
-    paths: memoize((nodes: TreeNode[]) => {
-      const pathsNode = nodes.find(node => node.key === 'paths');
+    default: (treeData: coreTreeData) => treeData.TreeNodes,
+
+    paths: memoize((treeData: coreTreeData) => {
+      const pathsNode = treeData.TreeNodes.find(node => node.key === 'paths');
       return pathsNode ? pathsNode.children || [] : [];
     }),
-    servers: memoize((nodes: TreeNode[]) => {
-      const serversNode = nodes.find(node => node.key === 'servers');
+
+    servers: memoize((treeData: coreTreeData) => {
+      const serversNode = treeData.TreeNodes.find(node => node.key === 'servers');
       return serversNode ? serversNode.children || [] : [];
     }),
-    components: memoize((nodes: TreeNode[]) => {
-      const componentsNode = nodes.find(node => node.key === 'components');
+
+    components: memoize((treeData: coreTreeData) => {
+      const componentsNode = treeData.TreeNodes.find(node => node.key === 'components');
       return componentsNode ? componentsNode.children || [] : [];
     }),
   };

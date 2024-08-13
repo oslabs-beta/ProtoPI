@@ -1,3 +1,7 @@
+<!--
+  path:  webviews/components/sidebar/nodes/MasterNode.svelte
+-->
+  
 <script lang="ts">
   import MasterNode from './MasterNode.svelte';
   import { createEventDispatcher } from 'svelte';
@@ -16,13 +20,14 @@
   let tooltipY = 0;
 
   function toggle() {
-    if (node.children.length > 0) {
+    if (node?.children?.length > 0) {
       dispatch('toggle', { id: node.id });
       node.isOpen = !node.isOpen;
     }
   }
 
   function getHoverLabel(node) {
+    if (!node || !node.children) return '';
     let label = '';
     const summaryItem = node.children.find(child => child.key === 'summary');
     const descriptionItem = node.children.find(child => child.key === 'description');
@@ -82,20 +87,20 @@
     on:blur={handleBlur}
   >
     <span class="toggle pr-1 text-yellow-500">
-      {getBulletOrArrow(node.children.length, node.isOpen)}
+      {getBulletOrArrow(node?.children?.length || 0, node?.isOpen)}
     </span>
     <span class="icon-container pr-1">
-      <img src={getSvgIconPath(node.key)} alt="Icon" class="icon-img fixed-size-icon" />
+      <img src={getSvgIconPath(node?.key)} alt="Icon" class="icon-img fixed-size-icon" />
     </span>
     <div class="content flex-grow hanging-indent">
-      {#if node.children.length > 0}
+      {#if node?.children?.length > 0}
         <span class="label font-bold text-white node-label">
           {node.key}
         </span>
       {:else}
         <div class="dictionary-item">
-          <span class="key font-bold text-orange-500">{node.key}:</span>
-          <span class="value text-gray-400">{node.value}</span>
+          <span class="key font-bold text-orange-500">{node?.key || 'N/A'}:</span>
+          <span class="value text-gray-400">{node?.value || 'N/A'}</span>
         </div>
       {/if}
     </div>
@@ -104,7 +109,7 @@
     {/if}
   </div>
 
-  {#if node.isOpen && node.children.length > 0}
+  {#if node?.isOpen && node?.children?.length > 0}
     <div class="children pt-1">
       {#each node.children as child (child.id)}
         <MasterNode node={child} />

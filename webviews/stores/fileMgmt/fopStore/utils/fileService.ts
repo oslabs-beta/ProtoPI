@@ -24,4 +24,3 @@ export function addFile(file: { filename: string; rawContent: string }) {
 
   addFileToStore(fileUUID, fileInfo);
 }
-

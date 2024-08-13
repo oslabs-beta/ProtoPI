@@ -1,3 +1,7 @@
+<!--
+  path:  webviews/components/sidebar/views/MasterTreeView.svelte
+-->
+
 <script lang="ts">
   import TreeNode from '../nodes/MasterNode.svelte';
   import Sortable from 'sortablejs';
@@ -13,7 +17,7 @@
 
   let unsubscribe: () => void = () => {};
 
-  $: if (treeStore) {
+ $: if (treeStore) {
     unsubscribe();
     unsubscribe = treeStore.subscribe(value => {
       treeNodes = [...value];

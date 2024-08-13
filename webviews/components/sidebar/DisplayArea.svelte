@@ -1,6 +1,11 @@
 <!-- DisplayArea.svelte  (Tree View Data Input)
   Tree data input through here for Tree View Generation 
 -->
+
+<!-- 
+  path:  webviews/components/sidebar/DisplayArea.svelte
+-->
+
 <script lang='ts'>
   import SidebarTabs from './SidebarTabs.svelte'
   // import MasterView from './views/MasterView.svelte';

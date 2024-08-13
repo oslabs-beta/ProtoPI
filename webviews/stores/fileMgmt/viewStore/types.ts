@@ -1,6 +1,9 @@
-// src/types.ts
+/**
+ * path:  webviews/stores/fileMgmt/viewStore/filters/types.ts
+ */
 
-import type { TreeNode } from './../../tnodeStore';
+// TODO CONNECTION
+// import type { TreeNode } from '../tnodeStore';
 
 export type FilterType = 'contains' | 'paths' | 'servers' | 'components';
 

@@ -1,3 +1,7 @@
+/**
+ *   path:  webviews/stores/fileMgmt/viewStore/index.ts
+ */
+
 // EXTERNAL EXPORTS
 export {
   filterCriteriaMap,

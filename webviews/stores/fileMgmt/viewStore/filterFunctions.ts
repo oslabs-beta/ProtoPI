@@ -1,23 +1,19 @@
-// filterFunctions.ts
+import { get } from 'svelte/store';
 import { filterManager } from './filters';
-import { type FilterType, type FileFilterStatusMap } from './filters/types';
-import { type TreeNode, type TreeFileMap } from './../tnodeStore';
+import { type FilterType, type FileFilterStatusMap, type TreeNode, type coreTreeData } from '../fopStore/types';
+import { coreStateStore } from '../fopStore/coreStateStore';
 import { writable, type Writable } from 'svelte/store';
 
-export function filterNodes(treeFilesData: TreeFileMap, filterCriteriaMap: Map<string, string>, statusMap: FileFilterStatusMap) {
-  // if (process.env.NODE_ENV === 'development') {
-    console.log("[filterFunctions.ts] filterNodes called with:", treeFilesData, filterCriteriaMap, statusMap);
-  // }
-  
+export function filterNodes(coreState: Map<string, coreTreeData>, filterCriteriaMap: Map<string, string>, statusMap: FileFilterStatusMap) {
   const filterMap = new Map<string, Map<string, TreeNode[]>>();
   const filteredData: Writable<TreeNode[]>[] = [];
 
-  Object.entries(treeFilesData).forEach(([fileHash, treeNodes]) => {
-    const rootNode = treeNodes[0];
+  coreState.forEach((treeData, uuid) => {
+    const rootNode = treeData.TreeNodes[0];
     const nodesToFilter = rootNode.children;
     const fileFilterMap = new Map<string, TreeNode[]>();
-    const fileStatusMap = statusMap.get(fileHash);
-    const filterCriteria = filterCriteriaMap.get(fileHash) || '';
+    const fileStatusMap = statusMap.get(treeData.fileUUID);
+    const filterCriteria = filterCriteriaMap.get(treeData.fileUUID) || '';
     const criteriaValue = filterCriteria.replace(/^[a-z]+:/, '');
 
     if (fileStatusMap) {
@@ -30,7 +26,7 @@ export function filterNodes(treeFilesData: TreeFileMap, filterCriteriaMap: Map<s
       });
     }
 
-    filterMap.set(fileHash, fileFilterMap);
+    filterMap.set(treeData.fileUUID, fileFilterMap);
 
     const filteredStore: Writable<TreeNode[]> = writable([]);
     const filterFunction = filterManager.getFilter(filterCriteria);
@@ -38,10 +34,6 @@ export function filterNodes(treeFilesData: TreeFileMap, filterCriteriaMap: Map<s
     filteredStore.set([{ ...rootNode, children: filteredNodes }]);
     filteredData.push(filteredStore);
   });
-
-  // if (process.env.NODE_ENV === 'development') {
-    console.log("[filterFunctions.ts]  filterNodes result:", { filterMap, filteredData });
-  // }
 
   return { filterMap, filteredData };
 }

@@ -6,7 +6,7 @@
 import {
   initDerivedStore 
 } from '../../../stores/fileMgmt/viewStoreInterface';
-import { openFilesData, addFile  as addOpenFile } from '../../../stores/fileMgmt/openStore';
+// import { openFilesData, addFile  as addOpenFile } from '../../../stores/fileMgmt/openStore';
 import { addFile as addRawFile } from '../../../stores/fileMgmt/fopStore/utils/fileService';
   let fileInput: HTMLInputElement | null = null;
   let tsvscode: any;
@@ -91,7 +91,7 @@ import { addFile as addRawFile } from '../../../stores/fileMgmt/fopStore/utils/f
           const fileData = { name: file.name, content: fileContent };
 
           // Add file to openFilesData store
-          addOpenFile(fileData);
+          // addOpenFile(fileData);
           initDerivedStore();
 
           // Add file to rawFilesData store using fileService

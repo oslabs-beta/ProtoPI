@@ -1,5 +1,6 @@
 import type { Writable } from 'svelte/store';
-import { addFile, type FileData } from '../../../stores/fileMgmt/openStore';
+// TODO CONNECTION
+// import { addFile, type FileData } from '../../../stores/fileMgmt/openStore';
 
 // Function to handle a single file content message
 export function handleFileContentMessage(
