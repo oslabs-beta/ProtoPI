@@ -5,6 +5,7 @@
   "version": "0.0.2",
   "publisher": "oslabs-beta",
   "repository": "https://github.com/oslabs-beta/ProtoPI",
+  "license": "GPL-3.0-only",
   "engines": {
     "vscode": "^1.89.0"
   },
