@@ -1,5 +1,6 @@
 {
   "name": "protopi",
+  "displayName": "ProtoPI",
   "description": "OpenAPI spec file parser/creator and mock server for VS Code",
   "version": "0.0.2",
   "publisher": "oslabs-beta",
