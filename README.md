@@ -39,7 +39,7 @@ ProtoPI uses [Stoplight Prism](https://stoplight.io/open-source/prism) as its mo
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/protopi.git
+   git clone https://github.com/oslabs-beta/ProtoPI.git
    cd protopi
    ```
 2. Install dependencies:
@@ -52,7 +52,7 @@ ProtoPI uses [Stoplight Prism](https://stoplight.io/open-source/prism) as its mo
    ```
 4. Open project in Visual Studio Code:
    ```bash
-   code.
+   code .
    ```
 5. Open project in Visual Studio Code:
    Press F5 or go to Run > Start Debugging.
