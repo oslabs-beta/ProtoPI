@@ -1,3 +1,19 @@
+Built using:
+
+<img src="README/openapiinitiative.svg" alt="OpenAPI" width="50" height="30">
+<img src="README/typescript.svg" alt="TypeScript" width="50" height="30">
+<img src="README/javascript.svg" alt="JavaScript" width="50" height="30">
+<img src="README/svelte.svg" alt="Svelte" width="50" height="30">
+<img src="README/rollupdotjs.svg" alt="Rollup.JS" width="50" height="30">
+<img src="README/tsnode.svg" alt="TSNode" width="50" height="30">
+<img src="README/esbuild.svg" alt="ESBuild" width="50" height="30">
+<img src="README/eslint.svg" alt="ESLint" width="50" height="30">
+<img src="README/tailwindcss.svg" alt="TailwindCSS" width="50" height="30">
+<img src="README/postcss.svg" alt="PostCSS" width="50" height="30">
+<img src="README/docusaurus.svg" alt="Docusaurus" width="50" height="30">
+<img src="README/lodash.svg" alt="Lodash" width="50" height="30">
+
+
 # ProtoPI - OpenAPI Designer & HTTP Client for VS Code
 
 ProtoPI is a Visual Studio Code extension that empowers developers to design, test, and mock their APIs using the OpenAPI (Swagger) specification directly within the editor. With integrated HTTP client functionality and a built-in mock server powered by Stoplight Prism, ProtoPI simplifies API development by providing a seamless workflow.
