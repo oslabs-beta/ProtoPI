@@ -90,17 +90,11 @@ Please report any issues on our [GitHub Issues page](https://github.com/oslabs-b
 
 ## Release Notes
 
-### 1.0.0
+### 0.1.0-alpha
 
 - Initial release of ProtoPI.
-- Support for OpenAPI Specification Designer, HTTP Client, and basic mock server.
+- Support for OpenAPI Specification Viewer, HTTP Client, and basic mock server.
 
-### 1.1.0
-
-- Added support for advanced OpenAPI features.
-- Improved performance with large files.
-
----
 
 ## Following Extension Guidelines
 
