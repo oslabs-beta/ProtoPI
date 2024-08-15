@@ -4,8 +4,5 @@
 </script>
 
 <div>
-  <div class="p-4 text-center">
-    Workshop
-  </div>
     <Http2 />
 </div>

@@ -11,5 +11,5 @@
   bind:value={url} 
   on:input={handleUrlChange} 
   placeholder="Enter URL or paste text" 
-  class="border p-2 rounded w-full text-black" 
+  class="h-full border p-2 rounded w-full text-black" 
 />

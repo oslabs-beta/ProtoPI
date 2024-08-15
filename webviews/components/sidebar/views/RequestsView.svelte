@@ -6,7 +6,7 @@
   export let treeData: TreeNode[] = [];
 
   // const isDevelopment: boolean = (import.meta.env.MODE === 'development');
-  const isDevelopment: boolean = true;
+  const isDevelopment: boolean = false;
 
 </script>
 

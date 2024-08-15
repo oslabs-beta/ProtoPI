@@ -28,7 +28,7 @@
     on:focus={() => showDropdown = true}
     on:blur={() => setTimeout(() => showDropdown = false, 200)}
     placeholder="Enter custom method" 
-    class="border p-2 rounded w-full text-black pr-10" 
+    class="border p-2 rounded h-full w-full text-black pr-10" 
   />
   <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
     <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
