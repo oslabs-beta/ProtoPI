@@ -1,71 +1,120 @@
-# ProtoPI README
+Built using:
 
-This is the README for your extension "ProtoPI". After writing up a brief description, we recommend including the following sections.
+<p align="center">
+  <img src="README/openapiinitiative.svg" alt="OpenAPI" width="50" height="30">
+  <img src="README/typescript.svg" alt="TypeScript" width="50" height="30">
+  <img src="README/javascript.svg" alt="JavaScript" width="50" height="30">
+  <img src="README/svelte.svg" alt="Svelte" width="50" height="30">
+  <img src="README/rollupdotjs.svg" alt="Rollup.JS" width="50" height="30">
+  <img src="README/tsnode.svg" alt="TSNode" width="50" height="30">
+  <img src="README/esbuild.svg" alt="ESBuild" width="50" height="30">
+  <img src="README/eslint.svg" alt="ESLint" width="50" height="30">
+  <img src="README/tailwindcss.svg" alt="TailwindCSS" width="50" height="30">
+  <img src="README/postcss.svg" alt="PostCSS" width="50" height="30">
+  <img src="README/docusaurus.svg" alt="Docusaurus" width="50" height="30">
+  <img src="README/lodash.svg" alt="Lodash" width="50" height="30">
+</p>
+
+# ProtoPI - OpenAPI Designer & HTTP Client for VS Code
+
+ProtoPI is a Visual Studio Code extension that empowers developers to design, test, and mock their APIs using the OpenAPI (Swagger) specification directly within the editor. With integrated HTTP client functionality and a built-in mock server powered by Stoplight Prism, ProtoPI simplifies API development by providing a seamless workflow.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **OpenAPI Designer**: Craft and edit your API definitions using the OpenAPI standard. ProtoPI supports YAML and JSON formats with syntax highlighting and validation.
+- **HTTP Client Functionality**: Test your API endpoints directly from VS Code with an intuitive HTTP client built into the extension.
+- **Built-In Mock Server**: Instantly mock your API responses using Stoplight Prism, allowing you to simulate server behavior without needing to deploy.
 
-For example if there is an image subfolder under your extension project workspace:
+![OpenAPI Designer](images/openapi-designer.png)
+_Screenshot of the OpenAPI designer within ProtoPI._
 
-\!\[feature X\]\(images/feature-x.png\)
+> Tip: Consider using short animations or GIFs to demonstrate how to use the key features of ProtoPI.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+## Importance of OpenAPI as a Source of Truth
+
+The OpenAPI Specification is the industry standard for defining RESTful APIs. By using OpenAPI as the single source of truth, you ensure consistency across your documentation, client generation, and server implementations. ProtoPI embraces this philosophy, making it easy to design, test, and mock APIs that adhere to the OpenAPI standard.
+
+Learn more about the [OpenAPI Specification](https://www.openapis.org/).
+
+## Stoplight Prism - Mock Server Instances
+
+ProtoPI uses [Stoplight Prism](https://stoplight.io/open-source/prism) as its mock server engine. Prism is a powerful tool that enables you to generate dynamic mock servers based on your OpenAPI specifications. With Prism integrated into ProtoPI, you can quickly test your API's behavior without needing to deploy the backend, speeding up development and reducing friction in your workflow.
+
+## Future State
+
+- **Request Collections**: Organize and manage your API requests in collections, similar to popular tools like Postman.
+- **API Documentation Generation**: Automatically generate and export API documentation directly from your OpenAPI specs.
+- **Collaboration Features**: Share and collaborate on API designs with team members within VS Code.
+- **Advanced Mocking Capabilities**: Enhanced support for complex scenarios, including dynamic responses and advanced validation.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Visual Studio Code version 1.50.0 or higher
+- Node.js version 12.0.0 or higher
+
+# Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/oslabs-beta/ProtoPI.git
+   cd protopi
+   ```
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
+3. Start the development build process:
+   ```bash
+   yarn watch
+   ```
+4. Open project in Visual Studio Code:
+   ```bash
+   code .
+   ```
+5. Open project in Visual Studio Code:
+   Press F5 or go to Run > Start Debugging.
+   This will open a new VS Code Debug window with the extension loaded.
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- `protopi.basePath`: Base path for storing API definitions and Collections
+- `protopi.mockServer.port`: Set the port for the built-in mock server.
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Some users may experience performance issues with very large OpenAPI files.
+- Limited support for certain advanced OpenAPI features like polymorphism and allOf.
+
+Please report any issues on our [GitHub Issues page](https://github.com/oslabs-beta/ProtoPI/issues).
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
+### 0.1.0-alpha
 
-### 1.0.0
+- Initial release of ProtoPI.
+- Support for OpenAPI Specification Viewer, HTTP Client, and basic mock server.
 
-Initial release of ...
 
-### 1.0.1
+## Following Extension Guidelines
 
-Fixed issue #.
+Ensure that you've read through the extension guidelines and followed the best practices for creating your extension.
 
-### 1.1.0
+- [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
 
-Added features X, Y, and Z.
+## How to Contribute
 
----
+We welcome contributions from the community! Here's how you can get involved:
 
-## Following extension guidelines
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature/your-feature-name`).
+3. Make your changes and commit them (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature/your-feature-name`).
+5. Open a pull request.
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+Please read our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+## License
 
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
